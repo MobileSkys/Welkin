@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "node build/build.mjs",
-    "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs",
+    "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-contrast.mjs",
     "test": "npm run lint && npm run build"
   },
   "browserslist": [
