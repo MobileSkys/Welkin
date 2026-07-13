@@ -1,5 +1,33 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .switcher — row of equals that switches to a column below a width
+   threshold (docs/06, T-24). The (threshold - 100%) * 999 flex-basis trick:
+   positive (huge) when the container is narrower than the threshold, so
+   every item jumps to full width; negative (clamped to content) when wider.
+   Knobs: --wel-switcher-threshold, --wel-switcher-gap; data-limit="2|3|4"
+   caps how many items may share a row (a selector cannot read a custom
+   property, so the limit is markup — docs/06). */
 @layer layout {
+  .switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wel-switcher-gap, var(--wel-space-4));
+    container-type: inline-size;
+    container-name: layout;
+  }
+
+  .switcher > :where(*) {
+    flex-grow: 1;
+    flex-basis: calc((var(--wel-switcher-threshold, 30rem) - 100%) * 999);
+  }
+}
+
+/* data-limit: with more items than the limit, every item goes full width —
+   a crowded row degrades to a clean column rather than a cramped squeeze. */
+@layer variants {
+  .switcher[data-limit="2"] > :where(:nth-last-child(n + 3), :nth-last-child(n + 3) ~ *),
+  .switcher[data-limit="3"] > :where(:nth-last-child(n + 4), :nth-last-child(n + 4) ~ *),
+  .switcher[data-limit="4"] > :where(:nth-last-child(n + 5), :nth-last-child(n + 5) ~ *) {
+    flex-basis: 100%;
+  }
 }

@@ -1,5 +1,17 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .cluster — horizontal grouping that wraps (docs/06, T-22): tag lists,
+   button rows, nav items. Knobs: --wel-cluster-gap, --wel-cluster-align,
+   --wel-cluster-justify. Establishes a queryable container per the doctrine
+   (docs/06 §doctrine #3/#4). */
 @layer layout {
+  .cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wel-cluster-gap, var(--wel-space-3));
+    align-items: var(--wel-cluster-align, center);
+    justify-content: var(--wel-cluster-justify, flex-start);
+    container-type: inline-size;
+    container-name: layout;
+  }
 }

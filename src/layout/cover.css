@@ -1,5 +1,22 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .cover — full-height cover with a vertically centred principal element
+   (docs/06, T-27): heroes, splash sections. Mark the principal child with
+   data-principal; its auto block margins centre it while header/footer
+   children keep to the edges. Knobs: --wel-cover-min-height,
+   --wel-cover-padding. */
 @layer layout {
+  .cover {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wel-space-4);
+    min-block-size: var(--wel-cover-min-height, 100dvb);
+    padding: var(--wel-cover-padding, var(--wel-space-5));
+    container-type: inline-size;
+    container-name: layout;
+  }
+
+  .cover > :where([data-principal]) {
+    margin-block: auto;
+  }
 }

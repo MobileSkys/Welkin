@@ -1,5 +1,28 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .center — horizontally centred, measure-capped content column (docs/06,
+   T-26). A three-track grid with named lines rather than auto margins, so
+   a data-breakout child (full-bleed figure, edge-to-edge section) can
+   escape the measure to the full container width while normal flow stays
+   capped. Default cap agrees with .prose by construction: both read
+   --wel-text-measure. Knobs: --wel-center-max, --wel-center-gutter. */
 @layer layout {
+  .center {
+    display: grid;
+    grid-template-columns:
+      [full-start] minmax(var(--wel-center-gutter, var(--wel-space-gutter)), 1fr)
+      [content-start] min(var(--wel-center-max, var(--wel-text-measure)), 100% - 2 * var(--wel-center-gutter, var(--wel-space-gutter)))
+      [content-end] minmax(var(--wel-center-gutter, var(--wel-space-gutter)), 1fr)
+      [full-end];
+    container-type: inline-size;
+    container-name: layout;
+  }
+
+  .center > :where(*) {
+    grid-column: content;
+  }
+
+  .center > :where([data-breakout]) {
+    grid-column: full;
+  }
 }

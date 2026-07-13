@@ -18,6 +18,7 @@
   .demo-well[data-w="medium"] > div { inline-size: 32rem; }
   .demo-well[data-w="wide"]   > div { inline-size: 48rem; }
   .demo-box { background: var(--wel-color-surface-sunken); border: var(--wel-border-width) solid var(--wel-color-border); border-radius: var(--wel-radius-sm); padding: var(--wel-space-2) var(--wel-space-3); }
+  .demo-tall { min-block-size: 8rem; }
 </style>
 </head>
 <body>
@@ -69,13 +70,230 @@
       </figure>
     </div>
   </section>
+
+  <section>
+    <h2><code>.cluster</code></h2>
+    <p>Horizontal grouping that wraps: tag lists, button rows, nav items. Knobs:
+    <code>--wel-cluster-gap</code>, <code>--wel-cluster-align</code>,
+    <code>--wel-cluster-justify</code>.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container — wraps</figcaption>
+        <div class="cluster">
+          <span class="demo-box">alpha</span>
+          <span class="demo-box">beta</span>
+          <span class="demo-box">gamma</span>
+          <span class="demo-box">delta</span>
+          <span class="demo-box">epsilon</span>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container</figcaption>
+        <div class="cluster">
+          <span class="demo-box">alpha</span>
+          <span class="demo-box">beta</span>
+          <span class="demo-box">gamma</span>
+          <span class="demo-box">delta</span>
+          <span class="demo-box">epsilon</span>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — justified end</figcaption>
+        <div class="cluster" style="--wel-cluster-justify: flex-end">
+          <span class="demo-box">alpha</span>
+          <span class="demo-box">beta</span>
+          <span class="demo-box">gamma</span>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.sidebar-layout</code></h2>
+    <p>Sidebar + content; wraps to stacked when the content's share would drop below
+    its minimum — no breakpoint. Knobs: <code>--wel-sidebar-width</code>,
+    <code>--wel-sidebar-content-min</code>, <code>--wel-sidebar-gap</code>;
+    <code>data-side="end"</code> puts the sidebar after the content.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container — stacked</figcaption>
+        <div class="sidebar-layout" style="--wel-sidebar-width: 10rem">
+          <div class="demo-box">sidebar</div>
+          <div class="demo-box">content</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container — side by side</figcaption>
+        <div class="sidebar-layout" style="--wel-sidebar-width: 10rem">
+          <div class="demo-box">sidebar</div>
+          <div class="demo-box">content</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — <code>data-side="end"</code></figcaption>
+        <div class="sidebar-layout" data-side="end" style="--wel-sidebar-width: 10rem">
+          <div class="demo-box">content</div>
+          <div class="demo-box">sidebar</div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.switcher</code></h2>
+    <p>Row of equals that switches to a column below the threshold. Knobs:
+    <code>--wel-switcher-threshold</code>, <code>--wel-switcher-gap</code>,
+    <code>data-limit</code> caps items per row.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container — column</figcaption>
+        <div class="switcher" style="--wel-switcher-threshold: 24rem">
+          <div class="demo-box">one</div>
+          <div class="demo-box">two</div>
+          <div class="demo-box">three</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container — row</figcaption>
+        <div class="switcher" style="--wel-switcher-threshold: 24rem">
+          <div class="demo-box">one</div>
+          <div class="demo-box">two</div>
+          <div class="demo-box">three</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — <code>data-limit="3"</code> with four items</figcaption>
+        <div class="switcher" data-limit="3" style="--wel-switcher-threshold: 24rem">
+          <div class="demo-box">one</div>
+          <div class="demo-box">two</div>
+          <div class="demo-box">three</div>
+          <div class="demo-box">four</div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.grid</code></h2>
+    <p>Auto-fit card grid: as many <code>--wel-grid-min</code>-wide columns as fit.
+    Knobs: <code>--wel-grid-min</code>, <code>--wel-grid-gap</code>.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container — one column</figcaption>
+        <div class="grid" style="--wel-grid-min: 10rem">
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container</figcaption>
+        <div class="grid" style="--wel-grid-min: 10rem">
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container</figcaption>
+        <div class="grid" style="--wel-grid-min: 10rem">
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+          <div class="demo-box">card</div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.center</code></h2>
+    <p>Measure-capped centred column; a <code>data-breakout</code> child escapes to the
+    full container width via named grid lines. Knobs: <code>--wel-center-max</code>
+    (defaults to <code>--wel-text-measure</code>), <code>--wel-center-gutter</code>.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container — gutters hold</figcaption>
+        <div class="center">
+          <p class="demo-box">capped column</p>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container — cap at 20rem</figcaption>
+        <div class="center" style="--wel-center-max: 20rem">
+          <p class="demo-box">capped column</p>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — with breakout child</figcaption>
+        <div class="center" style="--wel-center-max: 20rem">
+          <p class="demo-box">capped column</p>
+          <p class="demo-box" data-breakout>full-bleed breakout</p>
+          <p class="demo-box">capped again</p>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.cover</code></h2>
+    <p>Full-height cover with a vertically centred <code>data-principal</code> element;
+    other children keep to the edges. Knobs: <code>--wel-cover-min-height</code>
+    (default <code>100dvb</code>), <code>--wel-cover-padding</code>.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container, 12rem cover</figcaption>
+        <div class="cover" style="--wel-cover-min-height: 12rem">
+          <div class="demo-box">header</div>
+          <div class="demo-box" data-principal>principal</div>
+          <div class="demo-box">footer</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container, 16rem cover</figcaption>
+        <div class="cover" style="--wel-cover-min-height: 16rem">
+          <div class="demo-box">header</div>
+          <div class="demo-box" data-principal>principal</div>
+          <div class="demo-box">footer</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — principal only</figcaption>
+        <div class="cover" style="--wel-cover-min-height: 12rem">
+          <div class="demo-box" data-principal>hero headline</div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2><code>.frame</code></h2>
+    <p>Aspect-ratio media frame with <code>object-fit</code> cropping. Knob:
+    <code>--wel-frame-ratio</code> (default <code>16 / 9</code>).</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container, 16:9</figcaption>
+        <div class="frame demo-box"></div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container, 4:3</figcaption>
+        <div class="frame demo-box" style="--wel-frame-ratio: 4 / 3"></div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container, 21:9</figcaption>
+        <div class="frame demo-box" style="--wel-frame-ratio: 21 / 9"></div>
+      </figure>
+    </div>
+  </section>
 </main>
 
 <hr>
 
 <footer>
-  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> · Sections for the
-  remaining primitives land with T-22…T-28.</p>
+  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> · Subgrid card
+  alignment (<code>.grid[data-align="rows"]</code>) lands with T-29.</p>
 </footer>
 
 </body>

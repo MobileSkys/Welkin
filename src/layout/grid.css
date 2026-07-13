@@ -1,5 +1,16 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .grid — auto-fit card grid: as many min-wide columns as fit (docs/06,
+   T-25). The min(100%, …) guard keeps a track from forcing overflow in
+   containers narrower than the minimum. No column classes, no breakpoints —
+   the track list is the whole layout. Knobs: --wel-grid-min, --wel-grid-gap.
+   Subgrid row alignment (data-align="rows") is T-29. */
 @layer layout {
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--wel-grid-min, 20rem)), 1fr));
+    gap: var(--wel-grid-gap, var(--wel-space-4));
+    container-type: inline-size;
+    container-name: layout;
+  }
 }

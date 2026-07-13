@@ -46,7 +46,7 @@ container), each establishing `container-type: inline-size; container-name: layo
 | `.stack` | Vertical flow with consistent rhythm (owns the margins the reset removed) | `--wel-stack-gap` |
 | `.cluster` | Horizontal grouping that wraps (tag lists, button rows, nav items) | `--wel-cluster-gap`, `--wel-cluster-align`, `--wel-cluster-justify` |
 | `.sidebar-layout` | Sidebar + content; wraps to stacked when the sidebar's share gets too small | `--wel-sidebar-width`, `--wel-sidebar-content-min`, `--wel-sidebar-gap`, `data-side="start|end"` |
-| `.switcher` | Row of equals that switches to a column below a width threshold | `--wel-switcher-threshold`, `--wel-switcher-gap`, `--wel-switcher-limit` |
+| `.switcher` | Row of equals that switches to a column below a width threshold | `--wel-switcher-threshold`, `--wel-switcher-gap`, `data-limit="2|3|4"` (a selector cannot read a custom property, so the row-item cap is markup) |
 | `.grid` | Auto-fit card grid: as many `min`-wide columns as fit | `--wel-grid-min`, `--wel-grid-gap` |
 | `.center` | Horizontally centred, measure-capped column (page content) | `--wel-center-max` (defaults to `--wel-text-measure`), `--wel-center-gutter` |
 | `.cover` | Full-height cover with vertically centred principal element (heroes) | `--wel-cover-min-height`, `--wel-cover-padding` |

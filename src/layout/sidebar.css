@@ -1,5 +1,48 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .sidebar-layout — sidebar + content pair that wraps to stacked when the
+   content's share would drop below its minimum (docs/06, T-23). Intrinsic:
+   no breakpoint — the flex-basis/grow arithmetic decides from available
+   space. First child is the sidebar; data-side="end" flips the roles so
+   the sidebar sits after the content. Knobs: --wel-sidebar-width,
+   --wel-sidebar-content-min (percentage of the pair), --wel-sidebar-gap. */
 @layer layout {
+  .sidebar-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wel-sidebar-gap, var(--wel-space-5));
+    container-type: inline-size;
+    container-name: layout;
+  }
+
+  /* Sidebar: fixed preferred width, may grow when wrapped to full row. */
+  .sidebar-layout > :where(:first-child) {
+    flex-grow: 1;
+    flex-basis: var(--wel-sidebar-width, 20rem);
+  }
+
+  /* Content: grows greedily; wrapping triggers when it would be squeezed
+     below its minimum share. */
+  .sidebar-layout > :where(:last-child) {
+    flex-grow: 999;
+    flex-basis: 0;
+    min-inline-size: var(--wel-sidebar-content-min, 50%);
+  }
+}
+
+/* data-side="end": the sidebar is the last child (after the content in
+   source order). Attribute rules live in `variants` per ADR-0010's layout
+   budget (0-1-0, primitive class only). */
+@layer variants {
+  .sidebar-layout[data-side="end"] > :where(:first-child) {
+    flex-grow: 999;
+    flex-basis: 0;
+    min-inline-size: var(--wel-sidebar-content-min, 50%);
+  }
+
+  .sidebar-layout[data-side="end"] > :where(:last-child) {
+    flex-grow: 1;
+    flex-basis: var(--wel-sidebar-width, 20rem);
+    min-inline-size: auto;
+  }
 }

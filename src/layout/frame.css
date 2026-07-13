@@ -1,5 +1,19 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .frame — aspect-ratio media frame with object-fit cropping (docs/06,
+   T-28): thumbnails, video embeds, art-directed images that must hold a
+   shape regardless of intrinsic media size. Knob: --wel-frame-ratio. */
 @layer layout {
+  .frame {
+    aspect-ratio: var(--wel-frame-ratio, 16 / 9);
+    overflow: hidden;
+    container-type: inline-size;
+    container-name: layout;
+  }
+
+  .frame > :where(img, video, picture) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
 }
