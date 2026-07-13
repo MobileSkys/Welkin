@@ -572,6 +572,29 @@
       </div>
     </form>
   </section>
+
+  <section class="stack">
+    <h2>Tooltip</h2>
+    <p>Popover-API toggletip in Core: click / Enter / Space toggles, Esc and light
+    dismiss close, and the text is the trigger's <code>aria-describedby</code>
+    description — exposed to AT without ever opening it. Under Enhanced it tethers to
+    the trigger (anchor positioning) and fades. Hover reveal arrives with
+    <code>wel-tooltip</code> (Phase 5).</p>
+
+    <div class="cluster">
+      <button class="button" data-variant="ghost" aria-label="Formatting help"
+              popovertarget="fmt-tip" aria-describedby="fmt-tip">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.2a1.6 1.6 0 1 1 2.3 1.5c-.5.25-.8.55-.8 1.1v.4"/><circle cx="8" cy="11.4" r="0.1"/></svg>
+      </button>
+      <button class="button" popovertarget="below-tip" aria-describedby="below-tip">
+        Placed below
+      </button>
+    </div>
+    <div class="tooltip" id="fmt-tip" popover role="tooltip">Markdown is supported</div>
+    <div class="tooltip" id="below-tip" popover role="tooltip" data-placement="block-end">
+      Longer supplementary text wraps at the max inline size token.
+    </div>
+  </section>
 </main>
 
 <hr>

@@ -15,6 +15,7 @@ export const TOKENS_DIR = fileURLToPath(new URL('../src/tokens/', import.meta.ur
 // checker verifies it in both schemes.
 export const PAIRINGS = [
   ['--wel-color-ink', '--wel-color-surface', 4.5, 'body text'],
+  ['--wel-color-surface', '--wel-color-ink', 4.5, 'tooltip inverted bubble'],
   ['--wel-color-ink', '--wel-color-surface-raised', 4.5, 'text on cards'],
   ['--wel-color-ink', '--wel-color-surface-sunken', 4.5, 'text on sunken (code blocks)'],
   ['--wel-color-ink-muted', '--wel-color-surface', 4.5, 'secondary text'],

@@ -1,0 +1,100 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .tooltip — plain-text supplementary label on the Popover API
+   (docs/components/tooltip.md, T-45). Core is a toggletip: popovertarget
+   toggles it, Esc/light-dismiss close it, and aria-describedby exposes the
+   text to AT with zero interaction — the popover UA default centres it
+   (top-layer boxes cannot tether without anchor positioning). Enhanced
+   tethers it to the trigger's implicit invoker anchor. Hover behaviour is
+   wel-tooltip.js (Phase 5); popover="hint" is runtime-detected there, never
+   markup (its invalid-value fallback is `manual`, which would silently drop
+   Esc + light dismiss). */
+@layer components {
+  .tooltip {
+    --wel-tooltip-bg: var(--wel-color-ink);
+    --wel-tooltip-ink: var(--wel-color-surface);
+    --wel-tooltip-radius: var(--wel-radius-control);
+    --wel-tooltip-padding-block: var(--wel-space-1);
+    --wel-tooltip-padding-inline: var(--wel-space-2);
+    --wel-tooltip-max-inline-size: 18rem;
+    --wel-tooltip-offset: var(--wel-space-1);
+    /* Interaction timing for wel-tooltip (read via getComputedStyle), not
+       motion — deliberately not multiplied by --wel-motion: a zeroed delay
+       would make tooltips MORE eager under reduced motion. */
+    --wel-tooltip-show-delay: 600ms;
+
+    padding-block: var(--wel-tooltip-padding-block);
+    padding-inline: var(--wel-tooltip-padding-inline);
+    max-inline-size: var(--wel-tooltip-max-inline-size);
+    background-color: var(--wel-tooltip-bg);
+    color: var(--wel-tooltip-ink);
+    border: 0;
+    border-radius: var(--wel-tooltip-radius);
+    font-size: var(--wel-text-size--1);
+    line-height: var(--wel-text-leading-tight);
+  }
+
+  /* Enhanced: tether to the trigger via the implicit invoker anchor.
+     margin is the trigger gap here; outside this block the UA's auto
+     margins keep the Core fallback centred, so margin must not leak out. */
+  @supports (anchor-name: --wel-a) {
+    .tooltip {
+      /* The UA popover style is inset: 0 — position-area only steers the
+         box once the insets are auto again. */
+      inset: auto;
+      position-area: block-start;
+      position-try-fallbacks: flip-block;
+      margin: var(--wel-tooltip-offset);
+    }
+  }
+
+  /* Enhanced: opacity-only fade (non-vestibular, 09) riding --wel-motion;
+     display/overlay transition keeps the exit fade in the top layer. */
+  @supports (transition-behavior: allow-discrete) {
+    .tooltip {
+      opacity: 0;
+      transition:
+        opacity calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+        display calc(var(--wel-motion-duration-1) * var(--wel-motion)) allow-discrete,
+        overlay calc(var(--wel-motion-duration-1) * var(--wel-motion)) allow-discrete;
+    }
+
+    .tooltip:where(:popover-open) {
+      opacity: 1;
+    }
+
+    @starting-style {
+      .tooltip:where(:popover-open) {
+        opacity: 0;
+      }
+    }
+  }
+
+  /* Forced colors: the inverted pair collapses to Canvas/CanvasText — a
+     border keeps the bubble's edge. */
+  @media (forced-colors: active) {
+    .tooltip {
+      border: var(--wel-border-width) solid CanvasText;
+    }
+  }
+}
+
+@layer variants {
+  /* data-placement is Enhanced-only by contract: without anchor
+     positioning every placement is the same centred fallback. */
+  @supports (anchor-name: --wel-a) {
+    .tooltip[data-placement="block-end"] {
+      position-area: block-end;
+    }
+
+    .tooltip[data-placement="inline-start"] {
+      position-area: inline-start;
+      position-try-fallbacks: flip-inline;
+    }
+
+    .tooltip[data-placement="inline-end"] {
+      position-area: inline-end;
+      position-try-fallbacks: flip-inline;
+    }
+  }
+}

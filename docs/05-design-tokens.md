@@ -262,10 +262,10 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-red-900` | primitive | — | `oklch(30% 0.094 25)` | — |
 | `--wel-red-950` | primitive | — | `oklch(23% 0.068 25)` | — |
 | `--wel-red-975` | primitive | — | `oklch(17% 0.051 25)` | — |
-| `--wel-color-surface` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | under `ink` 15.5; under `ink-muted` 6.5; under `ink-faint` 3.3; under `accent` 4.7; under `accent-hover` 5.9; under `accent-active` 5.0; under `border-strong` 3.3; under `info` 6.6; under `success` 6.1; under `warning` 6.6; under `danger` 7.1 |
+| `--wel-color-surface` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | under `ink` 15.5; on `ink` 15.5; under `ink-muted` 6.5; under `ink-faint` 3.3; under `accent` 4.7; under `accent-hover` 5.9; under `accent-active` 5.0; under `border-strong` 3.3; under `info` 6.6; under `success` 6.1; under `warning` 6.6; under `danger` 7.1 |
 | `--wel-color-surface-raised` | semantic | `<color>` | light `oklch(99.5% 0.001 250)` / dark `var(--wel-grey-950)` | under `ink` 14.2; under `ink-muted` 6.6; under `border-strong` 3.6 |
 | `--wel-color-surface-sunken` | semantic | `<color>` | light `var(--wel-grey-100)` / dark `oklch(13% 0.003 250)` | under `ink` 14.2; under `ink-muted` 6.0; under `info` 6.0; under `accent` 4.3 |
-| `--wel-color-ink` | semantic | `<color>` | light `var(--wel-grey-950)` / dark `var(--wel-grey-100)` | on `surface` 15.5; on `surface-raised` 14.2; on `surface-sunken` 14.2; on `info-tint` 12.9; on `success-tint` 12.9; on `warning-tint` 12.9; on `danger-tint` 12.9; on `accent-tint` 13.3 |
+| `--wel-color-ink` | semantic | `<color>` | light `var(--wel-grey-950)` / dark `var(--wel-grey-100)` | on `surface` 15.5; under `surface` 15.5; on `surface-raised` 14.2; on `surface-sunken` 14.2; on `info-tint` 12.9; on `success-tint` 12.9; on `warning-tint` 12.9; on `danger-tint` 12.9; on `accent-tint` 13.3 |
 | `--wel-color-ink-muted` | semantic | `<color>` | light `var(--wel-grey-700)` / dark `var(--wel-grey-400)` | on `surface` 6.5; on `surface-raised` 6.6; on `surface-sunken` 6.0 |
 | `--wel-color-ink-faint` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-600)` | on `surface` 3.3 |
 | `--wel-color-border` | semantic | `<color>` | light `var(--wel-grey-200)` / dark `var(--wel-grey-800)` | under `accent` 3.6 |
@@ -377,6 +377,7 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | Foreground | Background | Min | Light | Dark | Worst | Use |
 |------------|------------|-----|-------|------|-------|-----|
 | `ink` | `surface` | 4.5:1 | 15.48:1 | 16.04:1 | 15.48:1 | body text |
+| `surface` | `ink` | 4.5:1 | 15.48:1 | 16.04:1 | 15.48:1 | tooltip inverted bubble |
 | `ink` | `surface-raised` | 4.5:1 | 16.65:1 | 14.16:1 | 14.16:1 | text on cards |
 | `ink` | `surface-sunken` | 4.5:1 | 14.16:1 | 16.87:1 | 14.16:1 | text on sunken (code blocks) |
 | `ink-muted` | `surface` | 4.5:1 | 6.53:1 | 7.43:1 | 6.53:1 | secondary text |
@@ -407,6 +408,6 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `accent` | `surface-sunken` | 3:1 | 4.29:1 | 7.80:1 | 4.29:1 | progress fill vs track (1.4.11) |
 | `accent` | `border` | 3:1 | 3.57:1 | 3.88:1 | 3.57:1 | spinner arc vs track (1.4.11) |
 
-Totals: 140 tokens, 30 pairings × 2 schemes.
+Totals: 140 tokens, 31 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->

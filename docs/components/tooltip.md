@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -104,7 +104,7 @@ covers real deployments) and fully functional.
 
 | Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
 |---------|------------------|-------------|------------------------------------------|
-| CSS anchor positioning (implicit invoker anchor, `position-area`) | `@supports (anchor-name: --x)` | Tooltip tethers to its trigger on the `data-placement` side, offset by `--wel-tooltip-offset`, with `position-try-fallbacks` flip. Status honesty: Chromium + WebKit shipped, Gecko in progress at writing — enters source at intake per [ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md) | Centred panel (03 row); `wel-tooltip` positions it where present |
+| CSS anchor positioning (implicit invoker anchor, `position-area`) | `@supports (anchor-name: --x)` | Tooltip tethers to its trigger on the `data-placement` side, offset by `--wel-tooltip-offset`, with `position-try-fallbacks` flip. Intake passed at implementation (T-45), following the navbar's shipped precedent (T-38) | Centred panel (03 row); `wel-tooltip` positions it where present |
 | `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Short fade in/out (opacity only) | Instant show/hide (03 row) |
 | `popover="hint"` | — (HTML attribute value; **cannot be gated and degrades badly**, see below) | Hint popovers don't close open `auto` popovers (tooltip over an open menu) and close each other | **Markup ships `popover` (auto).** The invalid-value default for `popover` is `manual` — so hard-coding `hint` in markup on a non-supporting engine silently *removes* light dismiss and Esc. Pre-Baseline at writing. Therefore `hint` is applied only at runtime by `wel-tooltip` after `el.popover = 'hint'; el.popover === 'hint'` feature detection |
 
@@ -183,13 +183,17 @@ a tooltip trigger inside another tooltip's trigger.
 
 ## Open questions
 
+- ~~Arrow/beak on the bubble?~~ **Resolved (T-45): omitted for v1** — pure aesthetics,
+  needs `anchor()` arithmetic to point correctly, and the offset gap reads cleanly
+  without it.
+
+**Deferred to the `wel-tooltip` module (Phase 5):**
+
 - Ship a shared show/hide delay pair (`-hide-delay` for the pointer corridor to the
   tooltip) or keep hide immediate-on-leave with the tooltip itself hoverable? Leaning
   single show-delay token until real usage complains.
 - `interestfor` intake: when Interest Invokers reach Baseline, does the module delete
   entirely or remain for the `hint` upgrade path? Revisit per ADR-0012 cadence.
-- Arrow/beak on the bubble: pure aesthetics, needs `anchor()`-based positioning to point
-  correctly — Enhanced-only nicety or omit entirely? Leaning omit for v1.
 
 ## References
 
