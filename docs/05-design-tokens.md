@@ -271,9 +271,9 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-color-border` | semantic | `<color>` | light `var(--wel-grey-200)` / dark `var(--wel-grey-800)` | — |
 | `--wel-color-border-strong` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-500)` | on `surface` 3.3 |
 | `--wel-color-accent` | semantic | `<color>` | light `var(--wel-blue-600)` / dark `var(--wel-blue-400)` | on `surface` 4.7; under `accent-contrast` 4.7 |
-| `--wel-color-accent-hover` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.06) c h)` | on `surface` 5.9 |
+| `--wel-color-accent-hover` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.06) c h)` | on `surface` 5.9; on `accent-tint` 5.1 |
 | `--wel-color-accent-active` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.10) c h)` | on `surface` 5.0 |
-| `--wel-color-accent-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface))` | under `ink` 13.3 |
+| `--wel-color-accent-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface))` | under `ink` 13.3; under `accent-hover` 5.1 |
 | `--wel-color-accent-contrast` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | on `accent` 4.7 |
 | `--wel-color-info` | semantic | `<color>` | light `var(--wel-blue-700)` / dark `var(--wel-blue-300)` | on `surface` 6.6; on `info-tint` 5.5 |
 | `--wel-color-success` | semantic | `<color>` | light `var(--wel-green-700)` / dark `var(--wel-green-300)` | on `surface` 6.1; on `success-tint` 5.1 |
@@ -398,7 +398,8 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `ink` | `info-tint` | 4.5:1 | 12.90:1 | 13.58:1 | 12.90:1 | alert body on tint |
 | `ink` | `danger-tint` | 4.5:1 | 12.87:1 | 13.60:1 | 12.87:1 | alert body on tint |
 | `ink` | `accent-tint` | 4.5:1 | 13.28:1 | 13.98:1 | 13.28:1 | text on hover tint (pagination/table rows) |
+| `accent-hover` | `accent-tint` | 4.5:1 | 5.22:1 | 5.14:1 | 5.14:1 | ghost/secondary button text on hover tint |
 
-Totals: 140 tokens, 22 pairings × 2 schemes.
+Totals: 140 tokens, 23 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->

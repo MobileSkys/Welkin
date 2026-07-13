@@ -1,0 +1,150 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .button — the action trigger (docs/components/button.md, T-30). Pure
+   CSS, Core tier. Variants/sizes are data-* axes (ADR-0001); every bg/ink
+   pair is a guaranteed pairing from the docs/05 table in both schemes.
+   Interaction shades derive from --wel-button-bg via the 05 formulas —
+   themes retint every state by setting one token. Variants with a
+   transparent bg point the -hover/-active tokens at tint pairings instead
+   (a lightness offset from transparent is meaningless). */
+@layer components {
+  .button {
+    --wel-button-bg: var(--wel-color-surface-sunken);
+    --wel-button-ink: var(--wel-color-ink);
+    --wel-button-border: transparent;
+    --wel-button-radius: var(--wel-radius-control);
+    --wel-button-padding-block: var(--wel-space-2);
+    --wel-button-padding-inline: var(--wel-space-4);
+    --wel-button-bg-hover: oklch(from var(--wel-button-bg) calc(l - 0.06) c h);
+    --wel-button-bg-active: oklch(from var(--wel-button-bg) calc(l - 0.1) c h);
+    --wel-button-ink-hover: var(--wel-button-ink);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wel-space-2);
+    padding-block: var(--wel-button-padding-block);
+    padding-inline: var(--wel-button-padding-inline);
+    /* WCAG 2.5.8: every size keeps a ≥ 24px block-size target. */
+    min-block-size: 1.5rem;
+    background-color: var(--wel-button-bg);
+    color: var(--wel-button-ink);
+    border: var(--wel-border-width) solid var(--wel-button-border);
+    border-radius: var(--wel-button-radius);
+    font: inherit;
+    font-size: var(--wel-text-size-0);
+    line-height: var(--wel-text-leading-tight);
+    font-weight: 500;
+    text-decoration: none; /* .button on <a> */
+    transition:
+      background-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      translate calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  .button > :where(svg) {
+    inline-size: 1em;
+    block-size: 1em;
+    flex: none;
+  }
+}
+
+@layer variants {
+  .button[data-variant="primary"] {
+    --wel-button-bg: var(--wel-color-accent);
+    --wel-button-ink: var(--wel-color-accent-contrast);
+  }
+
+  .button[data-variant="secondary"] {
+    --wel-button-bg: transparent;
+    --wel-button-ink: var(--wel-color-ink);
+    --wel-button-border: var(--wel-color-border-strong);
+    --wel-button-bg-hover: var(--wel-color-accent-tint);
+    --wel-button-bg-active: var(--wel-color-accent-tint);
+    --wel-button-ink-hover: var(--wel-color-accent-hover);
+  }
+
+  .button[data-variant="ghost"] {
+    --wel-button-bg: transparent;
+    --wel-button-ink: var(--wel-color-accent);
+    --wel-button-border: var(--wel-color-border-strong);
+    --wel-button-bg-hover: var(--wel-color-accent-tint);
+    --wel-button-bg-active: var(--wel-color-accent-tint);
+    --wel-button-ink-hover: var(--wel-color-accent-hover);
+  }
+
+  .button[data-variant="danger"] {
+    --wel-button-bg: var(--wel-color-danger);
+    --wel-button-ink: var(--wel-color-surface);
+  }
+
+  .button[data-size="sm"] {
+    --wel-button-padding-block: var(--wel-space-1);
+    --wel-button-padding-inline: var(--wel-space-3);
+
+    font-size: var(--wel-text-size--1);
+  }
+
+  .button[data-size="lg"] {
+    --wel-button-padding-block: var(--wel-space-3);
+    --wel-button-padding-inline: var(--wel-space-5);
+
+    font-size: var(--wel-text-size-1);
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .button:hover {
+      background-color: var(--wel-button-bg-hover);
+      color: var(--wel-button-ink-hover);
+    }
+  }
+
+  .button:active {
+    background-color: var(--wel-button-bg-active);
+    color: var(--wel-button-ink-hover);
+    /* 1px press, zeroed under reduced motion with the rest of the system. */
+    translate: 0 calc(1px * var(--wel-motion));
+  }
+
+  /* Busy: inline spinner takes the leading icon slot, label stays visible.
+     The animation duration rides the --wel-motion multiplier like every
+     other duration — frozen ring under reduced motion, aria-busy still
+     announces. */
+  .button[aria-busy="true"] {
+    pointer-events: none;
+  }
+
+  .button[aria-busy="true"]::before {
+    content: "";
+    inline-size: 1em;
+    block-size: 1em;
+    flex: none;
+    border: 0.125em solid;
+    border-block-start-color: transparent;
+    border-radius: var(--wel-radius-full);
+    animation: wel-button-spin calc(var(--wel-motion-duration-4) * 2 * var(--wel-motion)) linear infinite;
+  }
+
+  .button[aria-busy="true"] > :where(svg:first-of-type) {
+    display: none;
+  }
+
+  /* Disabled last in the layer so it beats hover/active at equal
+     specificity. Reduced-contrast pair is the documented WCAG 1.4.3
+     exemption for disabled controls. */
+  .button:disabled {
+    background-color: var(--wel-color-surface-sunken);
+    color: var(--wel-color-ink-faint);
+    border-color: transparent;
+    translate: none;
+  }
+}
+
+@keyframes wel-button-spin {
+  to {
+    rotate: 1turn;
+  }
+}

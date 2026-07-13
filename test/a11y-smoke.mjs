@@ -1,14 +1,15 @@
-// A11y smoke over the kitchen-sink page (docs/09 testing floor, board T-56):
+// A11y smoke over the example pages (docs/09 testing floor, board T-56):
 // axe in light + dark schemes, reduced-motion behaviour assertions, and a
-// forced-colors render pass. Requires `npm run build` first (page loads
-// dist/welkin-core.css). Run: npm run test:a11y
+// forced-colors render pass. Requires `npm run build` first (pages load
+// the dist bundles). Run: npm run test:a11y
 import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const page_url = pathToFileURL(
-  fileURLToPath(new URL('../examples/kitchen-sink.html', import.meta.url))
-).href;
+const exampleUrl = (name) =>
+  pathToFileURL(fileURLToPath(new URL(`../examples/${name}`, import.meta.url))).href;
+const page_url = exampleUrl('kitchen-sink.html');
+const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html'];
 
 let failures = 0;
 const fail = (msg) => { failures++; console.error(`FAIL ${msg}`); };
@@ -18,22 +19,24 @@ const browser = await chromium.launch();
 
 async function axePass(label, contextOptions = {}) {
   const context = await browser.newContext(contextOptions);
-  const page = await context.newPage();
-  await page.goto(page_url);
-  const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
-    .analyze();
-  if (results.violations.length) {
-    fail(`${label}: ${results.violations.length} axe violation(s)`);
-    for (const v of results.violations) {
-      console.error(`       ${v.id}: ${v.help}`);
-      for (const n of v.nodes) console.error(`         ${n.html}`);
+  for (const name of PAGES) {
+    const page = await context.newPage();
+    await page.goto(exampleUrl(name));
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
+      .analyze();
+    if (results.violations.length) {
+      fail(`${label} ${name}: ${results.violations.length} axe violation(s)`);
+      for (const v of results.violations) {
+        console.error(`       ${v.id}: ${v.help}`);
+        for (const n of v.nodes) console.error(`         ${n.html}`);
+      }
+    } else {
+      ok(`${label} ${name}: axe clean`);
     }
-  } else {
-    ok(`${label}: axe clean`);
+    await page.close();
   }
   await context.close();
-  return results;
 }
 
 // 1+2. axe, both schemes (colour contrast is scheme-dependent).
@@ -67,12 +70,18 @@ await axePass('dark scheme', { colorScheme: 'dark' });
     return getComputedStyle(th).borderBlockEndWidth;
   });
   borderWidth !== '0px' ? ok('forced colors: table row rule survives as border') : fail('forced colors: table row rule vanished');
-  const results = await new AxeBuilder({ page })
-    .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
-    .analyze();
-  results.violations.length
-    ? fail(`forced colors: ${results.violations.length} axe violation(s): ${results.violations.map((v) => v.id).join(', ')}`)
-    : ok('forced colors: axe clean');
+  await page.close();
+  for (const name of PAGES) {
+    const p = await context.newPage();
+    await p.goto(exampleUrl(name));
+    const results = await new AxeBuilder({ page: p })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
+      .analyze();
+    results.violations.length
+      ? fail(`forced colors ${name}: ${results.violations.length} axe violation(s): ${results.violations.map((v) => v.id).join(', ')}`)
+      : ok(`forced colors ${name}: axe clean`);
+    await p.close();
+  }
   await context.close();
 }
 
