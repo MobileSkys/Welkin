@@ -1,5 +1,60 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* tokens layer — implemented in Phase 1 (T-16, docs/05). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin typography tokens (docs/05, ADR-0008). Fluid modular scale:
+   each step is clamp(min, preferred, max) interpolating between a
+   small-context size (anchor-min x ratio-min^step, ratio 1.2 minor third)
+   and a large-context size (anchor-max x ratio-max^step, ratio 1.25 major
+   third) across a 20rem -> 80rem inline viewport. rem + vi inside clamp()
+   keeps zoom working (WCAG 1.4.4).
+
+   clamp endpoints are calc()-derived from the anchors, so re-declaring the
+   two anchor tokens re-densifies the whole scale (ADR-0008); the preferred
+   term's slope is written out numerically for the default anchors — a
+   docs-phase generator may rewrite this file (ADR-0002), never the build. */
 @layer tokens {
+  /* Anchors are typed lengths; ratio tokens document the scale and feed the
+     regeneration script. */
+  @property --wel-text-anchor-min { syntax: "<length>"; inherits: true; initial-value: 1rem; }
+  @property --wel-text-anchor-max { syntax: "<length>"; inherits: true; initial-value: 1.125rem; }
+
+  :root {
+    --wel-text-anchor-min: 1rem;
+    --wel-text-anchor-max: 1.125rem;
+    --wel-text-ratio-min: 1.2;
+    --wel-text-ratio-max: 1.25;
+
+    /* step -1: min = anchor-min / 1.2, max = anchor-max / 1.25 */
+    --wel-text-size--1: clamp(calc(var(--wel-text-anchor-min) * 0.8333), 0.8111rem + 0.1111vi, calc(var(--wel-text-anchor-max) * 0.8));
+    /* step 0: the anchors themselves (body size) */
+    --wel-text-size-0: clamp(var(--wel-text-anchor-min), 0.9583rem + 0.2083vi, var(--wel-text-anchor-max));
+    /* step 1: ratio^1 -> 1.2 / 1.25 */
+    --wel-text-size-1: clamp(calc(var(--wel-text-anchor-min) * 1.2), 1.1313rem + 0.3438vi, calc(var(--wel-text-anchor-max) * 1.25));
+    /* step 2: ratio^2 -> 1.44 / 1.5625 */
+    --wel-text-size-2: clamp(calc(var(--wel-text-anchor-min) * 1.44), 1.3341rem + 0.5297vi, calc(var(--wel-text-anchor-max) * 1.5625));
+    /* step 3: ratio^3 -> 1.728 / 1.9531 */
+    --wel-text-size-3: clamp(calc(var(--wel-text-anchor-min) * 1.728), 1.5716rem + 0.7822vi, calc(var(--wel-text-anchor-max) * 1.9531));
+    /* step 4: ratio^4 -> 2.0736 / 2.4414 */
+    --wel-text-size-4: clamp(calc(var(--wel-text-anchor-min) * 2.0736), 1.8493rem + 1.1217vi, calc(var(--wel-text-anchor-max) * 2.4414));
+    /* step 5: ratio^5 -> 2.4883 / 3.0518 */
+    --wel-text-size-5: clamp(calc(var(--wel-text-anchor-min) * 2.4883), 2.1733rem + 1.5748vi, calc(var(--wel-text-anchor-max) * 3.0518));
+    /* step 6: ratio^6 -> 2.986 / 3.8147 */
+    --wel-text-size-6: clamp(calc(var(--wel-text-anchor-min) * 2.986), 2.5508rem + 2.1758vi, calc(var(--wel-text-anchor-max) * 3.8147));
+
+    /* Font stacks — system stacks, no bundled webfonts (docs/05). */
+    --wel-text-font-body: system-ui, sans-serif;
+    --wel-text-font-display: var(--wel-text-font-body);
+    --wel-text-font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
+
+    /* Leading and tracking companions. */
+    --wel-text-leading-tight: 1.25;
+    --wel-text-leading-normal: 1.5;
+    --wel-text-leading-loose: 1.75;
+    --wel-text-tracking-tight: -0.01em;
+    --wel-text-tracking-normal: 0;
+    --wel-text-tracking-wide: 0.04em;
+
+    /* Max line length; consumed by .prose and .center (they agree by
+       construction — docs/components/prose.md). */
+    --wel-text-measure: 65ch;
+  }
 }

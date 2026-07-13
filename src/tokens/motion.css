@@ -1,5 +1,29 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* tokens layer — implemented in Phase 1 (T-16, docs/05). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin motion tokens (docs/05). The multiplier rule: every duration in
+   the codebase is written calc(duration-token * var(--wel-motion)) — no raw
+   durations anywhere (lint-checked). Zero-duration transitions still fire
+   transitionend, so JS never needs a reduced-motion branch. */
 @layer tokens {
+  @property --wel-motion { syntax: "<number>"; inherits: true; initial-value: 1; }
+
+  :root {
+    --wel-motion: 1;
+
+    --wel-motion-duration-1: 100ms;
+    --wel-motion-duration-2: 200ms;
+    --wel-motion-duration-3: 300ms;
+    --wel-motion-duration-4: 500ms;
+
+    --wel-motion-ease: cubic-bezier(0.2, 0, 0.2, 1);
+    --wel-motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --wel-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --wel-motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --wel-motion: 0;
+    }
+  }
 }

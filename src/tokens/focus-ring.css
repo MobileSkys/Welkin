@@ -1,0 +1,13 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* Welkin focus-ring tokens (docs/05, docs/09). Consumed by the single
+   global :focus-visible rule in `base` and nothing else. Widths/offsets are
+   px hairline-class values (ADR-0008): the ring must stay crisp, and its
+   visibility must not depend on user font size. */
+@layer tokens {
+  :root {
+    --wel-focus-ring-color: var(--wel-color-accent);
+    --wel-focus-ring-width: 2px;
+    --wel-focus-ring-offset: 2px;
+  }
+}

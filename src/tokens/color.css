@@ -1,5 +1,143 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* tokens layer — implemented in Phase 1 (T-16, docs/05). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin colour tokens (docs/05). Three tiers:
+   primitives (oklch ramps) -> semantic roles (light-dark(), typed) -> component
+   tokens (defined in each component's file). Components never read primitives.
+   Token names are semver-governed API. */
+
+/* ---- @property registrations (semantic colour tokens are typed: docs/05).
+   initial-value is the concrete light-scheme value — registrations cannot
+   carry var()/light-dark(), so these back-stop the :root declarations. */
 @layer tokens {
+  @property --wel-color-surface        { syntax: "<color>"; inherits: true; initial-value: oklch(97% 0.002 250); }
+  @property --wel-color-surface-raised { syntax: "<color>"; inherits: true; initial-value: oklch(99.5% 0.001 250); }
+  @property --wel-color-surface-sunken { syntax: "<color>"; inherits: true; initial-value: oklch(94% 0.003 250); }
+  @property --wel-color-ink            { syntax: "<color>"; inherits: true; initial-value: oklch(23% 0.004 250); }
+  @property --wel-color-ink-muted      { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.009 250); }
+  @property --wel-color-ink-faint      { syntax: "<color>"; inherits: true; initial-value: oklch(62% 0.01 250); }
+  @property --wel-color-accent          { syntax: "<color>"; inherits: true; initial-value: oklch(54% 0.16 255); }
+  @property --wel-color-accent-hover    { syntax: "<color>"; inherits: true; initial-value: oklch(48% 0.16 255); }
+  @property --wel-color-accent-active   { syntax: "<color>"; inherits: true; initial-value: oklch(44% 0.16 255); }
+  @property --wel-color-accent-tint     { syntax: "<color>"; inherits: true; initial-value: oklch(92% 0.021 255); }
+  @property --wel-color-accent-contrast { syntax: "<color>"; inherits: true; initial-value: oklch(97% 0.002 250); }
+  @property --wel-color-border        { syntax: "<color>"; inherits: true; initial-value: oklch(88% 0.005 250); }
+  @property --wel-color-border-strong { syntax: "<color>"; inherits: true; initial-value: oklch(62% 0.01 250); }
+  @property --wel-color-info    { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.144 255); }
+  @property --wel-color-success { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.135 150); }
+  @property --wel-color-warning { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.117 80); }
+  @property --wel-color-danger  { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.153 25); }
+  @property --wel-color-info-tint    { syntax: "<color>"; inherits: true; initial-value: oklch(91% 0.019 255); }
+  @property --wel-color-success-tint { syntax: "<color>"; inherits: true; initial-value: oklch(91% 0.018 150); }
+  @property --wel-color-warning-tint { syntax: "<color>"; inherits: true; initial-value: oklch(91% 0.016 80); }
+  @property --wel-color-danger-tint  { syntax: "<color>"; inherits: true; initial-value: oklch(91% 0.02 25); }
+
+  /* ---- Primitives: oklch ramps, written out in full (ADR-0002 — no
+     generation at build time; a docs-phase script may rewrite this block).
+     Fixed lightness targets per step, per-hue chroma curve peaking mid-ramp,
+     so every ramp reads evenly spaced. Never consumed by components. */
+  :root {
+    /* grey (hue 250, near-neutral) */
+    --wel-grey-50:  oklch(97% 0.002 250);
+    --wel-grey-100: oklch(94% 0.003 250);
+    --wel-grey-200: oklch(88% 0.005 250);
+    --wel-grey-300: oklch(80% 0.007 250);
+    --wel-grey-400: oklch(71% 0.009 250);
+    --wel-grey-500: oklch(62% 0.01 250);
+    --wel-grey-600: oklch(54% 0.01 250);
+    --wel-grey-700: oklch(46% 0.009 250);
+    --wel-grey-800: oklch(38% 0.008 250);
+    --wel-grey-900: oklch(30% 0.006 250);
+    --wel-grey-950: oklch(23% 0.004 250);
+    --wel-grey-975: oklch(17% 0.003 250);
+
+    /* blue (hue 255) — default accent + info */
+    --wel-blue-50:  oklch(97% 0.024 255);
+    --wel-blue-100: oklch(94% 0.04 255);
+    --wel-blue-200: oklch(88% 0.072 255);
+    --wel-blue-300: oklch(80% 0.104 255);
+    --wel-blue-400: oklch(71% 0.136 255);
+    --wel-blue-500: oklch(62% 0.16 255);
+    --wel-blue-600: oklch(54% 0.16 255);
+    --wel-blue-700: oklch(46% 0.144 255);
+    --wel-blue-800: oklch(38% 0.12 255);
+    --wel-blue-900: oklch(30% 0.088 255);
+    --wel-blue-950: oklch(23% 0.064 255);
+    --wel-blue-975: oklch(17% 0.048 255);
+
+    /* green (hue 150) — success */
+    --wel-green-50:  oklch(97% 0.023 150);
+    --wel-green-100: oklch(94% 0.038 150);
+    --wel-green-200: oklch(88% 0.068 150);
+    --wel-green-300: oklch(80% 0.098 150);
+    --wel-green-400: oklch(71% 0.128 150);
+    --wel-green-500: oklch(62% 0.15 150);
+    --wel-green-600: oklch(54% 0.15 150);
+    --wel-green-700: oklch(46% 0.135 150);
+    --wel-green-800: oklch(38% 0.113 150);
+    --wel-green-900: oklch(30% 0.083 150);
+    --wel-green-950: oklch(23% 0.06 150);
+    --wel-green-975: oklch(17% 0.045 150);
+
+    /* amber (hue 80) — warning */
+    --wel-amber-50:  oklch(97% 0.02 80);
+    --wel-amber-100: oklch(94% 0.033 80);
+    --wel-amber-200: oklch(88% 0.059 80);
+    --wel-amber-300: oklch(80% 0.085 80);
+    --wel-amber-400: oklch(71% 0.111 80);
+    --wel-amber-500: oklch(62% 0.13 80);
+    --wel-amber-600: oklch(54% 0.13 80);
+    --wel-amber-700: oklch(46% 0.117 80);
+    --wel-amber-800: oklch(38% 0.098 80);
+    --wel-amber-900: oklch(30% 0.072 80);
+    --wel-amber-950: oklch(23% 0.052 80);
+    --wel-amber-975: oklch(17% 0.039 80);
+
+    /* red (hue 25) — danger */
+    --wel-red-50:  oklch(97% 0.026 25);
+    --wel-red-100: oklch(94% 0.043 25);
+    --wel-red-200: oklch(88% 0.077 25);
+    --wel-red-300: oklch(80% 0.111 25);
+    --wel-red-400: oklch(71% 0.145 25);
+    --wel-red-500: oklch(62% 0.17 25);
+    --wel-red-600: oklch(54% 0.17 25);
+    --wel-red-700: oklch(46% 0.153 25);
+    --wel-red-800: oklch(38% 0.128 25);
+    --wel-red-900: oklch(30% 0.094 25);
+    --wel-red-950: oklch(23% 0.068 25);
+    --wel-red-975: oklch(17% 0.051 25);
+
+    /* ---- Semantic roles. Each defined ONCE with light-dark() (ADR-0007);
+       [data-theme] pinning + the graduation-audit fallback are T-17's concern.
+       Interaction shades are computed, not enumerated (docs/05 derivation):
+       one --wel-color-accent override retints hover/active/tint/contrast. */
+    --wel-color-surface:        light-dark(var(--wel-grey-50), var(--wel-grey-975));
+    --wel-color-surface-raised: light-dark(oklch(99.5% 0.001 250), var(--wel-grey-950));
+    --wel-color-surface-sunken: light-dark(var(--wel-grey-100), oklch(13% 0.003 250));
+
+    --wel-color-ink:       light-dark(var(--wel-grey-950), var(--wel-grey-100));
+    --wel-color-ink-muted: light-dark(var(--wel-grey-700), var(--wel-grey-400));
+    --wel-color-ink-faint: light-dark(var(--wel-grey-500), var(--wel-grey-600));
+
+    --wel-color-border:        light-dark(var(--wel-grey-200), var(--wel-grey-800));
+    /* border-strong must hold 3:1 vs surface in both schemes (WCAG 1.4.11) */
+    --wel-color-border-strong: light-dark(var(--wel-grey-500), var(--wel-grey-500));
+
+    --wel-color-accent:          light-dark(var(--wel-blue-600), var(--wel-blue-400));
+    --wel-color-accent-hover:    oklch(from var(--wel-color-accent) calc(l - 0.06) c h);
+    --wel-color-accent-active:   oklch(from var(--wel-color-accent) calc(l - 0.10) c h);
+    --wel-color-accent-tint:     color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface));
+    --wel-color-accent-contrast: light-dark(var(--wel-grey-50), var(--wel-grey-975));
+
+    /* Tones (data-tone axes): text-safe base in both schemes; tints follow
+       the surface automatically via color-mix, like accent-tint. */
+    --wel-color-info:    light-dark(var(--wel-blue-700), var(--wel-blue-300));
+    --wel-color-success: light-dark(var(--wel-green-700), var(--wel-green-300));
+    --wel-color-warning: light-dark(var(--wel-amber-700), var(--wel-amber-300));
+    --wel-color-danger:  light-dark(var(--wel-red-700), var(--wel-red-300));
+
+    --wel-color-info-tint:    color-mix(in oklch, var(--wel-color-info) 12%, var(--wel-color-surface));
+    --wel-color-success-tint: color-mix(in oklch, var(--wel-color-success) 12%, var(--wel-color-surface));
+    --wel-color-warning-tint: color-mix(in oklch, var(--wel-color-warning) 12%, var(--wel-color-surface));
+    --wel-color-danger-tint:  color-mix(in oklch, var(--wel-color-danger) 12%, var(--wel-color-surface));
+  }
 }

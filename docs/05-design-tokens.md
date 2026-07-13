@@ -179,9 +179,10 @@ nothing else ([09-accessibility.md](09-accessibility.md)).
 
 ## Appendix — initial token inventory
 
-The complete enumerated inventory (every token, tier, type registration, initial value,
-and pairing table) is produced during Phase 1 and maintained here as the canonical list.
-Structure agreed now:
+The implementation lives in [`src/tokens/`](../src/tokens/) (source = shippable,
+ADR-0002); the enumerated inventory table and the pairing table are generated from it
+together with the programmatic contrast checker (CI) and maintained here as the
+canonical list. Structure agreed now:
 
 | Column | Meaning |
 |--------|---------|

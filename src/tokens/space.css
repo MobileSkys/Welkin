@@ -1,5 +1,39 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* tokens layer — implemented in Phase 1 (T-16, docs/05). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin space tokens (docs/05, ADR-0008). Same fluid mechanism as type:
+   step n = anchor x multiplier (1, 2, 3, 4, 6, 8, 12, 16, 24), each a
+   clamp() between compact (anchor-min 0.25rem) and generous
+   (anchor-max 0.3125rem) across a 20rem -> 80rem inline viewport, so
+   layouts breathe proportionally at every size. Endpoints derive from the
+   typed anchors — re-declaring the two anchors re-densifies the system. */
 @layer tokens {
+  @property --wel-space-anchor-min { syntax: "<length>"; inherits: true; initial-value: 0.25rem; }
+  @property --wel-space-anchor-max { syntax: "<length>"; inherits: true; initial-value: 0.3125rem; }
+
+  :root {
+    --wel-space-anchor-min: 0.25rem;
+    --wel-space-anchor-max: 0.3125rem;
+
+    /* x1 */
+    --wel-space-1: clamp(var(--wel-space-anchor-min), 0.2292rem + 0.1042vi, var(--wel-space-anchor-max));
+    /* x2 */
+    --wel-space-2: clamp(calc(var(--wel-space-anchor-min) * 2), 0.4583rem + 0.2083vi, calc(var(--wel-space-anchor-max) * 2));
+    /* x3 */
+    --wel-space-3: clamp(calc(var(--wel-space-anchor-min) * 3), 0.6875rem + 0.3125vi, calc(var(--wel-space-anchor-max) * 3));
+    /* x4 */
+    --wel-space-4: clamp(calc(var(--wel-space-anchor-min) * 4), 0.9167rem + 0.4167vi, calc(var(--wel-space-anchor-max) * 4));
+    /* x6 */
+    --wel-space-5: clamp(calc(var(--wel-space-anchor-min) * 6), 1.375rem + 0.625vi, calc(var(--wel-space-anchor-max) * 6));
+    /* x8 */
+    --wel-space-6: clamp(calc(var(--wel-space-anchor-min) * 8), 1.8333rem + 0.8333vi, calc(var(--wel-space-anchor-max) * 8));
+    /* x12 */
+    --wel-space-7: clamp(calc(var(--wel-space-anchor-min) * 12), 2.75rem + 1.25vi, calc(var(--wel-space-anchor-max) * 12));
+    /* x16 */
+    --wel-space-8: clamp(calc(var(--wel-space-anchor-min) * 16), 3.6667rem + 1.6667vi, calc(var(--wel-space-anchor-max) * 16));
+    /* x24 */
+    --wel-space-9: clamp(calc(var(--wel-space-anchor-min) * 24), 5.5rem + 2.5vi, calc(var(--wel-space-anchor-max) * 24));
+
+    /* Semantic alias: default container padding. */
+    --wel-space-gutter: var(--wel-space-5);
+  }
 }

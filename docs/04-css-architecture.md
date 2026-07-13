@@ -86,7 +86,7 @@ src/
   layers.css              # the @layer order declaration, nothing else
   reset.css
   tokens/
-    color.css  type.css  space.css  radius-border-shadow.css  motion.css
+    color.css  type.css  space.css  radius-border-shadow.css  motion.css  focus-ring.css
   base/
     typography.css  forms.css  media.css  tables.css
   layout/
