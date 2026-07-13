@@ -1,0 +1,139 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .popover — transient anchored surface on the Popover API
+   (docs/components/popover-menu.md, T-41). The headline: popovertarget
+   makes open/close/toggle, light dismiss, Esc, one-at-a-time, top layer,
+   and the invoker's expanded state fully declarative — zero JS. Core
+   placement is the DESIGNED centred panel (top-layer boxes cannot tether
+   without anchor positioning; the reset restores the UA margin: auto this
+   relies on); Enhanced tethers to the implicit invoker anchor. Menus are
+   plain lists of links/buttons — role="menu" without the full APG keyboard
+   pattern is a defect, not an enhancement (spec Pattern B, post-v1). */
+@layer components {
+  .popover {
+    --wel-popover-bg: var(--wel-color-surface-raised);
+    --wel-popover-ink: var(--wel-color-ink);
+    --wel-popover-radius: var(--wel-radius-surface);
+    --wel-popover-padding: var(--wel-space-2);
+    --wel-popover-shadow: var(--wel-shadow-3);
+    --wel-popover-min-inline-size: 12rem;
+    --wel-popover-max-inline-size: min(24rem, calc(100dvw - 2 * var(--wel-space-gutter)));
+    --wel-popover-offset: var(--wel-space-1);
+
+    min-inline-size: var(--wel-popover-min-inline-size);
+    max-inline-size: var(--wel-popover-max-inline-size);
+    padding: var(--wel-popover-padding);
+    background-color: var(--wel-popover-bg);
+    color: var(--wel-popover-ink);
+    /* Hairline normally; THE panel edge under forced colors, where the
+       shadow is stripped. */
+    border: var(--wel-border-width) solid var(--wel-color-border);
+    border-radius: var(--wel-popover-radius);
+    box-shadow: var(--wel-popover-shadow);
+  }
+
+  /* Menu list: items pad themselves to ~24px+ targets (2.5.8). */
+  .popover > :where(ul) {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .popover :where(ul) :where(a, button) {
+    display: flex;
+    align-items: center;
+    gap: var(--wel-space-2);
+    inline-size: 100%;
+    padding-block: var(--wel-space-2);
+    padding-inline: var(--wel-space-2);
+    min-block-size: 1.5rem;
+    color: inherit;
+    text-decoration: none;
+    text-align: start;
+    background: none;
+    border: 0;
+    border-radius: var(--wel-radius-sm);
+    font: inherit;
+  }
+
+  /* Enhanced: tether to the invoker's implicit anchor. inset: auto is
+     load-bearing — the UA popover style is inset: 0, which silently
+     defeats position-area (see tooltip.css, T-45). margin becomes the
+     anchor gap; outside this block it stays the UA auto centring. */
+  @supports (anchor-name: --wel-a) {
+    .popover {
+      inset: auto;
+      position-area: block-end;
+      position-try-fallbacks: flip-block;
+      margin: var(--wel-popover-offset);
+    }
+  }
+
+  /* Enhanced: fade + 2% scale entry, fade exit, riding --wel-motion. */
+  @supports (transition-behavior: allow-discrete) {
+    .popover {
+      opacity: 0;
+      scale: 0.98;
+      transition:
+        opacity calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+        scale calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+        display calc(var(--wel-motion-duration-1) * var(--wel-motion)) allow-discrete,
+        overlay calc(var(--wel-motion-duration-1) * var(--wel-motion)) allow-discrete;
+    }
+
+    .popover:where(:popover-open) {
+      opacity: 1;
+      scale: 1;
+    }
+
+    @starting-style {
+      .popover:where(:popover-open) {
+        opacity: 0;
+        scale: 0.98;
+      }
+    }
+  }
+}
+
+@layer variants {
+  .popover[data-size="sm"] {
+    --wel-popover-padding: var(--wel-space-1);
+    --wel-popover-min-inline-size: 9rem;
+  }
+
+  /* data-placement is Enhanced-only by contract: without anchor
+     positioning every placement is the same centred panel. */
+  @supports (anchor-name: --wel-a) {
+    .popover[data-placement="block-start"] {
+      position-area: block-start;
+    }
+
+    .popover[data-placement="inline-start"] {
+      position-area: inline-start;
+      position-try-fallbacks: flip-inline;
+    }
+
+    .popover[data-placement="inline-end"] {
+      position-area: inline-end;
+      position-try-fallbacks: flip-inline;
+    }
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .popover :where(ul) :where(a, button):hover {
+      background-color: var(--wel-color-accent-tint);
+    }
+  }
+
+  /* Current item: accent ink AND an inline-start marker — never colour
+     alone (survives forced colors as the border). */
+  .popover :where(ul) :where([aria-current]) {
+    color: var(--wel-color-accent);
+    border-inline-start: var(--wel-border-width-strong) solid var(--wel-color-accent);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+}

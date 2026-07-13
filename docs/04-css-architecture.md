@@ -123,7 +123,10 @@ line-by-line documentation (source = shippable, ADR-0002). Scope, fixed by
 [ADR-0004](decisions/ADR-0004-reset-strategy.md):
 
 - `box-sizing: border-box` on everything including generated content;
-- universal margin trimming (spacing belongs to `.stack`, not element defaults);
+- universal margin trimming (spacing belongs to `.stack`, not element defaults) — with
+  `margin: auto` restored on `dialog`/`[popover]`, whose UA centring against `inset: 0`
+  is layout, not flow rhythm (found at T-40/T-41: a zero-margin top-layer element pins
+  to the viewport corner);
 - root `line-height: 1.5` + `-webkit-text-size-adjust: 100%` (justified physical/vendor
   exception, [ADR-0009](decisions/ADR-0009-logical-properties-rtl.md));
 - `scroll-behavior: smooth` gated on `prefers-reduced-motion: no-preference` directly —

@@ -688,6 +688,38 @@
       <p>No backdrop, no trap — a panel, not an interruption.</p>
     </dialog>
   </section>
+
+  <section class="stack">
+    <h2>Popover / Dropdown menu</h2>
+    <p>Fully declarative: <code>popovertarget</code> toggles, light dismiss and Esc
+    close, the invoker's expanded state reaches AT natively — zero JS. Plain lists,
+    no <code>role="menu"</code> (that role promises APG keyboard support the Popover
+    API doesn't supply). Tethered under Enhanced; a designed centred panel in Core.</p>
+
+    <div class="cluster">
+      <button class="button" popovertarget="project-menu">
+        Project
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <button class="button" data-variant="secondary" popovertarget="side-panel">
+        Placed inline-end
+      </button>
+    </div>
+    <div class="popover" id="project-menu" popover>
+      <ul>
+        <li><a href="#" aria-current="page">Overview</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Members</a></li>
+        <li><button data-dialog-open="confirm-delete">Delete…</button></li>
+      </ul>
+    </div>
+    <div class="popover" id="side-panel" popover data-placement="inline-end" data-size="sm">
+      <ul>
+        <li><a href="#">One</a></li>
+        <li><a href="#">Two</a></li>
+      </ul>
+    </div>
+  </section>
 </main>
 
 <hr>

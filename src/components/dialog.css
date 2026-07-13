@@ -19,9 +19,6 @@
     --wel-dialog-max-inline-size: 36rem;
     --wel-dialog-backdrop: color-mix(in oklch, var(--wel-color-ink) 45%, transparent);
 
-    /* The reset strips the UA margin: auto that centres a dialog — restore
-       it; this is layout, not spacing rhythm. */
-    margin: auto;
     inline-size: min(var(--wel-dialog-max-inline-size), calc(100dvw - 2 * var(--wel-space-gutter)));
     max-block-size: calc(100dvh - 2 * var(--wel-space-gutter));
     padding: var(--wel-dialog-padding);

@@ -16,6 +16,13 @@
     margin: 0;
   }
 
+  /* Top-layer elements are centred by the UA via margin: auto against
+     inset: 0 — that is layout, not flow rhythm, so the trim above must not
+     strip it (a zero-margin dialog/popover pins to the top-left corner). */
+  :where(dialog, [popover]) {
+    margin: auto;
+  }
+
   /* Root defaults. Unitless line-height inherits proportionally.
      -webkit-text-size-adjust: iOS Safari inflates text in landscape without
      it (vendor/physical form is the interoperable one — justified exception

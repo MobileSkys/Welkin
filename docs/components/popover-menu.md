@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -124,12 +124,10 @@ tethered placement in non-supporting browsers opt into the `wel-anchor` module b
 | `position-try-fallbacks` | same block as above | Flips to the opposite side / slides when the preferred side lacks room | — (part of the same enhancement) |
 | `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Fade + 2% scale entry, fade exit (`display` transitions with `allow-discrete`) | Instant appear/disappear (03 row) |
 
-Honesty note on anchor positioning status: Chromium and WebKit have shipped; Gecko is in
-progress at time of writing — strictly pre-Baseline, so per
-[ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md) it enters shipped source
-only when the last engine ships. [03](../03-browser-support-policy.md) already carries
-its contract row; this spec defines the behaviour so implementation is unblocked the day
-intake completes. Until then, all browsers get the Core centred panel (or `wel-anchor`).
+Anchor positioning intake passed at implementation (T-41), following the navbar (T-38)
+and tooltip (T-45) precedents — the `@supports` gate carries the
+[03](../03-browser-support-policy.md) contract row for engines that lag. Non-supporting
+browsers get the Core centred panel (or `wel-anchor`).
 
 ### JS enhancement
 
