@@ -862,6 +862,10 @@ function upgradeCarousel(root) {
   };
   sync();
   track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+  // Resizing changes scrollWidth/clientWidth without a scroll event —
+  // the end states must follow (T-64 review). Observing the track covers
+  // window and container resizes alike.
+  new ResizeObserver(() => sync()).observe(track);
 
   return root;
 }
