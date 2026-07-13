@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welkin layout primitives</title>
+<!-- Run `npm run build` first; this page loads the built core bundle.
+     Phase 2 demo page (docs/06): each primitive is shown at three container
+     widths per its acceptance criterion. The <style> below is demo harness
+     only — fixed-width wells so behaviour at each width is visible side by
+     side; it styles nothing the toolkit ships. -->
+<link rel="stylesheet" href="../dist/welkin-core.css">
+<style>
+  .demo-row { display: flex; flex-wrap: wrap; gap: var(--wel-space-4); align-items: start; }
+  .demo-well { border: var(--wel-border-width) dashed var(--wel-color-border-strong); padding: var(--wel-space-3); }
+  .demo-well > figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-end: var(--wel-space-2); }
+  .demo-well[data-w="narrow"] > div { inline-size: 16rem; }
+  .demo-well[data-w="medium"] > div { inline-size: 32rem; }
+  .demo-well[data-w="wide"]   > div { inline-size: 48rem; }
+  .demo-box { background: var(--wel-color-surface-sunken); border: var(--wel-border-width) solid var(--wel-color-border); border-radius: var(--wel-radius-sm); padding: var(--wel-space-2) var(--wel-space-3); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Welkin layout primitives</h1>
+  <p>Container-query-first, intrinsic layout (<a href="../docs/06-layout-system.md">docs/06</a>).
+  Each primitive is one class configured by custom-property knobs, shown here in
+  narrow, medium, and wide containers. No viewport breakpoints anywhere on this page.</p>
+</header>
+
+<hr>
+
+<main>
+  <section>
+    <h2><code>.stack</code></h2>
+    <p>Vertical flow with consistent rhythm — the stack owns the space between
+    siblings that the reset removed. Knob: <code>--wel-stack-gap</code>
+    (default <code>--wel-space-4</code>). Rhythm holds at every container width;
+    vary it by nesting stacks, not by per-element margins.</p>
+
+    <div class="demo-row">
+      <figure class="demo-well" data-w="narrow">
+        <figcaption>16rem container</figcaption>
+        <div class="stack">
+          <div class="demo-box">first</div>
+          <div class="demo-box">second</div>
+          <div class="demo-box">third</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="medium">
+        <figcaption>32rem container</figcaption>
+        <div class="stack">
+          <div class="demo-box">first</div>
+          <div class="demo-box">second</div>
+          <div class="demo-box">third</div>
+        </div>
+      </figure>
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — nested stack, tighter gap</figcaption>
+        <div class="stack">
+          <div class="demo-box">first</div>
+          <div class="stack" style="--wel-stack-gap: var(--wel-space-1)">
+            <div class="demo-box">nested a (tight rhythm)</div>
+            <div class="demo-box">nested b</div>
+          </div>
+          <div class="demo-box">third</div>
+        </div>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<hr>
+
+<footer>
+  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> · Sections for the
+  remaining primitives land with T-22…T-28.</p>
+</footer>
+
+</body>
+</html>

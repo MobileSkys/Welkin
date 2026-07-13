@@ -1,5 +1,16 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* layout layer — implemented in Phase 2 (T-21..T-28, docs/06). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* .stack — vertical flow with consistent rhythm (docs/06, T-21). The reset
+   strips element margins; the stack owns inter-sibling space instead —
+   spacing is a layout decision, not an element default. Rhythm varies by
+   nesting stacks, not per-pair margin exceptions. Establishes a queryable
+   container per the doctrine (docs/06 §doctrine #3/#4). */
 @layer layout {
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wel-stack-gap, var(--wel-space-4));
+    container-type: inline-size;
+    container-name: layout;
+  }
 }
