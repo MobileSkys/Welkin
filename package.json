@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Welkin — a CSS-first UI toolkit built on modern CSS: cascade layers, design tokens, container queries, zero required build step.",
   "type": "module",
+  "license": "MIT",
   "files": [
     "dist"
   ],
