@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -29,32 +29,36 @@ scrolling, snapping, touch, and momentum; CSS supplies the rest.
 └─────────────────────────────────────────────────────┘
 ```
 
-Parts: root (`.carousel`, the labelled container); scroller (the `<ul>`, the
-scroll-snap container); slides (`<li>`); markers and prev/next buttons
+Parts: root (`.carousel`, the labelled container); scroller (`.carousel-track`, the
+scroll-snap container); slides (its direct children); markers and prev/next buttons
 (`::scroll-marker` / `::scroll-button()` pseudo-elements — generated, never authored).
 
 ## HTML structure
 
 ```html
 <section class="carousel" aria-roledescription="carousel" aria-label="Featured work">
-  <ul tabindex="0" aria-label="Slides">
-    <li role="group" aria-roledescription="slide" aria-label="1 of 4">
+  <div class="carousel-track" tabindex="0" role="group" aria-label="Slides">
+    <div role="group" aria-roledescription="slide" aria-label="1 of 4">
       <figure class="frame">…</figure>
-    </li>
-    <li role="group" aria-roledescription="slide" aria-label="2 of 4">…</li>
-    <li role="group" aria-roledescription="slide" aria-label="3 of 4">…</li>
-    <li role="group" aria-roledescription="slide" aria-label="4 of 4">…</li>
-  </ul>
+    </div>
+    <div role="group" aria-roledescription="slide" aria-label="2 of 4">…</div>
+    <div role="group" aria-roledescription="slide" aria-label="3 of 4">…</div>
+    <div role="group" aria-roledescription="slide" aria-label="4 of 4">…</div>
+  </div>
 </section>
 ```
 
 Rationale: a labelled `<section>` maps to a `region` landmark;
 `aria-roledescription="carousel"` announces the widget type (APG carousel pattern).
-The `<ul>` is the scroll container — `tabindex="0"` makes keyboard scrolling
+`.carousel-track` is the scroll container — `tabindex="0"` makes keyboard scrolling
 guaranteed in every engine (some browsers auto-focus scrollable regions, Firefox and
-others do not; a focusable element needs a name, hence `aria-label="Slides"`). Each
-slide is `role="group"` + `aria-roledescription="slide"` with an "N of M" label —
-authored by the host since slide count is static content. Markers and buttons are
+others do not; a focusable element needs a name, hence `role="group"` +
+`aria-label="Slides"` — a bare `div` cannot carry a label). Each slide is
+`role="group"` + `aria-roledescription="slide"` with an "N of M" label — authored by
+the host since slide count is static content. Divs, not `ul`/`li`, deliberately:
+`role="group"` on `<li>` strips its listitem role, leaving a list with no list items —
+an ARIA validity error (axe `list`) the APG pattern avoids by not claiming list
+semantics at all (found at implementation, T-46). Markers and buttons are
 pseudo-elements on the scroller: zero extra markup, so the Core-tier document contains
 nothing that could dangle unstyled.
 
@@ -111,6 +115,14 @@ widget, not the widget.
 
 Per the 03 `@supports` strategy these are additive-only: no Enhanced rule changes
 reachability.
+
+Implementation status (T-46): the scroll-progress bar shipped (scroll-driven
+animations passed intake with the navbar/table sticky affordances). `::scroll-marker`
+/ `::scroll-button()` remain Chromium-only at implementation — **design-approved,
+implementation-blocked** per the [03 audit note](../03-browser-support-policy.md) /
+[ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md); their rules enter
+`carousel.css` at intake. Until then the 2.5.7 story for fallback browsers is the
+`carousel-buttons.js` module below.
 
 ### JS enhancement
 

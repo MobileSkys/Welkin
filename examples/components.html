@@ -595,6 +595,38 @@
       Longer supplementary text wraps at the max inline size token.
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Carousel</h2>
+    <p>Scroll-snap rail: the browser supplies touch, momentum, keyboard, and RTL —
+    focus the list and use arrow keys. No autoplay, ever (scope decision, 2.2.2).
+    Under Enhanced a scroll-progress bar tracks position; generated markers/buttons
+    join when <code>::scroll-marker</code> passes intake.</p>
+
+    <section class="carousel" aria-roledescription="carousel" aria-label="Featured work"
+             style="--wel-carousel-slide-size: min(100%, 18rem)">
+      <div class="carousel-track" tabindex="0" role="group" aria-label="Slides">
+        <div role="group" aria-roledescription="slide" aria-label="1 of 6">
+          <figure class="frame" style="background: var(--wel-color-accent-tint)"></figure>
+        </div>
+        <div role="group" aria-roledescription="slide" aria-label="2 of 6">
+          <figure class="frame" style="background: var(--wel-color-info-tint)"></figure>
+        </div>
+        <div role="group" aria-roledescription="slide" aria-label="3 of 6">
+          <figure class="frame" style="background: var(--wel-color-success-tint)"></figure>
+        </div>
+        <div role="group" aria-roledescription="slide" aria-label="4 of 6">
+          <figure class="frame" style="background: var(--wel-color-warning-tint)"></figure>
+        </div>
+        <div role="group" aria-roledescription="slide" aria-label="5 of 6">
+          <figure class="frame" style="background: var(--wel-color-danger-tint)"></figure>
+        </div>
+        <div role="group" aria-roledescription="slide" aria-label="6 of 6">
+          <figure class="frame" style="background: var(--wel-color-surface-sunken)"></figure>
+        </div>
+      </div>
+    </section>
+  </section>
 </main>
 
 <hr>

@@ -1,0 +1,82 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .carousel — scroll-snap slide rail (docs/components/carousel.md, T-46).
+   The browser's scroll machinery IS the widget: touch, momentum, wheel,
+   scrollbar, keyboard (the ul is the focusable scroller), RTL for free.
+   No autoplay in v1 by scope decision (2.2.2). ::scroll-marker /
+   ::scroll-button dots+buttons are spec-defined but Chromium-only —
+   implementation-blocked per ADR-0012 / doc 03 audit note; they enter this
+   file at intake. Until then hosts needing pointer-visible controls in
+   fallback browsers use the carousel-buttons.js module (Phase 5, 2.5.7). */
+@layer components {
+  .carousel {
+    --wel-carousel-gap: var(--wel-space-4);
+    --wel-carousel-slide-size: 100%;
+    --wel-carousel-padding: var(--wel-space-gutter);
+    --wel-carousel-marker: var(--wel-color-border-strong);
+    --wel-carousel-marker-current: var(--wel-color-accent);
+    --wel-carousel-button-bg: var(--wel-color-surface-raised);
+    --wel-carousel-button-ink: var(--wel-color-ink);
+  }
+
+  /* overflow-x / overscroll-behavior-x: permitted physical exception
+     (ADR-0009) until the logical overflow-inline forms graduate; the snap
+     axis itself is the logical `inline` keyword. */
+  .carousel :where(.carousel-track) {
+    display: flex;
+    gap: var(--wel-carousel-gap);
+    padding-inline: var(--wel-carousel-padding);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: inline mandatory;
+    scroll-padding-inline: var(--wel-carousel-padding);
+  }
+
+  .carousel :where(.carousel-track > *) {
+    flex: 0 0 var(--wel-carousel-slide-size);
+    scroll-snap-align: start;
+  }
+
+  /* Enhanced: scroll-progress bar under the scroller. Gated off under
+     reduced motion per the spec's preference matrix (unlike the sticky
+     shadows, it is a moving element). timeline-scope lifts the scroller's
+     timeline to the root so the ::after bar can consume it. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .carousel {
+        timeline-scope: --wel-carousel-scroll;
+      }
+
+      .carousel :where(.carousel-track) {
+        scroll-timeline: --wel-carousel-scroll inline;
+      }
+
+      .carousel::after {
+        content: "";
+        display: block;
+        /* px hairline class (ADR-0008). */
+        block-size: 3px;
+        margin-block-start: var(--wel-space-2);
+        margin-inline: var(--wel-carousel-padding);
+        inline-size: 0;
+        background-color: var(--wel-color-accent);
+        border-radius: var(--wel-radius-full);
+        animation: wel-carousel-progress linear both;
+        animation-timeline: --wel-carousel-scroll;
+      }
+    }
+  }
+}
+
+@layer variants {
+  /* Gallery snap: one centred slide. */
+  .carousel[data-align="center"] :where(.carousel-track > *) {
+    scroll-snap-align: center;
+  }
+}
+
+@keyframes wel-carousel-progress {
+  to {
+    inline-size: calc(100% - 2 * var(--wel-carousel-padding));
+  }
+}
