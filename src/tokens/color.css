@@ -9,6 +9,23 @@
    initial-value is the concrete light-scheme value — registrations cannot
    carry var()/light-dark(), so these back-stop the :root declarations. */
 @layer tokens {
+  /* ---- Scheme wiring (ADR-0007). Declaring both schemes lets the UA pick
+     per user preference and render form controls/scrollbars/system colours
+     accordingly; every light-dark() token below follows. [data-theme] on any
+     subtree pins the scheme — page-level toggle and scoped mixed-mode
+     regions with one mechanism. A JS toggle only ever sets data-theme.
+     Fallback stance: engines without light-dark() resolve each typed token
+     to its @property initial-value — the static light palette (ADR-0007).
+     color-scheme: light dark itself is declared in the primitives :root
+     block below (one :root rule per file, lint-enforced). */
+  [data-theme="light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
   @property --wel-color-surface        { syntax: "<color>"; inherits: true; initial-value: oklch(97% 0.002 250); }
   @property --wel-color-surface-raised { syntax: "<color>"; inherits: true; initial-value: oklch(99.5% 0.001 250); }
   @property --wel-color-surface-sunken { syntax: "<color>"; inherits: true; initial-value: oklch(94% 0.003 250); }
@@ -36,6 +53,8 @@
      Fixed lightness targets per step, per-hue chroma curve peaking mid-ramp,
      so every ramp reads evenly spaced. Never consumed by components. */
   :root {
+    color-scheme: light dark;
+
     /* grey (hue 250, near-neutral) */
     --wel-grey-50:  oklch(97% 0.002 250);
     --wel-grey-100: oklch(94% 0.003 250);
