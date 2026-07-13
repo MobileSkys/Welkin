@@ -151,6 +151,47 @@
       <li class="tag" role="option" aria-selected="false">Draft</li>
     </ul>
   </section>
+
+  <section class="stack">
+    <h2>Alert / Callout</h2>
+    <p>Static callouts carry no ARIA; only dynamically inserted urgent messages get
+    <code>role="alert"</code> (all boxes below are static, so none here).</p>
+
+    <div class="stack" style="max-inline-size: 44rem">
+      <div class="alert">
+        <p class="alert-title">Neutral note</p>
+        <p>Tone is opt-in; the bare class is a quiet grey box.</p>
+      </div>
+      <aside class="alert" data-tone="info">
+        <svg class="alert-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4M8 5v.1"/></svg>
+        <p class="alert-title">Container queries are Core tier</p>
+        <p>Every layout primitive establishes a container, so components can query the
+        space they are actually given — see <a href="../docs/06-layout-system.md">docs/06</a>.</p>
+      </aside>
+      <aside class="alert" data-tone="warning">
+        <svg class="alert-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.5 15 14H1zM8 6v4M8 11.5v.1"/></svg>
+        <p class="alert-title">Check your browser targets</p>
+        <p>Enhanced-tier features are gated behind <code>@supports</code>.</p>
+      </aside>
+      <div class="alert" data-tone="success">
+        <p class="alert-title">Saved</p>
+        <p>Dynamic non-urgent confirmations get <code>role="status"</code> when inserted.</p>
+      </div>
+      <div class="alert" data-tone="danger">
+        <p class="alert-title">Payment failed</p>
+        <p>Your card was declined. No charge was made.</p>
+      </div>
+    </div>
+
+    <h3>Narrow container — icon drops onto the title line</h3>
+    <div class="stack" style="inline-size: 18rem">
+      <aside class="alert" data-tone="info">
+        <svg class="alert-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v4M8 5v.1"/></svg>
+        <p class="alert-title">Compact form</p>
+        <p>Below 24rem the icon column drops to keep the measure usable.</p>
+      </aside>
+    </div>
+  </section>
 </main>
 
 <hr>

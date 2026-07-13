@@ -1,0 +1,99 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .alert — toned message surface (docs/components/alert-callout.md, T-33):
+   callouts (static, authored) and alerts (dynamic, urgent). The live-region
+   role is a usage decision, not a component style — only dynamically
+   inserted urgent messages carry role="alert" (spec's 4.1.3 discipline).
+   Body text stays body-inked; only title/icon/accent-border take the tone.
+   Neutral accent is ink-muted, not border-strong as the token table
+   suggests: the accent also paints the title, and border-strong is 3.3:1 —
+   below AA for text (the a11y section wins). */
+@layer components {
+  .alert {
+    --wel-alert-bg: var(--wel-color-surface-sunken);
+    --wel-alert-ink: var(--wel-color-ink);
+    --wel-alert-accent: var(--wel-color-ink-muted);
+    --wel-alert-radius: var(--wel-radius-surface);
+    --wel-alert-padding: var(--wel-space-4);
+    --wel-alert-gap: var(--wel-space-3);
+    --wel-alert-icon-size: 1.25em;
+
+    /* Links keep their normal styling, but plain accent misses AA on the
+       tints (4.29:1 on sunken) — so the alert retints the accent for its
+       subtree to the tone colour (cross-component influence via tokens,
+       docs/04) and re-derives the interaction shades, which otherwise
+       stay frozen at their :root-computed values. */
+    --wel-color-accent: var(--wel-color-info);
+    --wel-color-accent-hover: oklch(from var(--wel-color-accent) calc(l - 0.06) c h);
+    --wel-color-accent-active: oklch(from var(--wel-color-accent) calc(l - 0.1) c h);
+
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--wel-space-2) var(--wel-alert-gap);
+    padding: var(--wel-alert-padding);
+    background-color: var(--wel-alert-bg);
+    color: var(--wel-alert-ink);
+    border: var(--wel-border-width) solid transparent;
+    border-inline-start: var(--wel-border-width-strong) solid var(--wel-alert-accent);
+    border-radius: var(--wel-alert-radius);
+  }
+
+  /* Content flows in the second column; the icon owns the first. */
+  .alert > :where(*) {
+    grid-column: 2;
+    margin: 0;
+  }
+
+  .alert > :where(.alert-icon) {
+    grid-column: 1;
+    align-self: start;
+    inline-size: var(--wel-alert-icon-size);
+    block-size: var(--wel-alert-icon-size);
+    color: var(--wel-alert-accent);
+  }
+
+  .alert :where(.alert-title) {
+    color: var(--wel-alert-accent);
+    font-weight: 600;
+  }
+
+  /* Narrow containers (docs/06 doctrine): the icon column drops and the
+     icon rides the title line, keeping the text measure usable. */
+  @container layout (inline-size < 24rem) {
+    .alert {
+      display: block;
+    }
+
+    .alert > :where(.alert-icon) {
+      float: inline-start;
+      margin-inline-end: var(--wel-space-2);
+    }
+
+    .alert > :where(* + *) {
+      margin-block-start: var(--wel-space-2);
+    }
+  }
+
+  /* Forced colors: tints vanish; box + inline-start emphasis survive as
+     CanvasText borders (the engine keeps var()-computed author colours,
+     so map explicitly — same gap as .button). */
+  @media (forced-colors: active) {
+    .alert {
+      background-color: Canvas;
+      color: CanvasText;
+      border-color: CanvasText;
+    }
+
+    .alert > :where(.alert-icon),
+    .alert :where(.alert-title) {
+      color: CanvasText;
+    }
+  }
+}
+
+@layer variants {
+  .alert[data-tone="info"]    { --wel-alert-bg: var(--wel-color-info-tint);    --wel-alert-accent: var(--wel-color-info);    --wel-color-accent: var(--wel-color-info); }
+  .alert[data-tone="success"] { --wel-alert-bg: var(--wel-color-success-tint); --wel-alert-accent: var(--wel-color-success); --wel-color-accent: var(--wel-color-success); }
+  .alert[data-tone="warning"] { --wel-alert-bg: var(--wel-color-warning-tint); --wel-alert-accent: var(--wel-color-warning); --wel-color-accent: var(--wel-color-warning); }
+  .alert[data-tone="danger"]  { --wel-alert-bg: var(--wel-color-danger-tint);  --wel-alert-accent: var(--wel-color-danger);  --wel-color-accent: var(--wel-color-danger); }
+}

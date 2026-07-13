@@ -34,11 +34,14 @@ export const PAIRINGS = [
   ['--wel-color-warning', '--wel-color-warning-tint', 4.5, 'warning alert title on tint'],
   ['--wel-color-danger', '--wel-color-danger-tint', 4.5, 'danger alert title on tint'],
   ['--wel-color-ink', '--wel-color-info-tint', 4.5, 'alert body on tint'],
+  ['--wel-color-ink', '--wel-color-success-tint', 4.5, 'alert body on tint'],
+  ['--wel-color-ink', '--wel-color-warning-tint', 4.5, 'alert body on tint'],
   ['--wel-color-ink', '--wel-color-danger-tint', 4.5, 'alert body on tint'],
   ['--wel-color-ink', '--wel-color-accent-tint', 4.5, 'text on hover tint (pagination/table rows)'],
   ['--wel-color-accent-hover', '--wel-color-accent-tint', 4.5, 'ghost/secondary button text on hover tint'],
   ['--wel-color-border-strong', '--wel-color-surface-raised', 3, 'outlined card border on card bg (1.4.11)'],
   ['--wel-color-ink-muted', '--wel-color-surface-sunken', 4.5, 'neutral badge/tag label'],
+  ['--wel-color-info', '--wel-color-surface-sunken', 4.5, 'links in neutral alert (subtree accent retint)'],
 ];
 
 // ---- Parse custom-property declarations out of a token source file.

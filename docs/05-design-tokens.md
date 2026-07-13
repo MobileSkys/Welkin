@@ -264,8 +264,8 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-red-975` | primitive | — | `oklch(17% 0.051 25)` | — |
 | `--wel-color-surface` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | under `ink` 15.5; under `ink-muted` 6.5; under `ink-faint` 3.3; under `accent` 4.7; under `accent-hover` 5.9; under `accent-active` 5.0; under `border-strong` 3.3; under `info` 6.6; under `success` 6.1; under `warning` 6.6; under `danger` 7.1 |
 | `--wel-color-surface-raised` | semantic | `<color>` | light `oklch(99.5% 0.001 250)` / dark `var(--wel-grey-950)` | under `ink` 14.2; under `ink-muted` 6.6; under `border-strong` 3.6 |
-| `--wel-color-surface-sunken` | semantic | `<color>` | light `var(--wel-grey-100)` / dark `oklch(13% 0.003 250)` | under `ink` 14.2; under `ink-muted` 6.0 |
-| `--wel-color-ink` | semantic | `<color>` | light `var(--wel-grey-950)` / dark `var(--wel-grey-100)` | on `surface` 15.5; on `surface-raised` 14.2; on `surface-sunken` 14.2; on `info-tint` 12.9; on `danger-tint` 12.9; on `accent-tint` 13.3 |
+| `--wel-color-surface-sunken` | semantic | `<color>` | light `var(--wel-grey-100)` / dark `oklch(13% 0.003 250)` | under `ink` 14.2; under `ink-muted` 6.0; under `info` 6.0 |
+| `--wel-color-ink` | semantic | `<color>` | light `var(--wel-grey-950)` / dark `var(--wel-grey-100)` | on `surface` 15.5; on `surface-raised` 14.2; on `surface-sunken` 14.2; on `info-tint` 12.9; on `success-tint` 12.9; on `warning-tint` 12.9; on `danger-tint` 12.9; on `accent-tint` 13.3 |
 | `--wel-color-ink-muted` | semantic | `<color>` | light `var(--wel-grey-700)` / dark `var(--wel-grey-400)` | on `surface` 6.5; on `surface-raised` 6.6; on `surface-sunken` 6.0 |
 | `--wel-color-ink-faint` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-600)` | on `surface` 3.3 |
 | `--wel-color-border` | semantic | `<color>` | light `var(--wel-grey-200)` / dark `var(--wel-grey-800)` | — |
@@ -275,13 +275,13 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-color-accent-active` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.10) c h)` | on `surface` 5.0 |
 | `--wel-color-accent-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface))` | under `ink` 13.3; under `accent-hover` 5.1 |
 | `--wel-color-accent-contrast` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | on `accent` 4.7 |
-| `--wel-color-info` | semantic | `<color>` | light `var(--wel-blue-700)` / dark `var(--wel-blue-300)` | on `surface` 6.6; on `info-tint` 5.5 |
+| `--wel-color-info` | semantic | `<color>` | light `var(--wel-blue-700)` / dark `var(--wel-blue-300)` | on `surface` 6.6; on `info-tint` 5.5; on `surface-sunken` 6.0 |
 | `--wel-color-success` | semantic | `<color>` | light `var(--wel-green-700)` / dark `var(--wel-green-300)` | on `surface` 6.1; on `success-tint` 5.1 |
 | `--wel-color-warning` | semantic | `<color>` | light `var(--wel-amber-700)` / dark `var(--wel-amber-300)` | on `surface` 6.6; on `warning-tint` 5.5 |
 | `--wel-color-danger` | semantic | `<color>` | light `var(--wel-red-700)` / dark `var(--wel-red-300)` | on `surface` 7.1; on `danger-tint` 5.9 |
 | `--wel-color-info-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-info) 12%, var(--wel-color-surface))` | under `info` 5.5; under `ink` 12.9 |
-| `--wel-color-success-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-success) 12%, var(--wel-color-surface))` | under `success` 5.1 |
-| `--wel-color-warning-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-warning) 12%, var(--wel-color-surface))` | under `warning` 5.5 |
+| `--wel-color-success-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-success) 12%, var(--wel-color-surface))` | under `success` 5.1; under `ink` 12.9 |
+| `--wel-color-warning-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-warning) 12%, var(--wel-color-surface))` | under `warning` 5.5; under `ink` 12.9 |
 | `--wel-color-danger-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-danger) 12%, var(--wel-color-surface))` | under `danger` 5.9; under `ink` 12.9 |
 
 #### Focus ring (`src/tokens/focus-ring.css`)
@@ -396,12 +396,15 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `warning` | `warning-tint` | 4.5:1 | 5.51:1 | 8.60:1 | 5.51:1 | warning alert title on tint |
 | `danger` | `danger-tint` | 4.5:1 | 5.88:1 | 8.31:1 | 5.88:1 | danger alert title on tint |
 | `ink` | `info-tint` | 4.5:1 | 12.90:1 | 13.58:1 | 12.90:1 | alert body on tint |
+| `ink` | `success-tint` | 4.5:1 | 12.91:1 | 13.56:1 | 12.91:1 | alert body on tint |
+| `ink` | `warning-tint` | 4.5:1 | 12.92:1 | 13.56:1 | 12.92:1 | alert body on tint |
 | `ink` | `danger-tint` | 4.5:1 | 12.87:1 | 13.60:1 | 12.87:1 | alert body on tint |
 | `ink` | `accent-tint` | 4.5:1 | 13.28:1 | 13.98:1 | 13.28:1 | text on hover tint (pagination/table rows) |
 | `accent-hover` | `accent-tint` | 4.5:1 | 5.22:1 | 5.14:1 | 5.14:1 | ghost/secondary button text on hover tint |
 | `border-strong` | `surface-raised` | 3:1 | 3.59:1 | 4.64:1 | 3.59:1 | outlined card border on card bg (1.4.11) |
 | `ink-muted` | `surface-sunken` | 4.5:1 | 5.97:1 | 7.82:1 | 5.97:1 | neutral badge/tag label |
+| `info` | `surface-sunken` | 4.5:1 | 6.05:1 | 10.77:1 | 6.05:1 | links in neutral alert (subtree accent retint) |
 
-Totals: 140 tokens, 25 pairings × 2 schemes.
+Totals: 140 tokens, 28 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->
