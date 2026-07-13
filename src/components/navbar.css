@@ -1,0 +1,225 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .navbar — page-level navigation (docs/components/navbar.md, T-38).
+   Zero JavaScript: the collapsed menu is the Popover API (popover +
+   popovertarget — toggle, Esc, light dismiss, and aria-expanded sync are
+   all native). ONE <ul> is both the inline link row and the popover
+   panel: the UA's [popover] display:none loses to our expanded-state
+   container-query display override. Collapse is driven by the `page`
+   NAMED container (docs/06) — no ancestor page container means the query
+   never matches and the navbar stays collapsed-safe. */
+@layer components {
+  .navbar {
+    --wel-navbar-bg: var(--wel-color-surface-raised);
+    --wel-navbar-ink: var(--wel-color-ink);
+    --wel-navbar-padding-block: var(--wel-space-2);
+    --wel-navbar-padding-inline: var(--wel-space-gutter);
+    --wel-navbar-gap: var(--wel-space-4);
+    --wel-navbar-block-size: 3.5rem;
+    --wel-navbar-panel-bg: var(--wel-navbar-bg);
+    --wel-navbar-border: var(--wel-color-border);
+
+    background-color: var(--wel-navbar-bg);
+    color: var(--wel-navbar-ink);
+    border-block-end: var(--wel-border-width) solid var(--wel-navbar-border);
+  }
+
+  .navbar > :where(nav) {
+    display: flex;
+    align-items: center;
+    gap: var(--wel-navbar-gap);
+    min-block-size: var(--wel-navbar-block-size);
+    padding-block: var(--wel-navbar-padding-block);
+    padding-inline: var(--wel-navbar-padding-inline);
+  }
+
+  .navbar :where(.navbar-brand) {
+    color: var(--wel-navbar-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .navbar :where(.navbar-menu-button) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wel-space-1);
+    margin-inline-start: auto;
+    min-block-size: 1.5rem;
+    padding-block: var(--wel-space-1);
+    padding-inline: var(--wel-space-3);
+    background: none;
+    border: var(--wel-border-width) solid var(--wel-color-border-strong);
+    border-radius: var(--wel-radius-control);
+    color: var(--wel-navbar-ink);
+    font: inherit;
+  }
+
+  .navbar :where(.navbar-menu-button) > :where(svg) {
+    inline-size: 1em;
+    block-size: 1em;
+  }
+
+  /* Collapsed panel (the popover, when open): pinned below the bar. Core
+     placement assumes the bar's contract position at viewport top. */
+  .navbar :where(.navbar-menu) {
+    position: fixed;
+    inset-block-start: var(--wel-navbar-block-size);
+    inset-inline: 0;
+    inline-size: auto;
+    margin: 0;
+    padding: var(--wel-space-3);
+    list-style: none;
+    background-color: var(--wel-navbar-panel-bg);
+    color: var(--wel-navbar-ink);
+    border: none;
+    border-block-end: var(--wel-border-width) solid var(--wel-navbar-border);
+    box-shadow: var(--wel-shadow-2);
+  }
+
+  .navbar :where(.navbar-menu li + li) {
+    margin-block-start: var(--wel-space-1);
+  }
+
+  /* Panel links padded to ~44px targets. */
+  .navbar :where(.navbar-menu a) {
+    display: block;
+    padding-block: var(--wel-space-2);
+    padding-inline: var(--wel-space-2);
+    color: var(--wel-color-ink-muted);
+    text-decoration: none;
+    border-radius: var(--wel-radius-sm);
+  }
+
+  .navbar :where(.navbar-actions) {
+    margin-inline-start: auto;
+  }
+
+  /* When the menu-button is visible it owns the auto margin. */
+  .navbar :where(.navbar-menu-button) ~ :where(.navbar-actions) {
+    margin-inline-start: 0;
+  }
+
+  /* Expanded: the menu joins the bar inline; author display beats the UA
+     popover display:none. 48rem is the component default. */
+  @container page (inline-size >= 48rem) {
+    .navbar :where(.navbar-menu) {
+      display: flex;
+      position: static;
+      gap: var(--wel-space-2);
+      padding: 0;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+
+    .navbar :where(.navbar-menu li + li) {
+      margin-block-start: 0;
+    }
+
+    .navbar :where(.navbar-menu a) {
+      display: inline-block;
+      padding-block: var(--wel-space-1);
+      min-block-size: 1.5rem;
+    }
+
+    .navbar :where(.navbar-menu-button) {
+      display: none;
+    }
+  }
+
+  /* Enhanced: panel tethers to its button — correct even off viewport-top. */
+  @supports (anchor-name: --wel-a) {
+    .navbar :where(.navbar-menu-button) {
+      anchor-name: --wel-navbar-button;
+    }
+
+    .navbar :where(.navbar-menu) {
+      position-anchor: --wel-navbar-button;
+      inset-block-start: calc(anchor(end) + var(--wel-space-2));
+    }
+  }
+
+  /* Enhanced: entry fade/slide (exit stays instant — a closed-state
+     opacity would leak into the expanded inline arrangement). */
+  @supports (transition-behavior: allow-discrete) {
+    .navbar :where(.navbar-menu:popover-open) {
+      transition:
+        opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        translate calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease);
+    }
+
+    @starting-style {
+      .navbar :where(.navbar-menu:popover-open) {
+        opacity: 0;
+        translate: 0 -0.5rem;
+      }
+    }
+  }
+
+  /* Forced colors: bg/shadow strip; the block-end border keeps the bar
+     delineated and the current-page bar survives as a border. */
+  @media (forced-colors: active) {
+    .navbar {
+      border-block-end-color: CanvasText;
+    }
+
+    .navbar :where(.navbar-menu a) {
+      color: LinkText;
+    }
+  }
+}
+
+@layer variants {
+  .navbar[data-sticky] {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 10;
+    box-shadow: var(--wel-shadow-1);
+  }
+
+  /* Enhanced: the sticky shadow appears only once the page has scrolled. */
+  @supports (animation-timeline: scroll()) {
+    .navbar[data-sticky] {
+      animation: wel-navbar-shadow linear both;
+      animation-timeline: scroll();
+      animation-range: 0 6rem;
+    }
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .navbar :where(.navbar-menu a):hover {
+      color: var(--wel-color-accent-hover);
+    }
+  }
+
+  .navbar :where(.navbar-menu a):active {
+    color: var(--wel-color-accent-active);
+  }
+
+  /* Current page: accent ink AND a bar — never colour alone. */
+  .navbar :where(.navbar-menu a[aria-current="page"]) {
+    color: var(--wel-color-accent);
+    border-block-end: var(--wel-border-width-strong) solid var(--wel-color-accent);
+  }
+
+  /* The :has() trick: parent styled by child state, no JS classes. */
+  .navbar:where(:has(.navbar-menu:popover-open)) {
+    box-shadow: var(--wel-shadow-2);
+  }
+
+  .navbar:where(:has(.navbar-menu:popover-open)) :where(.navbar-menu-button) {
+    background-color: var(--wel-color-accent-tint);
+  }
+}
+
+@keyframes wel-navbar-shadow {
+  from {
+    box-shadow: none;
+  }
+
+  to {
+    box-shadow: var(--wel-shadow-1);
+  }
+}
