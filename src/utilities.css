@@ -1,5 +1,21 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* utilities layer — implemented in Phase 3+. Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* utilities layer — single-purpose classes; the only layer permitted
+   !important (ADR-0010). */
 @layer utilities {
+  /* Visually hidden, available to assistive tech (docs/09; consumed by
+     count badges, skip links, icon-only labels). The standard clip-path
+     recipe; !important so no component rule can accidentally reveal or
+     resize it. */
+  .visually-hidden {
+    position: absolute !important;
+    inline-size: 1px !important;
+    block-size: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
 }

@@ -117,6 +117,40 @@
       </article>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Badge &amp; Tag</h2>
+
+    <h3>Badges — static labels, tone axis</h3>
+    <div class="cluster">
+      <span class="badge">Neutral</span>
+      <span class="badge" data-tone="info">Beta</span>
+      <span class="badge" data-tone="success">Published</span>
+      <span class="badge" data-tone="warning">Deprecated</span>
+      <span class="badge" data-tone="danger">Breaking</span>
+    </div>
+    <p>Count badge with hidden context:
+      <a href="#">Inbox <span class="badge">3<span class="visually-hidden"> unread messages</span></span></a>
+    </p>
+
+    <h3>Tags — link, dismissible, selected, truncating</h3>
+    <div class="cluster">
+      <a class="tag" href="#">CSS</a>
+      <a class="tag" href="#" data-tone="info">container queries</a>
+      <span class="tag">
+        Draft
+        <button class="tag-dismiss" type="button" aria-label="Remove filter: Draft">
+          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l10 10M13 3L3 13"/></svg>
+        </button>
+      </span>
+      <span class="tag" style="--wel-tag-max-inline-size: 8rem">A very long tag label that truncates</span>
+    </div>
+    <p>Selected filter tags (listbox pattern):</p>
+    <ul class="cluster" role="listbox" aria-label="Status filters" style="list-style: none; padding: 0">
+      <li class="tag" role="option" data-tone="success" aria-selected="true">Published</li>
+      <li class="tag" role="option" aria-selected="false">Draft</li>
+    </ul>
+  </section>
 </main>
 
 <hr>

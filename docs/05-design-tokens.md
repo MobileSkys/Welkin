@@ -264,9 +264,9 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-red-975` | primitive | — | `oklch(17% 0.051 25)` | — |
 | `--wel-color-surface` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | under `ink` 15.5; under `ink-muted` 6.5; under `ink-faint` 3.3; under `accent` 4.7; under `accent-hover` 5.9; under `accent-active` 5.0; under `border-strong` 3.3; under `info` 6.6; under `success` 6.1; under `warning` 6.6; under `danger` 7.1 |
 | `--wel-color-surface-raised` | semantic | `<color>` | light `oklch(99.5% 0.001 250)` / dark `var(--wel-grey-950)` | under `ink` 14.2; under `ink-muted` 6.6; under `border-strong` 3.6 |
-| `--wel-color-surface-sunken` | semantic | `<color>` | light `var(--wel-grey-100)` / dark `oklch(13% 0.003 250)` | under `ink` 14.2 |
+| `--wel-color-surface-sunken` | semantic | `<color>` | light `var(--wel-grey-100)` / dark `oklch(13% 0.003 250)` | under `ink` 14.2; under `ink-muted` 6.0 |
 | `--wel-color-ink` | semantic | `<color>` | light `var(--wel-grey-950)` / dark `var(--wel-grey-100)` | on `surface` 15.5; on `surface-raised` 14.2; on `surface-sunken` 14.2; on `info-tint` 12.9; on `danger-tint` 12.9; on `accent-tint` 13.3 |
-| `--wel-color-ink-muted` | semantic | `<color>` | light `var(--wel-grey-700)` / dark `var(--wel-grey-400)` | on `surface` 6.5; on `surface-raised` 6.6 |
+| `--wel-color-ink-muted` | semantic | `<color>` | light `var(--wel-grey-700)` / dark `var(--wel-grey-400)` | on `surface` 6.5; on `surface-raised` 6.6; on `surface-sunken` 6.0 |
 | `--wel-color-ink-faint` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-600)` | on `surface` 3.3 |
 | `--wel-color-border` | semantic | `<color>` | light `var(--wel-grey-200)` / dark `var(--wel-grey-800)` | — |
 | `--wel-color-border-strong` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-500)` | on `surface` 3.3; on `surface-raised` 3.6 |
@@ -400,7 +400,8 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `ink` | `accent-tint` | 4.5:1 | 13.28:1 | 13.98:1 | 13.28:1 | text on hover tint (pagination/table rows) |
 | `accent-hover` | `accent-tint` | 4.5:1 | 5.22:1 | 5.14:1 | 5.14:1 | ghost/secondary button text on hover tint |
 | `border-strong` | `surface-raised` | 3:1 | 3.59:1 | 4.64:1 | 3.59:1 | outlined card border on card bg (1.4.11) |
+| `ink-muted` | `surface-sunken` | 4.5:1 | 5.97:1 | 7.82:1 | 5.97:1 | neutral badge/tag label |
 
-Totals: 140 tokens, 24 pairings × 2 schemes.
+Totals: 140 tokens, 25 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->

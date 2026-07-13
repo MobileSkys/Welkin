@@ -1,0 +1,165 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .badge / .tag — small labelling pair (docs/components/badge-tag.md,
+   T-32). A badge is static inline information and never focusable; a tag
+   is a categorisation the user may follow (link) or remove (dismiss
+   button, host-app-owned behaviour). One data-tone axis on both, fed by
+   the tone token sets — every pair is a checked docs/05 pairing. The tag
+   border paints border-strong: the spec's a11y section requires 3:1
+   against surface, which the decorative border token cannot hold.
+   Hover shifts ink as well as bg — a tint darkened by the 05 formula
+   alone drops the success pair below 4.5:1 in light scheme. */
+@layer components {
+  .badge {
+    --wel-badge-bg: var(--wel-color-surface-sunken);
+    --wel-badge-ink: var(--wel-color-ink-muted);
+    --wel-badge-radius: var(--wel-radius-full);
+    --wel-badge-padding-block: var(--wel-space-1);
+    --wel-badge-padding-inline: var(--wel-space-2);
+
+    display: inline-block;
+    padding-block: var(--wel-badge-padding-block);
+    padding-inline: var(--wel-badge-padding-inline);
+    background-color: var(--wel-badge-bg);
+    color: var(--wel-badge-ink);
+    border: var(--wel-border-width) solid transparent;
+    border-radius: var(--wel-badge-radius);
+    font-size: var(--wel-text-size--1);
+    line-height: var(--wel-text-leading-tight);
+    font-weight: 500;
+  }
+
+  .tag {
+    --wel-tag-bg: var(--wel-color-surface-sunken);
+    --wel-tag-ink: var(--wel-color-ink-muted);
+    --wel-tag-radius: var(--wel-radius-sm);
+    --wel-tag-padding-block: var(--wel-space-1);
+    --wel-tag-padding-inline: var(--wel-space-3);
+    --wel-tag-border: var(--wel-color-border-strong);
+    --wel-tag-max-inline-size: none;
+    --wel-tag-bg-hover: oklch(from var(--wel-tag-bg) calc(l - 0.06) c h);
+    --wel-tag-bg-active: oklch(from var(--wel-tag-bg) calc(l - 0.1) c h);
+    --wel-tag-ink-hover: light-dark(
+      oklch(from var(--wel-tag-ink) calc(l - 0.06) c h),
+      oklch(from var(--wel-tag-ink) calc(l + 0.06) c h)
+    );
+
+    /* inline-block, not flex: text-overflow cannot ellipsize an anonymous
+       flex item, and truncation (--wel-tag-max-inline-size) must work on
+       plain/link tags. Dismissible tags switch to flex below — their
+       button needs the alignment and they don't truncate. */
+    display: inline-block;
+    padding-block: var(--wel-tag-padding-block);
+    padding-inline: var(--wel-tag-padding-inline);
+    max-inline-size: var(--wel-tag-max-inline-size);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom; /* clipped inline-block otherwise misaligns baselines */
+    background-color: var(--wel-tag-bg);
+    color: var(--wel-tag-ink);
+    border: var(--wel-border-width) solid var(--wel-tag-border);
+    border-radius: var(--wel-tag-radius);
+    font-size: var(--wel-text-size--1);
+    line-height: var(--wel-text-leading-tight);
+    text-decoration: none; /* link tags */
+    transition:
+      background-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  .tag:where(:has(.tag-dismiss)) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wel-space-1);
+  }
+
+  /* Dismiss: a real button, ≥ 24px target (2.5.8) — the tag grows to
+     accommodate it rather than the button shrinking. */
+  .tag :where(.tag-dismiss) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 1.5rem;
+    min-block-size: 1.5rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    border-radius: var(--wel-tag-radius);
+    color: inherit;
+    font: inherit;
+  }
+
+  .tag :where(.tag-dismiss) > :where(svg) {
+    inline-size: 0.75em;
+    block-size: 0.75em;
+  }
+
+  /* Forced colors: tone tints vanish and the boundary survives as a
+     border. Colours are mapped explicitly — the engine does not force
+     var()-computed author colours (same gap as .button). */
+  @media (forced-colors: active) {
+    .badge,
+    .tag {
+      background-color: Canvas;
+      color: CanvasText;
+      border-color: CanvasText;
+    }
+
+    .tag:where(a) {
+      color: LinkText;
+    }
+
+    .tag :where(.tag-dismiss) {
+      color: ButtonText;
+    }
+  }
+}
+
+@layer variants {
+  .badge[data-tone="info"]    { --wel-badge-bg: var(--wel-color-info-tint);    --wel-badge-ink: var(--wel-color-info); }
+  .badge[data-tone="success"] { --wel-badge-bg: var(--wel-color-success-tint); --wel-badge-ink: var(--wel-color-success); }
+  .badge[data-tone="warning"] { --wel-badge-bg: var(--wel-color-warning-tint); --wel-badge-ink: var(--wel-color-warning); }
+  .badge[data-tone="danger"]  { --wel-badge-bg: var(--wel-color-danger-tint);  --wel-badge-ink: var(--wel-color-danger); }
+
+  .tag[data-tone="info"]    { --wel-tag-bg: var(--wel-color-info-tint);    --wel-tag-ink: var(--wel-color-info); }
+  .tag[data-tone="success"] { --wel-tag-bg: var(--wel-color-success-tint); --wel-tag-ink: var(--wel-color-success); }
+  .tag[data-tone="warning"] { --wel-tag-bg: var(--wel-color-warning-tint); --wel-tag-ink: var(--wel-color-warning); }
+  .tag[data-tone="danger"]  { --wel-tag-bg: var(--wel-color-danger-tint);  --wel-tag-ink: var(--wel-color-danger); }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .tag:where(a):hover {
+      background-color: var(--wel-tag-bg-hover);
+      color: var(--wel-tag-ink-hover);
+    }
+  }
+
+  .tag:where(a):active {
+    background-color: var(--wel-tag-bg-active);
+    color: var(--wel-tag-ink-hover);
+  }
+
+  /* Selected filter tag: fills with the tone/accent colour; border weight
+     carries the state under forced colors (never background-only). */
+  .tag[aria-selected="true"],
+  .tag[aria-pressed="true"] {
+    background-color: var(--wel-tag-ink);
+    color: var(--wel-color-surface);
+    border-width: var(--wel-border-width-strong);
+    border-color: var(--wel-tag-ink);
+  }
+
+  /* This layer beats the components-layer forced-colors mapping, so the
+     selected fill needs its own: the system selection pair, plus the
+     border-weight cue that is the not-background-only treatment. */
+  @media (forced-colors: active) {
+    .tag[aria-selected="true"],
+    .tag[aria-pressed="true"] {
+      background-color: SelectedItem;
+      color: SelectedItemText;
+      border-color: CanvasText;
+    }
+  }
+}
