@@ -1,0 +1,97 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .breadcrumb — hierarchy trail (docs/components/breadcrumb.md, T-34).
+   Separators are CSS-generated from a string token, never markup; with
+   alternative-text syntax (Enhanced tier) they are declared empty for
+   assistive tech. The current page is styled from [aria-current="page"]
+   itself. The list wraps by default — hidden overflow is never the
+   baseline; narrow containers engage per-item ellipsis caps instead. */
+@layer components {
+  .breadcrumb {
+    --wel-breadcrumb-ink: var(--wel-color-ink-muted);
+    --wel-breadcrumb-ink-current: var(--wel-color-ink);
+    --wel-breadcrumb-gap: var(--wel-space-2);
+    --wel-breadcrumb-separator: "/";
+    --wel-breadcrumb-item-max: 12rem;
+  }
+
+  .breadcrumb > :where(ol) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wel-breadcrumb-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .breadcrumb :where(li) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wel-breadcrumb-gap);
+  }
+
+  .breadcrumb :where(li + li)::before {
+    content: var(--wel-breadcrumb-separator);
+    color: var(--wel-color-ink-faint);
+  }
+
+  /* Alternative-text syntax guarantees screen readers ignore the glyph;
+     without support the plain separator above stands (additive-only). */
+  @supports (content: "a" / "b") {
+    .breadcrumb :where(li + li)::before {
+      content: var(--wel-breadcrumb-separator) / "";
+    }
+  }
+
+  .breadcrumb :where(a) {
+    display: inline-block;
+    /* 2.5.8: pad the link target to ≥ 24px block-size. */
+    padding-block: var(--wel-space-1);
+    min-block-size: 1.5rem;
+    color: var(--wel-breadcrumb-ink);
+    text-decoration: none;
+  }
+
+  .breadcrumb :where(a[aria-current="page"]) {
+    color: var(--wel-breadcrumb-ink-current);
+  }
+
+  /* Narrow containers: cap each crumb; the full text stays the link's
+     accessible name — the ellipsis is visual only. */
+  @container layout (inline-size < 30rem) {
+    .breadcrumb :where(a) {
+      max-inline-size: var(--wel-breadcrumb-item-max);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  @container layout (inline-size < 20rem) {
+    .breadcrumb {
+      --wel-breadcrumb-item-max: 8rem;
+    }
+  }
+
+  /* Forced colors: the ink distinction collapses, so the current item is
+     the one WITHOUT the underline the trail links receive. */
+  @media (forced-colors: active) {
+    .breadcrumb :where(a) {
+      text-decoration: underline;
+    }
+
+    .breadcrumb :where(a[aria-current="page"]) {
+      text-decoration: none;
+    }
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .breadcrumb :where(a):hover {
+      color: var(--wel-breadcrumb-ink-current);
+      text-decoration: underline;
+    }
+  }
+}

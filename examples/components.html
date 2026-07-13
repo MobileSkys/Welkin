@@ -192,6 +192,41 @@
       </aside>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Breadcrumb</h2>
+    <p>Separators are CSS-generated from a string token — never markup. The current
+    page is styled from <code>aria-current="page"</code>.</p>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Docs</a></li>
+        <li><a href="#">Components</a></li>
+        <li><a href="#" aria-current="page">Breadcrumb</a></li>
+      </ol>
+    </nav>
+
+    <p>Swapped separator glyph (token, no markup change):</p>
+    <nav class="breadcrumb" aria-label="Breadcrumb example with chevron" style="--wel-breadcrumb-separator: '›'">
+      <ol>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Guides</a></li>
+        <li><a href="#" aria-current="page">Theming</a></li>
+      </ol>
+    </nav>
+
+    <p>Narrow container — crumbs cap and ellipsize, the trail wraps (never hides):</p>
+    <div class="stack" style="inline-size: 18rem">
+      <nav class="breadcrumb" aria-label="Breadcrumb example narrow">
+        <ol>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">A rather long section title</a></li>
+          <li><a href="#" aria-current="page">An even longer current page title</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
 </main>
 
 <hr>
