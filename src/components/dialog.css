@@ -17,7 +17,11 @@
     --wel-dialog-padding: var(--wel-space-5);
     --wel-dialog-shadow: var(--wel-shadow-4);
     --wel-dialog-max-inline-size: 36rem;
-    --wel-dialog-backdrop: color-mix(in oklch, var(--wel-color-ink) 45%, transparent);
+    /* A scrim always DARKENS — ink-based mixing inverts in dark mode (ink
+       is near-white there, so the "dim" lit the page up; T-40 review). The
+       dark scheme needs a deeper, stronger scrim to read over an already
+       dark page. */
+    --wel-dialog-backdrop: light-dark(oklch(21% 0.01 250 / 0.45), oklch(8% 0.005 250 / 0.6));
 
     inline-size: min(var(--wel-dialog-max-inline-size), calc(100dvw - 2 * var(--wel-space-gutter)));
     max-block-size: calc(100dvh - 2 * var(--wel-space-gutter));

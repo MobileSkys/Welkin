@@ -108,7 +108,7 @@ Interior controls carry their own states (`:focus-visible` etc.) per their specs
 | `--wel-dialog-padding` | `var(--wel-space-5)` | — | |
 | `--wel-dialog-shadow` | `var(--wel-shadow-4)` | — | |
 | `--wel-dialog-max-inline-size` | per `data-size`; `36rem` default | — | Always additionally capped by viewport minus gutter |
-| `--wel-dialog-backdrop` | `color-mix(in oklch, var(--wel-color-ink) 45%, transparent)` | — | See `::backdrop` inheritance note below |
+| `--wel-dialog-backdrop` | `light-dark(oklch(21% 0.01 250 / 0.45), oklch(8% 0.005 250 / 0.6))` | — | A scrim always **darkens** — an ink-based mix inverts in dark mode (ink is near-white there, so the dim lit the page; caught in T-40 review). See `::backdrop` inheritance note below |
 
 `::backdrop` note: custom-property inheritance into `::backdrop` (from the dialog)
 reached Baseline in 2024 and is near Widely Available at time of writing; until the
