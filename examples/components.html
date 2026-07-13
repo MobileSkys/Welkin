@@ -330,6 +330,47 @@
       </figure>
     </article>
   </section>
+
+  <section class="stack">
+    <h2>Progress / Spinner / Skeleton</h2>
+    <p>Progress when completion is measurable, spinner when it isn't, skeleton when
+    the incoming shape is known.</p>
+
+    <h3>Progress (native element)</h3>
+    <div class="stack" style="max-inline-size: 30rem">
+      <div>
+        <label for="upload">Uploading photos…</label>
+        <progress class="progress" id="upload" max="100" value="62">62%</progress>
+      </div>
+      <div>
+        <label for="upload-sm">Small</label>
+        <progress class="progress" id="upload-sm" data-size="sm" max="100" value="30">30%</progress>
+      </div>
+      <div>
+        <label for="upload-ind">Indeterminate (docs steer to the spinner)</label>
+        <progress class="progress" id="upload-ind">working…</progress>
+      </div>
+    </div>
+
+    <h3>Spinner</h3>
+    <div class="cluster">
+      <div class="spinner" data-size="sm" role="status"><span class="visually-hidden">Loading…</span></div>
+      <div class="spinner" role="status"><span class="visually-hidden">Loading…</span></div>
+      <div class="spinner" data-size="lg" role="status"><span class="visually-hidden">Loading…</span></div>
+    </div>
+
+    <h3>Skeleton (decorative, inside an <code>aria-busy</code> region)</h3>
+    <section aria-busy="true" aria-describedby="feed-status" class="stack" style="max-inline-size: 24rem">
+      <p id="feed-status" class="visually-hidden">Loading feed…</p>
+      <div class="cluster">
+        <div class="skeleton" data-variant="circle" aria-hidden="true"></div>
+        <div class="skeleton" data-variant="text" aria-hidden="true" style="inline-size: 10rem"></div>
+      </div>
+      <div class="skeleton" data-variant="text" aria-hidden="true"></div>
+      <div class="skeleton" data-variant="text" aria-hidden="true" style="inline-size: 75%"></div>
+      <div class="skeleton" aria-hidden="true" style="block-size: 8rem"></div>
+    </section>
+  </section>
 </main>
 
 <hr>

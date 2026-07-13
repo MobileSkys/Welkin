@@ -1,0 +1,170 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .progress / .spinner / .skeleton — loading indicators (docs/components/
+   progress-spinner-skeleton.md, T-37). Progress = measurable, spinner =
+   indeterminate, skeleton = known shape (aria-hidden, inside an
+   [aria-busy] region — the region announces, never the placeholder).
+   Every duration is token-derived through the --wel-motion multiplier. */
+@layer components {
+  /* ---- Progress: native element. Quick path = accent-color (correct in
+     every engine); the full restyle rides engine pseudos. An unrecognised
+     pseudo-element invalidates its whole rule, so each engine's block is
+     a separate rule — never comma-joined. Engines rejecting the pseudos
+     keep the accent-coloured native bar. */
+  .progress {
+    --wel-progress-track-bg: var(--wel-color-surface-sunken);
+    --wel-progress-fill: var(--wel-color-accent);
+    --wel-progress-block-size: var(--wel-space-2);
+    --wel-progress-radius: var(--wel-radius-full);
+
+    accent-color: var(--wel-progress-fill);
+    appearance: none;
+    inline-size: 100%;
+    block-size: var(--wel-progress-block-size);
+    border: none;
+    background-color: var(--wel-progress-track-bg);
+    border-radius: var(--wel-progress-radius);
+  }
+
+  .progress::-webkit-progress-bar {
+    background-color: var(--wel-progress-track-bg);
+    border-radius: var(--wel-progress-radius);
+  }
+
+  .progress::-webkit-progress-value {
+    background-color: var(--wel-progress-fill);
+    border-radius: var(--wel-progress-radius);
+  }
+
+  .progress::-moz-progress-bar {
+    background-color: var(--wel-progress-fill);
+    border-radius: var(--wel-progress-radius);
+  }
+
+  /* ---- Spinner: border-built arc over a visible track. At multiplier 0
+     or PRM the rotation stops and the static partial arc still reads as
+     "busy"; the role="status" label does the announcing. */
+  .spinner {
+    --wel-spinner-size: var(--wel-space-6);
+    --wel-spinner-thickness: var(--wel-border-width-strong);
+    --wel-spinner-ink: var(--wel-color-accent);
+    --wel-spinner-track: var(--wel-color-border);
+
+    display: inline-block;
+    inline-size: var(--wel-spinner-size);
+    block-size: var(--wel-spinner-size);
+    border: var(--wel-spinner-thickness) solid var(--wel-spinner-track);
+    border-block-start-color: var(--wel-spinner-ink);
+    border-radius: var(--wel-radius-full);
+    animation: wel-spinner-rotate calc(var(--wel-motion-duration-4) * 2 * var(--wel-motion)) linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+    }
+  }
+
+  /* ---- Skeleton: static tinted shape in Core; the shimmer exists only
+     inside the motion-OK wrapper — stillness is the default. */
+  .skeleton {
+    --wel-skeleton-bg: var(--wel-color-surface-sunken);
+    --wel-skeleton-shimmer: var(--wel-color-surface-raised);
+    --wel-skeleton-radius: var(--wel-radius-sm);
+
+    background-color: var(--wel-skeleton-bg);
+    border-radius: var(--wel-skeleton-radius);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton {
+      background-image: linear-gradient(90deg, transparent 25%, var(--wel-skeleton-shimmer) 50%, transparent 75%);
+      background-size: 200% 100%;
+      background-repeat: no-repeat;
+      animation: wel-skeleton-shimmer calc(var(--wel-motion-duration-4) * 3 * var(--wel-motion)) var(--wel-motion-ease) infinite;
+    }
+  }
+
+  /* Enhanced (docs/03): a THEME zeroing --wel-motion also halts the two
+     infinite animations, not just the OS preference. */
+  @container style(--wel-motion: 0) {
+    .spinner,
+    .skeleton {
+      animation: none;
+    }
+  }
+
+  /* Forced colors: progress reverts to native (fill maps to Highlight);
+     spinner maps arc/track explicitly; skeletons gain a border so the
+     reserved space stays visible. */
+  @media (forced-colors: active) {
+    .progress {
+      appearance: auto;
+    }
+
+    .spinner {
+      border-color: GrayText;
+      border-block-start-color: CanvasText;
+    }
+
+    .skeleton {
+      border: 1px solid GrayText;
+    }
+  }
+}
+
+@layer variants {
+  .progress[data-size="sm"] { --wel-progress-block-size: var(--wel-space-1); }
+  .progress[data-size="lg"] { --wel-progress-block-size: var(--wel-space-3); }
+
+  /* sm is 1em-relative for the inline-in-button pattern. */
+  .spinner[data-size="sm"] {
+    --wel-spinner-size: 1em;
+    --wel-spinner-thickness: 0.125em;
+  }
+
+  .spinner[data-size="lg"] {
+    --wel-spinner-size: var(--wel-space-8);
+  }
+
+  .skeleton[data-variant="text"] {
+    block-size: 1em;
+  }
+
+  .skeleton[data-variant="circle"] {
+    --wel-skeleton-radius: var(--wel-radius-full);
+
+    inline-size: var(--wel-space-7);
+    aspect-ratio: 1;
+  }
+}
+
+@layer states {
+  /* Indeterminate progress: no value to fill — a subtle track pulse
+     (opacity only, multiplier-gated; docs steer to the spinner). */
+  .progress:where(:indeterminate) {
+    animation: wel-progress-pulse calc(var(--wel-motion-duration-4) * 4 * var(--wel-motion)) var(--wel-motion-ease) infinite alternate;
+  }
+}
+
+@keyframes wel-spinner-rotate {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes wel-skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes wel-progress-pulse {
+  to {
+    opacity: 0.6;
+  }
+}
