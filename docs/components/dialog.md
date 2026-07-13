@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -42,8 +42,7 @@ close button; body (flow content); footer (action cluster).
   Delete project…
 </button>
 
-<dialog class="dialog" id="confirm-delete" aria-labelledby="confirm-delete-title"
-        closedby="any">
+<dialog class="dialog" id="confirm-delete" aria-labelledby="confirm-delete-title">
   <header>
     <h2 id="confirm-delete-title">Delete this project?</h2>
     <form method="dialog">
@@ -222,11 +221,17 @@ stacking; the design system does not); `.dialog` inside `.popover`.
 
 ## Open questions
 
+- ~~`closedby` intake: confirm Baseline status at Phase 1 audit.~~ **Resolved (T-40):
+  withheld** — checked at implementation (July 2026): Chrome 134 / Firefox 137 shipped,
+  Safari has not (Baseline blocked since 2025; Interop 2026 item). Per the spec's own
+  contingency the attribute is omitted from shipped markup and nothing else changes —
+  the mandatory close button covers every user. Re-check at each minor-release audit
+  (ADR-0012).
 - Does `wel-dialog.js` ship in v1, or is the documented inline 3-liner enough until
-  Invoker Commands graduate? Leaning module (late-added DOM, one import).
+  Invoker Commands graduate? Leaning module (late-added DOM, one import) — queued as a
+  Phase 5 task.
 - Drawer/sheet placement (`data-placement="inline-end"`) — post-v1, needs its own motion
   contract.
-- `closedby` intake: confirm Baseline status at Phase 1 audit.
 
 ## References
 

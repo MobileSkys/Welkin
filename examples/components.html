@@ -627,6 +627,67 @@
       </div>
     </section>
   </section>
+
+  <section class="stack">
+    <h2>Dialog</h2>
+    <p>Native <code>&lt;dialog&gt;</code>: <code>showModal()</code> gives the focus
+    trap, background inert, Esc, and top layer for free; closing is declarative via
+    <code>form method="dialog"</code>. Opening is the one gap — the 3-line script at
+    the end of this page is the whole documented Core path until Invoker Commands
+    graduate.</p>
+
+    <div class="cluster">
+      <button class="button" data-variant="danger" data-dialog-open="confirm-delete">
+        Delete project…
+      </button>
+      <button class="button" data-dialog-open="dialog-lg">Open large dialog…</button>
+    </div>
+
+    <dialog class="dialog" id="confirm-delete" data-size="sm"
+            aria-labelledby="confirm-delete-title">
+      <header>
+        <h2 id="confirm-delete-title">Delete this project?</h2>
+        <form method="dialog">
+          <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+        </form>
+      </header>
+      <p>This permanently removes the project and all its data.</p>
+      <footer class="cluster" style="--wel-cluster-justify: flex-end">
+        <form method="dialog">
+          <button class="button" value="cancel" autofocus>Cancel</button>
+          <button class="button" data-variant="danger" value="delete">Delete</button>
+        </form>
+      </footer>
+    </dialog>
+
+    <dialog class="dialog" id="dialog-lg" data-size="lg" aria-labelledby="dialog-lg-title">
+      <header>
+        <h2 id="dialog-lg-title">Large dialog</h2>
+        <form method="dialog">
+          <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+        </form>
+      </header>
+      <p>Block size is content-driven, capped to the viewport with internal scroll.
+      Entry and exit fade/scale under Enhanced, instantly under reduced motion.</p>
+      <footer class="cluster" style="--wel-cluster-justify: flex-end">
+        <form method="dialog">
+          <button class="button" data-variant="primary" value="ok" autofocus>Got it</button>
+        </form>
+      </footer>
+    </dialog>
+
+    <p>Server-rendered non-modal (<code>open</code> attribute, no JS): renders in flow,
+    close button still works.</p>
+    <dialog class="dialog" open aria-labelledby="inflow-title">
+      <header>
+        <h2 id="inflow-title">In-flow panel</h2>
+        <form method="dialog">
+          <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+        </form>
+      </header>
+      <p>No backdrop, no trap — a panel, not an interruption.</p>
+    </dialog>
+  </section>
 </main>
 
 <hr>
@@ -636,6 +697,14 @@
   <a href="layout.html">Layout primitives</a> · Remaining Phase 3 components land
   with T-31…T-39.</p>
 </footer>
+
+<!-- The documented Core dialog-opening path (docs/components/dialog.md):
+     deleted when Invoker Commands graduate per ADR-0012. -->
+<script type="module">
+  for (const b of document.querySelectorAll('[data-dialog-open]'))
+    b.addEventListener('click', () =>
+      document.getElementById(b.dataset.dialogOpen)?.showModal());
+</script>
 
 </body>
 </html>

@@ -1,0 +1,131 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .dialog — the interruption surface on native <dialog>
+   (docs/components/dialog.md, T-40). showModal() supplies focus trap,
+   background inert, Esc, top layer, aria-modal — zero focus-management JS.
+   Closing is declarative (form method="dialog"); opening is the one
+   platform gap: Invoker Commands are pre-Baseline (ADR-0012), so the Core
+   path is the documented 3-line script / wel-dialog module. closedby="any"
+   light dismiss is likewise withheld from shipped markup at implementation
+   (Safari unshipped, checked at T-40) — the mandatory close button already
+   covers every user. */
+@layer components {
+  .dialog {
+    --wel-dialog-bg: var(--wel-color-surface-raised);
+    --wel-dialog-ink: var(--wel-color-ink);
+    --wel-dialog-radius: var(--wel-radius-surface);
+    --wel-dialog-padding: var(--wel-space-5);
+    --wel-dialog-shadow: var(--wel-shadow-4);
+    --wel-dialog-max-inline-size: 36rem;
+    --wel-dialog-backdrop: color-mix(in oklch, var(--wel-color-ink) 45%, transparent);
+
+    /* The reset strips the UA margin: auto that centres a dialog — restore
+       it; this is layout, not spacing rhythm. */
+    margin: auto;
+    inline-size: min(var(--wel-dialog-max-inline-size), calc(100dvw - 2 * var(--wel-space-gutter)));
+    max-block-size: calc(100dvh - 2 * var(--wel-space-gutter));
+    padding: var(--wel-dialog-padding);
+    background-color: var(--wel-dialog-bg);
+    color: var(--wel-dialog-ink);
+    /* Hairline normally; THE panel edge under forced colors, where the
+       shadow is stripped and backdrop dimming may be suppressed. */
+    border: var(--wel-border-width) solid var(--wel-color-border);
+    border-radius: var(--wel-dialog-radius);
+    box-shadow: var(--wel-dialog-shadow);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Custom-property inheritance into ::backdrop is Baseline 2024, pending
+     the graduation audit — hence the literal fallback (ink at 45% ≈ the
+     token's light-scheme value). */
+  .dialog::backdrop {
+    background-color: var(--wel-dialog-backdrop, oklch(21% 0.01 250 / 0.45));
+  }
+
+  .dialog > :where(header) {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--wel-space-3);
+    margin-block-end: var(--wel-space-3);
+  }
+
+  .dialog > :where(header) :where(h1, h2, h3) {
+    font-size: var(--wel-text-size-2);
+    line-height: var(--wel-text-leading-tight);
+  }
+
+  .dialog > :where(footer) {
+    margin-block-start: var(--wel-space-4);
+  }
+
+  /* method="dialog" close/action forms are wiring, not layout boxes. */
+  .dialog :where(form[method="dialog"]) {
+    display: contents;
+  }
+
+  /* Non-modal (.show() or server-rendered [open]): genuinely in flow — the
+     UA default is position: absolute, which overlays following content. No
+     backdrop, no trap: a panel, not an interruption. */
+  .dialog:where(:not(:modal)) {
+    position: static;
+    margin: 0;
+    box-shadow: var(--wel-shadow-1);
+  }
+
+  /* Enhanced: fade/scale entry and exit on panel and backdrop. display +
+     overlay in the list so the exit plays before the element leaves the
+     top layer (engines without `overlay` may snap the exit; entry is
+     unaffected). All durations ride --wel-motion — instant under reduced
+     motion, identical to Core. */
+  @supports (transition-behavior: allow-discrete) {
+    .dialog {
+      opacity: 0;
+      scale: 0.96;
+      transition:
+        opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        scale calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        display calc(var(--wel-motion-duration-2) * var(--wel-motion)) allow-discrete,
+        overlay calc(var(--wel-motion-duration-2) * var(--wel-motion)) allow-discrete;
+    }
+
+    .dialog:where([open]) {
+      opacity: 1;
+      scale: 1;
+    }
+
+    .dialog::backdrop {
+      opacity: 0;
+      transition:
+        opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        display calc(var(--wel-motion-duration-2) * var(--wel-motion)) allow-discrete,
+        overlay calc(var(--wel-motion-duration-2) * var(--wel-motion)) allow-discrete;
+    }
+
+    .dialog:where([open])::backdrop {
+      opacity: 1;
+    }
+
+    @starting-style {
+      .dialog:where([open]) {
+        opacity: 0;
+        scale: 0.96;
+      }
+
+      .dialog:where([open])::backdrop {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@layer variants {
+  .dialog[data-size="sm"] {
+    --wel-dialog-max-inline-size: 24rem;
+  }
+
+  .dialog[data-size="lg"] {
+    --wel-dialog-max-inline-size: 48rem;
+  }
+}
