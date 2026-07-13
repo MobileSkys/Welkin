@@ -1,5 +1,36 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* base layer — implemented in Phase 1 (T-18). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin base form defaults (docs/04): light element normalisation only.
+   The full field/control treatment (borders, sizes, validation states) is
+   the form-controls component (docs/components/form-controls.md); base makes
+   bare controls presentable and scheme-correct with zero classes. */
 @layer base {
+  /* Retint native widgets (checks, radios, progress, range) from the accent
+     token — the docs/components quick path; dark mode and forced colors stay
+     native via color-scheme. */
+  input, textarea, select, progress, meter {
+    accent-color: var(--wel-color-accent);
+  }
+
+  ::placeholder {
+    color: var(--wel-color-ink-faint);
+    opacity: 1; /* Firefox default dims via opacity; the token carries the value */
+  }
+
+  fieldset {
+    border: var(--wel-border-width) solid var(--wel-color-border);
+    border-radius: var(--wel-radius-md);
+    padding-block: var(--wel-space-3);
+    padding-inline: var(--wel-space-4);
+  }
+
+  legend {
+    padding-inline: var(--wel-space-1);
+  }
+
+  button:not(:disabled),
+  select:not(:disabled),
+  input:where([type="checkbox"], [type="radio"], [type="range"]):not(:disabled) {
+    cursor: pointer;
+  }
 }

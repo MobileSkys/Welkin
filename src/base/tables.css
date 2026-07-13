@@ -1,5 +1,27 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* base layer — implemented in Phase 1 (T-18). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin base table defaults (docs/04): a bare <table> reads as a table —
+   hairline row rules, start-aligned headers. The full component (scroller,
+   variants, sticky, sorting) is docs/components/table.md. */
 @layer base {
+  table {
+    border-collapse: collapse;
+  }
+
+  caption {
+    color: var(--wel-color-ink-muted);
+    font-size: var(--wel-text-size--1);
+    text-align: start;
+  }
+
+  th {
+    text-align: start;
+    font-weight: 600;
+  }
+
+  th, td {
+    border-block-end: var(--wel-border-width) solid var(--wel-color-border);
+    padding-block: var(--wel-space-1);
+    padding-inline: var(--wel-space-2);
+  }
 }

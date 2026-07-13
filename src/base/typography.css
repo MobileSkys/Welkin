@@ -1,5 +1,87 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* base layer — implemented in Phase 1 (T-18). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin base typography (docs/04): opinionated element defaults — the
+   "classless-ish" experience. Elements are made presentable everywhere;
+   editorial rhythm (inter-block spacing, measure) is .prose's job, not
+   base's. No class selectors in this layer. */
 @layer base {
+  body {
+    background: var(--wel-color-surface);
+    color: var(--wel-color-ink);
+    font-family: var(--wel-text-font-body);
+    font-size: var(--wel-text-size-0);
+    line-height: var(--wel-text-leading-normal);
+  }
+
+  /* The single global focus ring (docs/09): token-driven, zero-specificity,
+     :focus-visible only — never rings on mouse click, never removed.
+     Components restyle it via the three tokens, nothing else. */
+  :where(:focus-visible) {
+    outline: var(--wel-focus-ring-width) solid var(--wel-focus-ring-color);
+    outline-offset: var(--wel-focus-ring-offset);
+  }
+
+  /* Heading scale: h1..h6 -> size-5..size-0 on the fluid scale (docs/05);
+     .prose adopts the same mapping so documents agree with app chrome. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--wel-text-font-display);
+    line-height: var(--wel-text-leading-tight);
+  }
+
+  h1 { font-size: var(--wel-text-size-5); letter-spacing: var(--wel-text-tracking-tight); }
+  h2 { font-size: var(--wel-text-size-4); letter-spacing: var(--wel-text-tracking-tight); }
+  h3 { font-size: var(--wel-text-size-3); }
+  h4 { font-size: var(--wel-text-size-2); }
+  h5 { font-size: var(--wel-text-size-1); }
+  h6 { font-size: var(--wel-text-size-0); }
+
+  small { font-size: var(--wel-text-size--1); }
+
+  a {
+    color: var(--wel-color-accent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.15em;
+  }
+
+  a:hover {
+    color: var(--wel-color-accent-hover);
+    text-decoration-thickness: 0.14em;
+  }
+
+  code, kbd, samp, pre {
+    font-family: var(--wel-text-font-mono);
+    font-size: 0.925em;
+  }
+
+  code, kbd {
+    background: var(--wel-color-surface-sunken);
+    border-radius: var(--wel-radius-sm);
+    padding-block: 0.1em;
+    padding-inline: 0.3em;
+  }
+
+  pre {
+    background: var(--wel-color-surface-sunken);
+    border-radius: var(--wel-radius-md);
+    padding: var(--wel-space-3);
+    overflow-x: auto; /* physical form permitted until overflow-inline graduates (ADR-0009) */
+  }
+
+  /* Inline code inside a pre block must not double up the treatment. */
+  pre code {
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    font-size: 1em;
+  }
+
+  hr {
+    border: none;
+    border-block-start: var(--wel-border-width) solid var(--wel-color-border);
+  }
+
+  mark {
+    background: var(--wel-color-warning-tint);
+    color: var(--wel-color-ink);
+  }
 }

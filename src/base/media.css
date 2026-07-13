@@ -1,5 +1,15 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* base layer — implemented in Phase 1 (T-18). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin base media defaults (docs/04). Sizing/display normalisation lives
+   in the reset; base adds the light presentational voice. */
 @layer base {
+  figcaption {
+    color: var(--wel-color-ink-muted);
+    font-size: var(--wel-text-size--1);
+  }
+
+  iframe {
+    border: none;
+    max-inline-size: 100%;
+  }
 }
