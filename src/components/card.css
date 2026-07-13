@@ -1,0 +1,118 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .card — bounded content surface (docs/components/card.md, T-31). Pure
+   CSS. Parts are direct children (.card-media/-header/-body/-footer) so
+   subgrid alignment via .grid[data-align="rows"] can take the card's rows —
+   the layer order lets the primitive's display:grid win over the flex flow
+   here. Padding is applied per part, not on the root, so media bleeds to
+   the card edge. The stretched .card-link makes the whole card the
+   heading-link's target without wrapping the card in <a>.
+   Outlined paints border-strong: the spec's a11y section requires 3:1
+   against both card and page surface (checked pairings), which the
+   decorative border token cannot hold. */
+@layer components {
+  .card {
+    --wel-card-bg: var(--wel-color-surface-raised);
+    --wel-card-ink: var(--wel-color-ink);
+    --wel-card-radius: var(--wel-radius-surface);
+    --wel-card-padding: var(--wel-space-5);
+    --wel-card-gap: var(--wel-space-3);
+    --wel-card-border: var(--wel-color-border-strong);
+    --wel-card-shadow: var(--wel-shadow-1);
+    --wel-card-shadow-hover: var(--wel-shadow-2);
+    --wel-card-border-hover: transparent;
+
+    position: relative; /* anchors the stretched link */
+    display: flex;
+    flex-direction: column;
+    gap: var(--wel-card-gap);
+    overflow: clip; /* media inherits the outer radius */
+    background-color: var(--wel-card-bg);
+    color: var(--wel-card-ink);
+    border: var(--wel-border-width) solid transparent;
+    border-radius: var(--wel-card-radius);
+    box-shadow: var(--wel-card-shadow);
+    transition:
+      box-shadow calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  /* Per-part padding; media is the exception and bleeds edge to edge. */
+  .card > :where(.card-header, .card-body, .card-footer) {
+    padding-inline: var(--wel-card-padding);
+  }
+
+  .card > :where(:first-child):where(:not(.card-media)) {
+    padding-block-start: var(--wel-card-padding);
+  }
+
+  .card > :where(:last-child):where(:not(.card-media)) {
+    padding-block-end: var(--wel-card-padding);
+  }
+
+  .card > :where(.card-media) > :where(img, video, .frame) {
+    inline-size: 100%;
+    display: block;
+  }
+
+  /* Stretched link: the card becomes the heading-link's hit area; the
+     accessible name stays the heading text (docs/components/card.md). */
+  .card :where(.card-link)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Secondary interactive elements sit above the stretch. */
+  .card :where(.card-footer) :where(a, button) {
+    position: relative;
+  }
+
+  /* Forced colors: surface/shadow distinctions collapse, so every variant
+     renders a border — the card boundary survives (spec a11y section). */
+  @media (forced-colors: active) {
+    .card {
+      border-color: CanvasText;
+    }
+  }
+}
+
+@layer variants {
+  .card[data-variant="outlined"] {
+    --wel-card-shadow: none;
+    --wel-card-shadow-hover: none;
+    /* "border strengthens" must work in both schemes: ink-muted is darker
+       than border-strong in light and lighter in dark — stronger in both. */
+    --wel-card-border-hover: var(--wel-color-ink-muted);
+
+    border-color: var(--wel-card-border);
+  }
+
+  .card[data-variant="plain"] {
+    --wel-card-bg: transparent;
+    --wel-card-shadow: none;
+    --wel-card-shadow-hover: none;
+  }
+}
+
+@layer states {
+  /* Interactive states exist only on clickable cards (those with a
+     .card-link); :where() keeps the :has() test weightless. */
+  @media (hover: hover) {
+    .card:where(:has(.card-link)):hover {
+      box-shadow: var(--wel-card-shadow-hover);
+      border-color: var(--wel-card-border-hover);
+    }
+  }
+
+  /* Focus ring is drawn at the card boundary; the stretched link's own
+     ring is suppressed in its favour. */
+  .card:where(:has(.card-link:focus-visible)) {
+    outline: var(--wel-focus-ring-width) solid var(--wel-focus-ring-color);
+    outline-offset: var(--wel-focus-ring-offset);
+  }
+
+  .card :where(.card-link:focus-visible) {
+    outline: none;
+  }
+}

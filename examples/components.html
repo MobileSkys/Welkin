@@ -61,6 +61,62 @@
       <a class="button" data-variant="primary" href="#">See pricing</a>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Card</h2>
+
+    <h3>Variants</h3>
+    <div class="grid" style="--wel-grid-min: 14rem">
+      <article class="card">
+        <header class="card-header"><h4>Raised (default)</h4></header>
+        <div class="card-body"><p>Elevated surface, no border.</p></div>
+      </article>
+      <article class="card" data-variant="outlined">
+        <header class="card-header"><h4>Outlined</h4></header>
+        <div class="card-body"><p>Border, no shadow.</p></div>
+      </article>
+      <article class="card" data-variant="plain">
+        <header class="card-header"><h4>Plain</h4></header>
+        <div class="card-body"><p>Grouping by spacing alone.</p></div>
+      </article>
+    </div>
+
+    <h3>Clickable card, media, aligned grid</h3>
+    <div class="grid" data-align="rows" style="--wel-grid-min: 14rem">
+      <article class="card">
+        <header class="card-header">
+          <h4><a class="card-link" href="#">Intrinsic layout in practice</a></h4>
+        </header>
+        <div class="card-body"><p>The whole card is this heading-link's target.</p></div>
+        <footer class="card-footer"><small>3 min read</small></footer>
+      </article>
+      <article class="card">
+        <header class="card-header">
+          <h4><a class="card-link" href="#">A much longer teaser heading that wraps onto multiple lines</a></h4>
+        </header>
+        <div class="card-body"><p>Headers, bodies, and footers align across the row —
+        subgrid, not equal-height hacks.</p></div>
+        <footer class="card-footer"><a href="#">Secondary link</a></footer>
+      </article>
+      <article class="card">
+        <header class="card-header">
+          <h4><a class="card-link" href="#">Short</a></h4>
+        </header>
+        <div class="card-body"><p>Body.</p></div>
+        <footer class="card-footer"><small>footer</small></footer>
+      </article>
+    </div>
+
+    <div class="grid" style="--wel-grid-min: 16rem; max-inline-size: 26rem">
+      <article class="card">
+        <figure class="card-media">
+          <div class="frame" style="--wel-frame-ratio: 21 / 9; background: var(--wel-color-accent-tint)"></div>
+        </figure>
+        <header class="card-header"><h4>Media card</h4></header>
+        <div class="card-body"><p>Media bleeds to the card edge and inherits the radius.</p></div>
+      </article>
+    </div>
+  </section>
 </main>
 
 <hr>

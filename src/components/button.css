@@ -48,6 +48,22 @@
     block-size: 1em;
     flex: none;
   }
+
+  /* Forced colors: the engine forces plain author colours but not ones
+     computed through var(), so map to the system button palette explicitly.
+     Variant distinctions collapse by design (spec a11y section). */
+  @media (forced-colors: active) {
+    .button {
+      background-color: ButtonFace;
+      color: ButtonText;
+      border-color: ButtonBorder;
+    }
+
+    .button:where(:disabled) {
+      color: GrayText;
+      border-color: GrayText;
+    }
+  }
 }
 
 @layer variants {

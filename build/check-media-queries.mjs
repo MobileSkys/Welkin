@@ -24,7 +24,7 @@ for (const file of cssFiles(srcDir)) {
   const src = readFileSync(file, 'utf8');
   for (const [i, line] of src.split('\n').entries()) {
     const m = line.match(/@media\s*([^{]+)/);
-    if (m && !/^\(\s*(prefers-|(any-)?(hover|pointer)\s*:)/.test(m[1].trim())) {
+    if (m && !/^\(\s*(prefers-|forced-colors\s*:|(any-)?(hover|pointer)\s*:)/.test(m[1].trim())) {
       violations++;
       console.error(
         `FAIL ${path.relative(srcDir, file)}:${i + 1}: viewport media query "${m[1].trim()}" — use container queries (docs/06)`

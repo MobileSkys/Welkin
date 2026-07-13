@@ -37,6 +37,7 @@ export const PAIRINGS = [
   ['--wel-color-ink', '--wel-color-danger-tint', 4.5, 'alert body on tint'],
   ['--wel-color-ink', '--wel-color-accent-tint', 4.5, 'text on hover tint (pagination/table rows)'],
   ['--wel-color-accent-hover', '--wel-color-accent-tint', 4.5, 'ghost/secondary button text on hover tint'],
+  ['--wel-color-border-strong', '--wel-color-surface-raised', 3, 'outlined card border on card bg (1.4.11)'],
 ];
 
 // ---- Parse custom-property declarations out of a token source file.
