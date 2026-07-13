@@ -118,7 +118,21 @@ distribution ([ADR-0003](decisions/ADR-0003-distribution-and-imports.md)) safe.
 
 ## The reset, line by line
 
-The full annotated reset lives here once written in Phase 1; its scope is fixed by
-[ADR-0004](decisions/ADR-0004-reset-strategy.md): box-sizing, margin trimming, media
-defaults, `font: inherit` on form controls, balanced headings / pretty paragraphs,
-root line-height and text-rendering, smooth scroll behind the motion multiplier.
+Implemented at [`src/reset.css`](../src/reset.css), which is itself the annotated
+line-by-line documentation (source = shippable, ADR-0002). Scope, fixed by
+[ADR-0004](decisions/ADR-0004-reset-strategy.md):
+
+- `box-sizing: border-box` on everything including generated content;
+- universal margin trimming (spacing belongs to `.stack`, not element defaults);
+- root `line-height: 1.5` + `-webkit-text-size-adjust: 100%` (justified physical/vendor
+  exception, [ADR-0009](decisions/ADR-0009-logical-properties-rtl.md));
+- `scroll-behavior: smooth` gated on `prefers-reduced-motion: no-preference` directly —
+  the `--wel-motion` multiplier cannot zero a discrete keyword, so the preference is the
+  gate (additive rule, [03](03-browser-support-policy.md));
+- `scroll-padding-block-start` fed by `--wel-navbar-block-size` (2.4.11 companion);
+- media defaults (`display: block; max-inline-size: 100%; block-size: auto`);
+- `font: inherit` on form controls;
+- `text-wrap: balance` on headings, `text-wrap: pretty` on paragraphs,
+  `overflow-wrap: break-word` on both.
+
+Every selector is `:where()`-wrapped: the whole layer is zero-specificity.

@@ -1,5 +1,68 @@
 @layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
 
-/* reset layer — implemented in Phase 1 (T-15, ADR-0004). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+/* Welkin reset (ADR-0004): own minimal reset, zero specificity via :where(),
+   lowest layer — nothing a user writes can lose to it. Scope is fixed by the
+   ADR; opinions beyond normalisation belong in `base`. Documented line by line
+   in docs/04-css-architecture.md. */
 @layer reset {
+  /* Predictable sizing everywhere, including generated content. */
+  :where(*, *::before, *::after) {
+    box-sizing: border-box;
+  }
+
+  /* Margin trimming: default margins fight the .stack primitive's owned
+     rhythm (docs/06); spacing is a layout decision, not an element default. */
+  :where(*) {
+    margin: 0;
+  }
+
+  /* Root defaults. Unitless line-height inherits proportionally.
+     -webkit-text-size-adjust: iOS Safari inflates text in landscape without
+     it (vendor/physical form is the interoperable one — justified exception
+     per ADR-0009). scroll-padding keeps in-page navigation targets clear of
+     sticky chrome (WCAG 2.4.11 Focus Not Obscured); the navbar's block-size
+     token feeds it, with a small fallback gap for pages without a bar. */
+  :where(html) {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-block-start: var(--wel-navbar-block-size, 1rem);
+  }
+
+  /* Smooth in-page scrolling as motion: opt-in under the user's preference
+     only — the additive rule from docs/03. The --wel-motion multiplier
+     cannot zero a discrete keyword, so the preference gates it directly. */
+  @media (prefers-reduced-motion: no-preference) {
+    :where(html) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Media defaults: block display kills phantom baseline gaps; max-inline-size
+     keeps replaced elements inside their container; block-size auto preserves
+     aspect ratio when a width attribute is present. */
+  :where(img, picture, video, canvas, svg) {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* Form controls inherit the surrounding voice instead of UA chrome fonts. */
+  :where(input, button, textarea, select) {
+    font: inherit;
+  }
+
+  /* Headings bind as visual units; paragraphs avoid orphans. Core-tier candy
+     (docs/03) — engines without these text-wrap values keep normal wrapping. */
+  :where(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+  }
+
+  :where(p) {
+    text-wrap: pretty;
+  }
+
+  /* Long words/URLs must never force container overflow. */
+  :where(p, h1, h2, h3, h4, h5, h6) {
+    overflow-wrap: break-word;
+  }
 }
