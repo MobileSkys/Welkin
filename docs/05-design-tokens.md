@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [02-naming.md, 03-browser-support-policy.md, 04-css-architecture.md]
 ---
 

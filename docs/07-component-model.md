@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [04-css-architecture.md, 05-design-tokens.md, 06-layout-system.md, 08-javascript-policy.md, 09-accessibility.md]
 ---
 
@@ -77,7 +77,7 @@ Specs use these names with these standard selectors — no invented state classe
 | Focus | `:focus-visible` (never bare `:focus` for rings) |
 | Active/pressed | `:active`, `[aria-pressed="true"]` |
 | Disabled | `:disabled`, `[aria-disabled="true"]` |
-| Invalid | `:user-invalid` (never bare `:invalid`) |
+| Invalid | `:user-invalid` (never bare `:invalid`); `[aria-invalid="true"]` for server-rendered validation errors (SSR frameworks re-render forms with errors and no client validation state) |
 | Busy/loading | `[aria-busy="true"]` |
 | Selected/current | `[aria-selected="true"]`, `[aria-current]` |
 | Expanded/open | `[open]`, `:popover-open`, `[aria-expanded="true"]` |

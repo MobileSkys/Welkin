@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [03-browser-support-policy.md, 04-css-architecture.md, 05-design-tokens.md]
 ---
 
@@ -27,18 +27,13 @@ Per [ADR-0006](decisions/ADR-0006-container-query-first-responsiveness.md):
 
 ## Why no 12-column grid
 
-Stated once, here, so it never needs re-arguing:
-
-- A column count is a **viewport-era abstraction**: `col-md-6` encodes "half-width when
-  the *screen* is medium", which is simply wrong information when the component sits in a
-  sidebar, a modal, or a dashboard cell.
-- Modern grid (`repeat(auto-fit, minmax(min(100%, 20rem), 1fr))`) expresses the actual
-  intent — "as many 20rem+ columns as fit" — with no breakpoints and no HTML class
-  bookkeeping at all.
-- 12-column class grids put layout decisions in markup, which is exactly where designers
-  can't theme them. Our layout knobs are tokens.
-- What people actually use `col-*` for decomposes into a handful of intrinsic patterns —
-  which are the primitives below.
+The decision against viewport breakpoints and column-class grids is
+[ADR-0006](decisions/ADR-0006-container-query-first-responsiveness.md) — not re-argued
+here. What this document adds is the constructive half: everything authors reach for
+`col-*` to do decomposes into a handful of intrinsic patterns — the primitives below —
+and modern grid (`repeat(auto-fit, minmax(min(100%, 20rem), 1fr))`) expresses the actual
+intent ("as many 20rem+ columns as fit") with no breakpoints and no HTML class
+bookkeeping. Layout knobs are tokens, not markup classes, so designers can theme them.
 
 ## Layout primitives
 

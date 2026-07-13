@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [01-vision-and-principles.md, 03-browser-support-policy.md]
 ---
 
@@ -44,7 +44,7 @@ each.
 |------------|----------------------|
 | `prefers-reduced-motion: reduce` | All durations route through the `--wel-motion` multiplier token, set to `0` under the preference ([05-design-tokens.md](05-design-tokens.md)). No component writes a raw duration. Scroll-driven and view-transition effects are additionally gated off. Opacity-only fades may remain (non-vestibular). |
 | `prefers-contrast: more` | Semantic border/divider tokens strengthen; low-contrast decorative tints deepen. Handled in the `tokens` layer, not per component. |
-| `prefers-reduced-transparency: reduce` | Translucent surface tokens (`--wel-color-surface-glass` etc.) fall back to opaque equivalents. |
+| `prefers-reduced-transparency: reduce` | Any translucent surface treatment falls back to an opaque equivalent; no shipped token pairing may rely on transparency to meet contrast. |
 | `forced-colors: active` | See below. |
 | `prefers-color-scheme` | Dark mode via `light-dark()` ([ADR-0007](decisions/ADR-0007-dark-mode-mechanism.md)). |
 

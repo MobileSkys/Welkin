@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [01-vision-and-principles.md, 03-browser-support-policy.md]
 ---
 

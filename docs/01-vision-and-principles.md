@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: []
 ---
 
@@ -83,7 +83,7 @@ Stated explicitly so future decisions can be tested against them:
   registry, no `window.welkincss` namespace object.
 - **No viewport-breakpoint-everything grid.** No `col-md-6 col-lg-4`. Container queries and
   intrinsic layout primitives replace the 12-column grid.
-  (Rationale in [06-layout-system.md](06-layout-system.md).)
+  (Rationale in [ADR-0006](decisions/ADR-0006-container-query-first-responsiveness.md).)
 - **No Sass variable pipeline.** No 500-variable `_variables.scss`, no compile step to
   change a colour. Custom properties are the variable system, live in the browser.
 - **No visual monoculture.** "Every Bootstrap site looks like Bootstrap" is a failure mode.

@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [04-css-architecture.md, 05-design-tokens.md]
 ---
 

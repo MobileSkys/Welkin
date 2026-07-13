@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [01-vision-and-principles.md, 10-theming-and-customisation.md]
 ---
 
@@ -37,6 +37,13 @@ happens then. What is binding now:
   source = shipped means no sourcemap indirection.
 - **Starter templates:** a plain-HTML starter page and a kitchen-sink page ship in the
   repo.
+- **Server-framework integration — CakePHP plugin (required):** the primary consumer
+  develops in CakePHP, so a composer-installable plugin ships alongside the toolkit:
+  FormHelper templates that emit Welkin form-control markup, and server-side validation
+  errors mapped to the Welkin invalid state (`[aria-invalid="true"]` + error-message
+  element per [form-controls.md](components/form-controls.md)). Custom elements are plain
+  HTML to any server framework ([ADR-0011](decisions/ADR-0011-js-delivery-mechanism.md)),
+  so no JS shim is needed; other framework wrappers remain post-v1.
 
 ## Versioning & changelog
 

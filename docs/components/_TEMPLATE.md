@@ -8,6 +8,9 @@
 | **Version target** | v1 \| post-v1 |
 
 <!--
+TEMPLATE FROZEN 2026-07-13 — this structure is API for the docs-site generator (11).
+Changing section names/order requires the same scrutiny as a code API change.
+
 Template rules:
 - Keep every section, in this order, even if a section is one line ("None." is valid).
 - Tables where the template shows tables.
@@ -58,7 +61,7 @@ Composability rules: which axes combine; any forbidden combinations.
 | Focus | `:focus-visible` | Global focus ring | — |
 | Active | `:active` | | — |
 | Disabled | `:disabled` | | Implicit via semantics |
-| Invalid | `:user-invalid` | | Error text via `aria-describedby` |
+| Invalid | `:user-invalid`; `[aria-invalid="true"]` (server-rendered) | | Error text via `aria-describedby` |
 | Busy | `[aria-busy="true"]` | | `aria-busy` |
 
 (Delete rows that don't apply; add component-specific states.)
@@ -106,6 +109,10 @@ Exact behaviour with Core-tier CSS only.
 - **Forced colors:** system-color mappings; state treatments that survive
   `forced-colors: active`.
 - **Reduced motion:** what the `--wel-motion: 0` experience is.
+- **Increased contrast (`prefers-contrast: more`):** usually "token-layer handled; no
+  component-specific treatment" — state any exception.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** "None." unless the
+  component uses a translucent treatment; if so, the opaque fallback.
 - **Contrast:** pairings consumed (from the 05 pairing table).
 - **WCAG 2.2 criteria specifically implicated:** list.
 

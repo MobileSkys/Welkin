@@ -1,5 +1,5 @@
 ---
-status: Draft
+status: Review
 depends-on: [01-vision-and-principles.md]
 ---
 
@@ -55,6 +55,7 @@ absent. Component specs that use an Enhanced feature must reference the contract
 | `light-dark()` | Single-declaration dual-mode colour tokens | See [ADR-0007](decisions/ADR-0007-dark-mode-mechanism.md) — treated as core-eligible pending graduation audit; static light fallback if audit fails |
 | `::scroll-marker` / `::scroll-button` | CSS-only carousel markers and prev/next buttons | Carousel remains a scroll-snap scroller; navigation by swipe/scrollbar only, or JS-enhanced buttons |
 | `appearance: base-select` | Fully styleable `<select>` with rich options | Native select rendering — always usable |
+| `<details name>` exclusive grouping | Single-open accordion groups with no JS | Browsers ignoring `name` render independent `<details>` — multiple panels may be open at once; fully functional (additive by nature: no `@supports` gate exists for HTML attributes) |
 | Style queries (`@container style(…)`) | Context-aware component variants (e.g. auto-invert on dark surface) | Component keeps its explicit variant; context awareness absent |
 
 > **Baseline-status audit note.** The tier assignments above reflect the state of
