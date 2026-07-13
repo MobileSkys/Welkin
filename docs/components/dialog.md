@@ -227,9 +227,12 @@ stacking; the design system does not); `.dialog` inside `.popover`.
   contingency the attribute is omitted from shipped markup and nothing else changes —
   the mandatory close button covers every user. Re-check at each minor-release audit
   (ADR-0012).
-- Does `wel-dialog.js` ship in v1, or is the documented inline 3-liner enough until
-  Invoker Commands graduate? Leaning module (late-added DOM, one import) — queued as a
-  Phase 5 task.
+- ~~Does `wel-dialog.js` ship in v1, or is the documented inline 3-liner enough until
+  Invoker Commands graduate?~~ **Resolved (T-65): module ships.** `wel-dialog.js` is the
+  3-liner as one *delegated* root listener, so late-added invokers need no re-scan, plus
+  an already-open guard (`showModal()` on an open dialog throws, and a server-rendered
+  in-flow panel must not be re-modal-ised). The inline 3-liner remains an equally
+  supported choice. Both are deleted when Invoker Commands graduate (ADR-0012).
 - Drawer/sheet placement (`data-placement="inline-end"`) — post-v1, needs its own motion
   contract.
 
