@@ -31,7 +31,11 @@ function upgradeTrigger(trigger) {
 
   let showTimer;
   let hideTimer;
-  const show = () => { try { tip.showPopover(); } catch { /* already open / disconnected */ } };
+  // source establishes the invoker relationship a programmatic show
+  // otherwise lacks — without it there is no implicit anchor and the
+  // bubble falls to its static position instead of tethering to the
+  // trigger (T-63 review). Engines predating the option ignore it.
+  const show = () => { try { tip.showPopover({ source: trigger }); } catch { /* already open / disconnected */ } };
   const hide = () => { try { tip.hidePopover(); } catch { /* already closed */ } };
 
   const scheduleShow = () => {
