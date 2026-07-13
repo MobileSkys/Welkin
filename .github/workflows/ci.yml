@@ -21,3 +21,6 @@ jobs:
       - run: npm run build
       # size = min+gzip budgets for bundles, per-component CSS, JS modules
       - run: npm run check:size
+      # a11y smoke: axe (light/dark), reduced-motion, forced-colors
+      - run: npx playwright install chromium --with-deps
+      - run: npm run test:a11y

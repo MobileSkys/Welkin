@@ -113,10 +113,11 @@
         <p>
           <label for="upload">Progress</label>
           <progress id="upload" max="100" value="62">62%</progress>
-          <meter min="0" max="100" low="30" high="80" value="91">91</meter>
+          <label for="score">Score</label>
+          <meter id="score" min="0" max="100" low="30" high="80" value="91">91</meter>
         </p>
         <p>
-          <input type="text" disabled value="Disabled input">
+          <input type="text" disabled value="Disabled input" aria-label="Disabled example">
           <button type="button">Plain button</button>
           <button type="button" disabled>Disabled button</button>
         </p>
