@@ -295,6 +295,41 @@
       </table>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Prose</h2>
+    <p>Editorial typography for element-only content — no classes on anything inside.</p>
+
+    <article class="prose">
+      <h3>Container queries change the question</h3>
+      <p>Components should respond to the space they are <em>given</em>, not the
+      viewport they happen to be on. A card in a 300px sidebar and the same card in a
+      900px column each lay themselves out correctly — see <a href="../docs/06-layout-system.md">the layout doctrine</a>.</p>
+      <ul>
+        <li>Respond to the container, never the viewport.</li>
+        <li>Every primitive establishes a container.
+          <ul><li>Named <code>layout</code>, queried by components.</li></ul>
+        </li>
+      </ul>
+      <blockquote>
+        <p>Functional everywhere, delightful where supported.</p>
+        <p>That is the whole browser-support policy in one sentence.</p>
+      </blockquote>
+      <pre><code>@container layout (inline-size &gt; 30rem) { … }</code></pre>
+      <h4>A small table</h4>
+      <table>
+        <thead><tr><th>Tier</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Core</td><td>Baseline Widely Available</td></tr>
+          <tr><td>Enhanced</td><td>Baseline Newly Available, gated</td></tr>
+        </tbody>
+      </table>
+      <figure>
+        <div class="frame" style="--wel-frame-ratio: 21 / 9; background: var(--wel-color-accent-tint)"></div>
+        <figcaption>Figures get muted, smaller captions.</figcaption>
+      </figure>
+    </article>
+  </section>
 </main>
 
 <hr>

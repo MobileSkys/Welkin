@@ -1,0 +1,94 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .prose — editorial typography for element-only content (docs/components/
+   prose.md, T-36): rendered Markdown, CMS output, documentation. base
+   makes elements presentable; this makes a document composed. The one
+   component where descendant ELEMENT selectors are the API — and every
+   rule is `.prose :where(...)` so the whole file sits at exactly 0-1-0:
+   one unlayered class overrides anything here, and components dropped
+   into an article beat prose rules by normal layer order. */
+@layer components {
+  .prose {
+    --wel-prose-measure: var(--wel-text-measure);
+    --wel-prose-gap: var(--wel-space-4);
+    --wel-prose-heading-gap: calc(var(--wel-prose-gap) * 2);
+    --wel-prose-ink: var(--wel-color-ink);
+    --wel-prose-code-bg: var(--wel-color-surface-sunken);
+    --wel-prose-quote-accent: var(--wel-color-border-strong);
+    --wel-prose-rule: var(--wel-color-border);
+
+    max-inline-size: var(--wel-prose-measure);
+    color: var(--wel-prose-ink);
+  }
+
+  /* Rhythm: margins, not fixed heights (1.4.12) — the owl gives every
+     following block the base gap; headings get double ABOVE only, so they
+     bind to the content they introduce. */
+  .prose > :where(* + *) {
+    margin-block-start: var(--wel-prose-gap);
+  }
+
+  .prose > :where(h1, h2, h3, h4, h5, h6):where(:not(:first-child)) {
+    margin-block-start: var(--wel-prose-heading-gap);
+  }
+
+  .prose :where(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+  }
+
+  /* Lists */
+  .prose :where(ul, ol) {
+    padding-inline-start: var(--wel-space-5);
+  }
+
+  .prose :where(li + li),
+  .prose :where(li) > :where(ul, ol) {
+    margin-block-start: var(--wel-space-1);
+  }
+
+  /* Blockquote */
+  .prose :where(blockquote) {
+    padding-inline-start: var(--wel-space-4);
+    border-inline-start: var(--wel-border-width-strong) solid var(--wel-prose-quote-accent);
+    color: var(--wel-color-ink-muted);
+  }
+
+  .prose :where(blockquote) > :where(* + *) {
+    margin-block-start: var(--wel-prose-gap);
+  }
+
+  /* Code — token redirect; components layer wins over base, so the
+     pre>code reset must be restated. */
+  .prose :where(code, kbd, pre) {
+    background: var(--wel-prose-code-bg);
+  }
+
+  .prose :where(pre) :where(code) {
+    background: none;
+  }
+
+  /* Figures */
+  .prose :where(figcaption) {
+    margin-block-start: var(--wel-space-2);
+    color: var(--wel-color-ink-muted);
+    font-size: var(--wel-text-size--1);
+  }
+
+  /* Tables: hairline rules from the prose rule token. (A table wider than
+     the measure is the content author's scroller to add — prose cannot
+     wrap it, and display overrides would strip table semantics.) */
+  .prose :where(table) {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .prose :where(th, td) {
+    padding-block: var(--wel-space-1);
+    padding-inline: var(--wel-space-2);
+    border-block-end: var(--wel-border-width) solid var(--wel-prose-rule);
+  }
+
+  .prose :where(hr) {
+    border-block-start-color: var(--wel-prose-rule);
+  }
+}
