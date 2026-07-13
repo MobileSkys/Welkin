@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -85,8 +85,8 @@ interaction colours, fluid sizing.
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | None | — | — | — |
 
 ### JS enhancement
@@ -94,6 +94,8 @@ interaction colours, fluid sizing.
 None.
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** native `button` role. Icon-only: `aria-label` required.
   `aria-busy="true"` during async action; `aria-pressed` for toggle buttons (documented
@@ -110,6 +112,8 @@ None.
   `forced-color-adjust` overrides.
 - **Reduced motion:** the active-state translate and any transition run at 0ms via
   `--wel-motion`; colour states remain (instant).
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — `secondary`/`ghost` borders strengthen via the border tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** every `data-variant` bg/ink pairing is a guaranteed 4.5:1 pairing from
   the 05 table, in both light and dark schemes; disabled pair documented as exempt
   (WCAG 1.4.3 exception for disabled controls).

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -69,8 +69,13 @@ Rationale: native controls bring focus, keyboard behaviour, form participation,
 constraint validation, `:user-invalid`, forced-colors mapping, and mobile keyboards for
 free. `label[for]` (never placeholder-as-label) is required — it is the accessible name
 and enlarges the hit target. The error element is present in markup (its `id` is wired
-into `aria-describedby`) and revealed by CSS only when the control is `:user-invalid`,
-via `.field:has(:user-invalid) .error`. The **switch is a checkbox** with
+into `aria-describedby`) and revealed by CSS only when the control is invalid, via
+`.field:has(:user-invalid) .error` **and** `.field:has([aria-invalid="true"]) .error` —
+the second selector is the server-rendered path ([07 state
+vocabulary](../07-component-model.md)): an SSR framework re-rendering a submitted form
+with errors has no client validation state, so it marks the control
+`aria-invalid="true"` instead (this is the contract the CakePHP FormHelper plugin
+emits, [11](../11-docs-site-and-dx.md)). The **switch is a checkbox** with
 `role="switch"` — same form participation and keyboard behaviour, announced as a
 switch; no bespoke element.
 
@@ -97,7 +102,7 @@ group fields (innermost wins).
 | Focus | `:focus-visible` | Global focus ring | — |
 | Disabled | `:disabled` | Reduced-contrast ink/bg; label dimmed via `.field:has(:disabled) label` | Implicit via semantics |
 | Read-only | `:read-only` | Sunken surface, border retained (distinguishable from disabled) | Implicit via semantics |
-| Invalid | `:user-invalid` | Danger-tone border + `.field:has(:user-invalid)` turns label/error danger ink and reveals `.error` | Error text via `aria-describedby` |
+| Invalid | `:user-invalid`; `[aria-invalid="true"]` (server-rendered) | Danger-tone border + `.field:has(:user-invalid)` / `.field:has([aria-invalid="true"])` turns label/error danger ink and reveals `.error` | Error text via `aria-describedby`; `aria-invalid` announced |
 | Valid | `:user-valid` | Success-tone border (subtle; opt-in via `data-show-valid` on the form) | — |
 | Checked | `:checked` | Accent fill (check/radio/switch); switch thumb slides to end | Implicit via semantics |
 | Indeterminate | `:indeterminate` | Dash mark (checkbox only) | Implicit via semantics |
@@ -159,9 +164,11 @@ None.
   control — both ids are listed even while the error is hidden, so the association is
   static and the description simply materialises when the error is revealed.
   Switch: `role="switch"` on the checkbox; checked state maps to switch state
-  natively. No `aria-invalid` scripting in v1: `:user-invalid` implies constraint
-  validation, which ATs surface from the control's validity itself; hosts adding
-  custom validation set `aria-invalid` themselves.
+  natively. Welkin never *sets* `aria-invalid` (no scripting in v1) but styles it
+  identically to `:user-invalid` — it is the input contract for server-rendered
+  validation errors (SSR frameworks, the CakePHP plugin per
+  [11](../11-docs-site-and-dx.md)); hosts adding custom client-side validation set
+  `aria-invalid` themselves and get the same treatment.
 - **Keyboard interaction:**
 
 | Key | Action |
@@ -179,6 +186,8 @@ None.
   `Highlight`/`FieldText` via border/currentColor techniques, disabled in `GrayText`.
 - **Reduced motion:** switch thumb slide and border-color transitions run through the
   `--wel-motion` multiplier; at `0` states change instantly.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — `--wel-input-border` strengthens via the border tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** input border ≥ 3:1 vs surface (1.4.11); error ink/surface and
   ink/bg pairings from the 05 table at 4.5:1; disabled pair exempt (1.4.3 exception).
 - **WCAG 2.2 criteria specifically implicated:** 1.4.11 Non-text Contrast (control

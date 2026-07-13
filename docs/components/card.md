@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -109,8 +109,8 @@ subgrid row alignment are all Core-tier CSS.
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | None | — | — | — |
 
 ### JS enhancement
@@ -118,6 +118,8 @@ subgrid row alignment are all Core-tier CSS.
 None.
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** none required — semantics come from the elements chosen (`<article>`,
   headings, the link). The stretched link's accessible name is its text content (the
@@ -136,6 +138,8 @@ None.
   to `LinkText`.
 - **Reduced motion:** hover shadow/border changes transition through the `--wel-motion`
   multiplier; at `0` they are instant.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — the `outlined` border strengthens via the border tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None — elevation uses shadows, not translucent surfaces.
 - **Contrast:** `--wel-card-bg`/`--wel-card-ink` is a guaranteed 4.5:1 pairing from the
   [05](../05-design-tokens.md) table; `outlined` border meets 3:1 against both card and
   page surface.
