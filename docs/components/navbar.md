@@ -179,7 +179,9 @@ non-queried state — mobile-first, so the failure mode is usable). Sensible min
 ## Composition
 
 May contain: brand link/image, nav links, `.button` in actions, a search `<input>`
-(documented pattern). Arrangement of actions uses `.cluster`. May be contained by: the
+(documented pattern). The actions part lays out its own children (flex + gap) — do not
+compose it with `.cluster`: a layout primitive's inline-size containment collapses it to
+zero width as an auto-sized flex item. May be contained by: the
 `.page` shell header row — one per page. Forbidden: `.navbar` inside `.navbar`; dialogs
 or full components inside the menu list; nested link lists (v1 is one level — no
 dropdown submenus until the popover-menu component composes in post-v1).

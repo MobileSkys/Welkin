@@ -90,7 +90,14 @@
     border-radius: var(--wel-radius-sm);
   }
 
+  /* The actions part lays out its own children — do NOT compose it with
+     .cluster: a layout primitive's inline-size containment collapses it
+     to zero width as an auto-sized flex item, spilling its contents past
+     the bar edge. */
   .navbar :where(.navbar-actions) {
+    display: flex;
+    align-items: center;
+    gap: var(--wel-space-2);
     margin-inline-start: auto;
   }
 

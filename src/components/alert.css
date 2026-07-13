@@ -49,6 +49,9 @@
     align-self: start;
     inline-size: var(--wel-alert-icon-size);
     block-size: var(--wel-alert-icon-size);
+    /* Centre the icon on the title's first line: the icon top-aligns to
+       the line box, but glyphs sit half a leading lower. */
+    margin-block-start: calc((1em * var(--wel-text-leading-normal) - var(--wel-alert-icon-size)) / 2);
     color: var(--wel-alert-accent);
   }
 
@@ -71,6 +74,12 @@
 
     .alert > :where(* + *) {
       margin-block-start: var(--wel-space-2);
+    }
+
+    /* The element after the floated icon IS the first line — a top margin
+       there pushes the title below the float. */
+    .alert > :where(.alert-icon + *) {
+      margin-block-start: 0;
     }
   }
 
