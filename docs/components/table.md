@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS / JS-enhanced hybrid |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -170,6 +170,8 @@ narrow container is scrolling that preserves meaning, not re-rendering that dest
 
 ## Accessibility
 
+*Blocking acceptance criteria.*
+
 - **Roles/ARIA:** native table semantics; `<caption>` required; `scope="col"`/`scope="row"`
   on all `<th>`. Scroller: `role="region"` + `aria-labelledby` → caption. Sort headers:
   real `<button>` inside `<th>`, `aria-sort` on the `<th>` (never on the button).
@@ -191,6 +193,8 @@ narrow container is scrolling that preserves meaning, not re-rendering that dest
   [09](../09-accessibility.md)).
 - **Reduced motion:** no motion in Core. The Enhanced scroll-shadow fade routes through
   `--wel-motion`; at `0` the shadow state is instant.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — row rules and grid lines strengthen via the border tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None — sticky cells are already required to be opaque.
 - **Contrast:** cell ink on `--wel-table-bg` and on `--wel-table-stripe-bg` are both
   guaranteed 4.5:1 pairings from the [05](../05-design-tokens.md) table — the stripe
   token is chosen from the pairing table, not eyeballed.

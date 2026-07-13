@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -144,6 +144,8 @@ opt-in wrapper, stillness the default, per the additive rule in
 
 ## Accessibility
 
+*Blocking acceptance criteria.*
+
 - **Roles/ARIA:** progress — native `progressbar` role with value semantics; label via
   `<label for>` or `aria-labelledby` (required). Spinner — `role="status"` (polite live
   region) with a visually-hidden text label (required; the ring alone has no name).
@@ -175,6 +177,8 @@ opt-in wrapper, stillness the default, per the additive rule in
   ("Loading…") beside spinners that persist beyond a couple of seconds. Skeleton
   shimmer is simply absent — static shapes already convey "pending". Native
   indeterminate `<progress>` animation is UA-controlled and exempt.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — spinner track and skeleton tints deepen via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None — tints are opaque token colours; the shimmer is a colour sweep, not an opacity effect.
 - **Contrast:** progress fill vs track and spinner arc vs track are 3:1 non-text
   pairings from the [05](../05-design-tokens.md) pairing table (WCAG 1.4.11). Skeletons
   are decorative and contrast-exempt, but the shipped tint remains perceivable on

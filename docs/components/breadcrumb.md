@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -90,8 +90,8 @@ var(--wel-breadcrumb-separator)`), current-page treatment, wrap-based overflow b
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | Generated-content alternative text | `@supports (content: "a" / "b")` | Separator declared with empty alt text (`content: … / ""`), guaranteeing screen readers ignore it | Plain `content:` separator; punctuation glyphs are ignored by screen readers in practice — cosmetic-risk only, no task impact ([03](../03-browser-support-policy.md), additive-only rule) |
 
 ### JS enhancement
@@ -99,6 +99,8 @@ var(--wel-breadcrumb-separator)`), current-page treatment, wrap-based overflow b
 None.
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** `<nav>` landmark with `aria-label="Breadcrumb"` (required);
   `aria-current="page"` on the last item's link (required when it is a link). No
@@ -119,6 +121,8 @@ None.
   non-underlined, end-of-list position; under `forced-colors: active` the current link
   additionally renders without the link underline treatment the others receive.
 - **Reduced motion:** none — no motion shipped.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — the muted trail ink deepens via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** `ink-muted`-on-surface and `ink`-on-surface are guaranteed 4.5:1 pairings
   ([05](../05-design-tokens.md)); separators are decorative and exempt.
 - **WCAG 2.2 implicated:** 2.4.8 Location (AAA, but the component's purpose); 1.3.1 Info

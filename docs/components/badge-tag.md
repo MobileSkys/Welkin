@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -92,6 +92,7 @@ Badges have no states — they are static by definition.
 | `--wel-tag-radius` | `var(--wel-radius-sm)` | — | Tags read as objects, not pills |
 | `--wel-tag-padding-block` / `-inline` | `var(--wel-space-1)` / `var(--wel-space-3)` | — | |
 | `--wel-tag-border` | `var(--wel-color-border)` | — | |
+| `--wel-tag-max-inline-size` | `none` | — | Opt-in truncation cap (see Container behaviour) |
 
 ## Behaviour tiers
 
@@ -101,8 +102,8 @@ Everything. Both components are fully realised in Core CSS.
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | None | — | — | — |
 
 ### JS enhancement
@@ -111,6 +112,8 @@ None. (Dismissal is host-app behaviour, deliberately: a library-owned "remove th
 handler would hide the real work — updating the application state the tag represents.)
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** badge — none; it is inline text. Count badges need visible or
   visually-hidden text making the number meaningful ("3" alone announces as "three").
@@ -131,6 +134,8 @@ handler would hide the real work — updating the application state the tag repr
   the boundary survives. Link tags map to `LinkText`; the dismiss button to
   `ButtonText`. Selected tags add a treatment that is not background-only (border weight).
 - **Reduced motion:** hover/active colour transitions run at 0ms via `--wel-motion`.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — tone tints deepen and the tag border strengthens via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** every tone tint/ink pair is a guaranteed 4.5:1 pairing from the
   [05](../05-design-tokens.md) table; the tag border meets 3:1 against surface.
 - **WCAG 2.2 implicated:** 2.5.8 Target Size — the dismiss button is ≥ 24×24 CSS px even

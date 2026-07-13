@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -103,8 +103,8 @@ Everything. Tones, the icon/content arrangement, and the accent border are Core 
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | None | — | — | — |
 
 ### JS enhancement
@@ -113,6 +113,8 @@ None. (Insertion of dynamic alerts is host-app code by nature; queued, timed, se
 dismissing messages are the JS-enhanced toast component.)
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** static callout — none (element semantics only). Dynamic urgent —
   `role="alert"` (implicit `aria-live="assertive"`, `aria-atomic="true"`). Dynamic
@@ -136,6 +138,8 @@ dismissing messages are the JS-enhanced toast component.)
   collapse (acceptable — the text carries severity).
 - **Reduced motion:** none — the component ships no motion. (Hosts animating insertion
   must route durations through `--wel-motion`.)
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — tone tints deepen and the accent border strengthens via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** tone tint/ink and tint/accent pairings come from the
   [05](../05-design-tokens.md) pairing table at 4.5:1 (text) and 3:1 (accent border vs
   tint).

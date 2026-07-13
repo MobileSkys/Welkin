@@ -85,6 +85,15 @@ Specs use these names with these standard selectors — no invented state classe
 All state styling lives in the `states` layer
 ([04-css-architecture.md](04-css-architecture.md)).
 
+## Part naming
+
+Named parts inside a component use the part-class convention from
+[04-css-architecture.md](04-css-architecture.md): a nested element selector where the
+element is distinctive, else a part class named `{component}-{part}` (`.card-header`,
+`.navbar-brand`). `data-part` attributes were considered and rejected — parts are
+structure, not variant axes ([ADR-0001](decisions/ADR-0001-variant-syntax.md) reserves
+data-attributes for author-set modifiers). Ratified before Batch B.
+
 ## Composition rules
 
 - Components arrange their own children; **siblings are arranged by layout primitives**,

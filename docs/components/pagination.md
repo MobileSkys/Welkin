@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -101,6 +101,8 @@ None.
 
 ## Accessibility
 
+*Blocking acceptance criteria.*
+
 - **Roles/ARIA:** `<nav>` landmark with `aria-label="Pagination"` (unique per page — if
   two paginated regions exist, label them distinctly). `aria-current="page"` on exactly
   one link. Ellipsis items `aria-hidden="true"`. `rel="prev"`/`rel="next"` on the
@@ -121,6 +123,8 @@ None.
   `LinkText`, current-page border to `CanvasText`. No `forced-color-adjust` overrides.
 - **Reduced motion:** no motion in this component; hover/active transitions route
   through `--wel-motion` and collapse to instant at `0`.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — rest-state muted ink deepens via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** `-current-bg`/`-current-ink` is a guaranteed 4.5:1 pairing; rest-state
   link ink on surface ≥ 4.5:1; hover tint stays within the pairing table's worst-case
   bounds.

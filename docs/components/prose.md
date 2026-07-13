@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -108,8 +108,8 @@ from the reset).
 
 ### Enhanced (Baseline Newly Available)
 
-| Feature | `@supports` gate | Enhancement | Fallback experience |
-|---------|------------------|-------------|---------------------|
+| Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
+|---------|------------------|-------------|------------------------------------------|
 | None | — | — | — |
 
 ### JS enhancement
@@ -117,6 +117,8 @@ from the reset).
 None.
 
 ## Accessibility
+
+*Blocking acceptance criteria.*
 
 - **Roles/ARIA:** none — prose is semantics-transparent; the content's own elements carry
   everything. Heading-level hierarchy is the content author's responsibility (the CMS
@@ -134,6 +136,8 @@ None.
   code-block and blockquote tints vanish but their borders/indentation survive.
 - **Reduced motion:** none shipped; smooth in-page scrolling is the reset's concern,
   already behind `--wel-motion`.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — rules, quote accents, and muted inks strengthen via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None.
 - **Contrast:** ink-on-surface, muted-ink-on-surface, and ink-on-sunken (code blocks) are
   guaranteed pairings from the [05](../05-design-tokens.md) table.
 - **WCAG 2.2 implicated:** 1.4.8 Visual Presentation (AAA, treated as a target) — measure

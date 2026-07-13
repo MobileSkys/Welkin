@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -126,6 +126,8 @@ None. That is the point of this component.
 
 ## Accessibility
 
+*Blocking acceptance criteria.*
+
 - **Roles/ARIA:** `<header>` (banner when top-level) + `<nav aria-label="Primary">`.
   Menu-button: visible text label preferred; icon-only requires `aria-label="Menu"`.
   `aria-expanded` is synced natively by the `popovertarget` association — authors must
@@ -147,6 +149,8 @@ None. That is the point of this component.
   rule from [09](../09-accessibility.md). Menu-button maps to `ButtonFace`/`ButtonText`.
 - **Reduced motion:** panel entry/exit transitions and the sticky-shadow fade all route
   through `--wel-motion`; at `0` every state change is instant. No other motion exists.
+- **Increased contrast (`prefers-contrast: more`):** token-layer handled ([09](../09-accessibility.md)) — the block-end hairline and muted link ink strengthen via the tokens; no component-specific treatment.
+- **Reduced transparency (`prefers-reduced-transparency: reduce`):** None — bar and panel backgrounds are required to be opaque.
 - **Contrast:** `--wel-navbar-ink` on `--wel-navbar-bg` and accent-on-surface link states
   are guaranteed pairings from [05](../05-design-tokens.md).
 - **WCAG 2.2 criteria specifically implicated:** 2.4.11 Focus Not Obscured — `data-sticky`
@@ -182,10 +186,8 @@ dropdown submenus until the popover-menu component composes in post-v1).
 
 ## Open questions
 
-- Part-naming convention: this is the first spec needing named child parts
-  (`.navbar-brand` etc.). Descendant part classes vs `data-part` attributes should be
-  ratified in [07](../07-component-model.md) before Batch B; this spec uses part classes
-  provisionally.
+- ~~Part-naming convention~~ — resolved: part classes (`{component}-{part}`) ratified in
+  [07](../07-component-model.md) / [04](../04-css-architecture.md); `data-part` rejected.
 - Should `.navbar-actions` fold into the popover panel below a second, tighter
   breakpoint, or always stay inline? Currently always inline (the primary CTA should
   not hide behind a menu).
