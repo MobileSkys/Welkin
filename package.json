@@ -18,8 +18,9 @@
   },
   "scripts": {
     "build": "node build/build.mjs",
+    "check:size": "node build/check-size.mjs",
     "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-contrast.mjs",
-    "test": "npm run lint && npm run build"
+    "test": "npm run lint && npm run build && npm run check:size"
   },
   "browserslist": [
     "last 2 Chrome versions",
