@@ -20,7 +20,8 @@
     "build": "node build/build.mjs",
     "check:size": "node build/check-size.mjs",
     "test:a11y": "node test/a11y-smoke.mjs",
-    "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-contrast.mjs",
+    "gen:appendix": "node build/gen-token-appendix.mjs",
+    "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-contrast.mjs && node build/gen-token-appendix.mjs --check",
     "test": "npm run lint && npm run build && npm run check:size"
   },
   "browserslist": [
