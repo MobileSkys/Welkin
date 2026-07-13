@@ -13,6 +13,14 @@
     line-height: var(--wel-text-leading-normal);
   }
 
+  /* A data-theme scope pins its colour scheme (ADR-0007, tokens/color.css);
+     painting surface + ink here is what makes the pinned region visibly its
+     own scheme rather than only retinting native widgets. */
+  [data-theme] {
+    background: var(--wel-color-surface);
+    color: var(--wel-color-ink);
+  }
+
   /* The single global focus ring (docs/09): token-driven, zero-specificity,
      :focus-visible only — never rings on mouse click, never removed.
      Components restyle it via the three tokens, nothing else. */

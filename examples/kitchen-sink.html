@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welkin kitchen sink — zero classes</title>
+<!-- Run `npm run build` first; this page loads the built core bundle.
+     Every element below is bare HTML: no classes, no inline styles, no JS.
+     This page is the Phase 1 exit-criterion demo (docs/12): "a plain-HTML
+     kitchen-sink page looks good with zero classes". -->
+<link rel="stylesheet" href="../dist/welkin-core.css">
+</head>
+<body>
+
+<header>
+  <h1>Welkin kitchen sink</h1>
+  <p>Every element on this page is classless. What you see is <code>welkin-core.css</code>:
+  reset, tokens, and base — the foundation before any component loads. Toggle your OS
+  colour scheme to see <a href="../docs/decisions/ADR-0007-dark-mode-mechanism.md">dark mode</a> follow.</p>
+</header>
+
+<hr>
+
+<main>
+  <section>
+    <h2>Typography</h2>
+    <h1>Heading one</h1>
+    <h2>Heading two</h2>
+    <h3>Heading three</h3>
+    <h4>Heading four</h4>
+    <h5>Heading five</h5>
+    <h6>Heading six</h6>
+    <p>A paragraph with <a href="#">a link</a>, <strong>strong text</strong>,
+    <em>emphasis</em>, <code>inline code</code>, a <kbd>Ctrl</kbd>+<kbd>K</kbd> shortcut,
+    <samp>sample output</samp>, <mark>marked text</mark>, and <small>small print</small>.
+    Long-form rhythm belongs to <code>.prose</code>; base keeps elements presentable.</p>
+    <blockquote>
+      <p>Functional everywhere, delightful where supported.</p>
+    </blockquote>
+    <pre><code>@container (inline-size > 30rem) {
+  .card { /* container queries, not media queries */ }
+}</code></pre>
+    <ul>
+      <li>Unordered item</li>
+      <li>Another item
+        <ul><li>Nested item</li></ul>
+      </li>
+    </ul>
+    <ol>
+      <li>First step</li>
+      <li>Second step</li>
+    </ol>
+    <dl>
+      <dt>Definition term</dt>
+      <dd>Definition description.</dd>
+    </dl>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>Table</h2>
+    <table>
+      <caption>Q3 invoices</caption>
+      <thead>
+        <tr><th scope="col">Invoice</th><th scope="col">Client</th><th scope="col">Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">#1042</th><td>Acme</td><td>€1,200</td></tr>
+        <tr><th scope="row">#1043</th><td>Northwind</td><td>€860</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>Forms</h2>
+    <form>
+      <fieldset>
+        <legend>Account</legend>
+        <p>
+          <label for="name">Name</label><br>
+          <input id="name" name="name" type="text" placeholder="Ada Lovelace">
+        </p>
+        <p>
+          <label for="email">Email</label><br>
+          <input id="email" name="email" type="email" placeholder="ada@example.com">
+        </p>
+        <p>
+          <label for="bio">Bio</label><br>
+          <textarea id="bio" name="bio" rows="3" placeholder="A few words…"></textarea>
+        </p>
+        <p>
+          <label for="plan">Plan</label><br>
+          <select id="plan" name="plan">
+            <option>Starter</option>
+            <option>Pro</option>
+          </select>
+        </p>
+        <p>
+          <input id="tos" name="tos" type="checkbox">
+          <label for="tos">I accept the terms</label>
+        </p>
+        <p>
+          <input id="m" type="radio" name="cycle" checked> <label for="m">Monthly</label>
+          <input id="y" type="radio" name="cycle"> <label for="y">Yearly</label>
+        </p>
+        <p>
+          <label for="vol">Volume</label>
+          <input id="vol" type="range" min="0" max="10" value="7">
+        </p>
+        <p>
+          <label for="upload">Progress</label>
+          <progress id="upload" max="100" value="62">62%</progress>
+          <meter min="0" max="100" low="30" high="80" value="91">91</meter>
+        </p>
+        <p>
+          <input type="text" disabled value="Disabled input">
+          <button type="button">Plain button</button>
+          <button type="button" disabled>Disabled button</button>
+        </p>
+      </fieldset>
+    </form>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>Media</h2>
+    <figure>
+      <svg width="320" height="120" role="img" aria-label="Decorative gradient sample">
+        <rect width="320" height="120" fill="currentColor" opacity="0.15"/>
+        <circle cx="60" cy="60" r="36" fill="currentColor" opacity="0.4"/>
+        <rect x="130" y="35" width="150" height="14" rx="7" fill="currentColor" opacity="0.35"/>
+        <rect x="130" y="62" width="110" height="14" rx="7" fill="currentColor" opacity="0.25"/>
+      </svg>
+      <figcaption>An inline SVG stands in for an image so the page works offline.</figcaption>
+    </figure>
+    <details>
+      <summary>Native disclosure</summary>
+      <p>Platform behaviour, zero JavaScript — the ladder's second rung.</p>
+    </details>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>Scoped schemes</h2>
+    <p>Two regions pinned with <code>data-theme</code> — mixed light/dark on one page,
+    one mechanism (ADR-0007):</p>
+    <div data-theme="light">
+      <p>This region is pinned <strong>light</strong>. <a href="#">A link</a>,
+      <code>some code</code>, and text sit on the light surface whatever the OS says.</p>
+    </div>
+    <div data-theme="dark">
+      <p>This region is pinned <strong>dark</strong>. <a href="#">A link</a>,
+      <code>some code</code>, and text sit on the dark surface whatever the OS says.</p>
+    </div>
+  </section>
+</main>
+
+<hr>
+
+<footer>
+  <p><small>Welkin — plain HTML, zero classes, no build step required to consume.</small></p>
+</footer>
+
+</body>
+</html>
