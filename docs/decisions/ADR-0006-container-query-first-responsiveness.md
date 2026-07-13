@@ -33,7 +33,10 @@ components can respond to the space they actually occupy.
   size can no longer be determined by its contents. This is why **primitives** establish
   containers (their widths come from their parent context by design) rather than
   arbitrary elements — the rule that prevents containment surprises. Documented
-  prominently in [06-layout-system.md](../06-layout-system.md).
+  prominently in [06-layout-system.md](../06-layout-system.md). The residual hazard —
+  a primitive collapsing to zero width in content-sized contexts (auto flex basis,
+  `auto` grid tracks, shrink-to-fit) — is mitigated by
+  [ADR-0013](ADR-0013-containment-collapse-composition-rules.md).
 - Components tested in isolation behave identically in situ — testing story improves.
 - Zoom reflow (WCAG 1.4.10) inherits the same correctness: shrinking effective container
   widths triggers the same adaptations ([09-accessibility.md](../09-accessibility.md)).

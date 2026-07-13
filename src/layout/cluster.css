@@ -14,4 +14,15 @@
     container-type: inline-size;
     container-name: layout;
   }
+
+  /* Guardrail (ADR-0013): a nested primitive's inline-size containment
+     makes its content contribute nothing to flex-basis: auto, so as a
+     cluster item it would collapse to zero width. Growing is the only
+     content-independent size a wrapping row can give it; zero width is
+     never intent, so this only ever replaces a broken render. flex-basis
+     stays auto: an explicit inline-size on the item is still honoured as
+     the basis, and :where() keeps any author rule winning. */
+  .cluster > :where(.stack, .cluster, .grid, .switcher, .sidebar-layout, .center, .cover, .frame) {
+    flex-grow: 1;
+  }
 }

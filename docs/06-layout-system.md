@@ -54,7 +54,35 @@ container), each establishing `container-type: inline-size; container-name: layo
 
 Primitives compose freely and are the **only** sanctioned way components arrange
 siblings — component CSS never reimplements these patterns internally when a primitive
-serves.
+serves. One physics constraint applies when composing: see the containment sizing rules
+below.
+
+## Containment and intrinsic sizing: composition rules
+
+Because every primitive is a container, inline-size containment applies: **a primitive's
+contents contribute nothing to its intrinsic inline size**. Anywhere a box is sized by
+its content — `flex-basis: auto`, an `auto` grid track, `min-content`/`max-content`,
+floats, `inline-block`, absolute positioning, table cells — a primitive resolves to
+**zero width** and its contents overflow ([ADR-0013](decisions/ADR-0013-containment-collapse-composition-rules.md)).
+
+Nesting primitives in primitives is safe by construction: `.stack` and `.cover` stretch
+children cross-axis; `.switcher` and `.sidebar-layout` set explicit basis/grow on every
+child; `.grid` and `.center` use sized tracks; `.frame` sizes media to `100%`. `.cluster`
+is the one content-sized context, so it carries a guardrail: direct primitive children
+get `flex-grow: 1` (zero-specificity — any author rule overrides it; an explicit
+`inline-size` on the item is still honoured as its flex basis).
+
+In **author-controlled** contexts the rules are:
+
+- Primitive as a flex item → give it `flex-grow` or an explicit `flex-basis`, never
+  content-based sizing.
+- Primitive as a grid item → place it in a sized track (`fr`, `minmax()`), not an
+  `auto` track.
+- Never a primitive as a float, `inline-block`, or absolutely-positioned box without an
+  explicit `inline-size`.
+- Component parts that are themselves auto-sized flex items lay out their own leaf
+  children instead of delegating to a nested primitive (see the navbar spec's actions
+  part).
 
 ## Subgrid: the aligned-card-grid demo
 

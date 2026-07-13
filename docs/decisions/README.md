@@ -20,5 +20,6 @@ Alternatives considered.
 | [0010](ADR-0010-specificity-budget.md) | Specificity budget | Accepted |
 | [0011](ADR-0011-js-delivery-mechanism.md) | JS delivery: light-DOM custom elements + data-attribute upgraders | Accepted |
 | [0012](ADR-0012-feature-graduation-criteria.md) | Feature intake and graduation criteria | Accepted |
+| [0013](ADR-0013-containment-collapse-composition-rules.md) | Containment collapse: cluster guardrail and composition rules | Accepted |
 
 New ADRs take the next number; never renumber. A superseding ADR links both ways.
