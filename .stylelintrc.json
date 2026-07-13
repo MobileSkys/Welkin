@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "max-nesting-depth": 3,
+    "selector-max-id": 0,
+    "declaration-no-important": [true, { "severity": "error" }],
+    "no-invalid-position-at-import-rule": true,
+    "no-duplicate-selectors": true
+  },
+  "overrides": [
+    {
+      "files": ["src/utilities.css"],
+      "rules": {
+        "declaration-no-important": null
+      }
+    }
+  ]
+}

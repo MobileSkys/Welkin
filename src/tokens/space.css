@@ -1,0 +1,5 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* tokens layer — implemented in Phase 1 (T-16, docs/05). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+@layer tokens {
+}

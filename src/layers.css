@@ -1,0 +1,5 @@
+/* Welkin — canonical cascade-layer order (docs/04-css-architecture.md).
+   This declaration is public API: reordering is a breaking change.
+   Every source file repeats this exact line first, so any subset of files
+   concatenates correctly in any order (docs/decisions/ADR-0003). */
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;

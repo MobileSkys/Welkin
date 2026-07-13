@@ -1,0 +1,5 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* reset layer — implemented in Phase 1 (T-15, ADR-0004). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+@layer reset {
+}

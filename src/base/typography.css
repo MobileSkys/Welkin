@@ -1,0 +1,5 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* base layer — implemented in Phase 1 (T-18). Stub: valid standalone CSS (ADR-0002 source = shippable). */
+@layer base {
+}
