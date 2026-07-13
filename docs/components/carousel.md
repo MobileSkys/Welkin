@@ -122,7 +122,11 @@ animations passed intake with the navbar/table sticky affordances). `::scroll-ma
 implementation-blocked** per the [03 audit note](../03-browser-support-policy.md) /
 [ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md); their rules enter
 `carousel.css` at intake. Until then the 2.5.7 story for fallback browsers is the
-`carousel-buttons.js` module below.
+`carousel-buttons.js` module below. One interim consequence, stated honestly: the
+module yields wherever the engine supports `::scroll-button()` (T-64, per its
+detect-and-yield contract), so engines that support the pseudo *before* it passes
+intake get neither CSS buttons nor injected ones — keyboard, scrollbar, and swipe
+remain. The gap closes the day the feature reaches Baseline and the CSS ships.
 
 ### JS enhancement
 
