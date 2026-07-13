@@ -14,3 +14,19 @@
     container-name: layout;
   }
 }
+
+/* data-align="rows" (docs/06, T-29): every child spans its row's implicit
+   tracks with subgrid, so headers, bodies, and footers align across cards
+   regardless of content length. The named exception to "components never
+   depend on parent layout". Gated: without subgrid, span 3 would interleave
+   cards across three outer rows — inside @supports the whole rule drops and
+   cards stay self-sized. */
+@layer variants {
+  @supports (grid-template-rows: subgrid) {
+    .grid[data-align="rows"] > :where(*) {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+    }
+  }
+}

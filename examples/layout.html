@@ -209,6 +209,36 @@
   </section>
 
   <section>
+    <h2><code>.grid</code> + subgrid: aligned cards</h2>
+    <p>With <code>data-align="rows"</code> every card spans its row's tracks via
+    <code>grid-template-rows: subgrid</code> — headers, bodies, and footers align
+    across cards regardless of content length. No equal-height hacks, no truncation.</p>
+    <div class="demo-row">
+      <figure class="demo-well" data-w="wide">
+        <figcaption>48rem container — three cards, ragged content, aligned rows</figcaption>
+        <div class="grid" data-align="rows" style="--wel-grid-min: 12rem">
+          <article class="demo-box">
+            <h3>Short</h3>
+            <p>One-line body.</p>
+            <footer><small>footer</small></footer>
+          </article>
+          <article class="demo-box">
+            <h3>A much longer card heading that wraps onto several lines</h3>
+            <p>Body copy.</p>
+            <footer><small>footer</small></footer>
+          </article>
+          <article class="demo-box">
+            <h3>Medium heading</h3>
+            <p>A noticeably longer body paragraph that wraps and pushes its footer
+            further down than its neighbours would on their own.</p>
+            <footer><small>footer</small></footer>
+          </article>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <section>
     <h2><code>.center</code></h2>
     <p>Measure-capped centred column; a <code>data-breakout</code> child escapes to the
     full container width via named grid lines. Knobs: <code>--wel-center-max</code>
@@ -292,8 +322,8 @@
 <hr>
 
 <footer>
-  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> · Subgrid card
-  alignment (<code>.grid[data-align="rows"]</code>) lands with T-29.</p>
+  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> ·
+  All docs/06 primitives demoed above.</p>
 </footer>
 
 </body>
