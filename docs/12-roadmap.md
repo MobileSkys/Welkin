@@ -1,5 +1,5 @@
 ---
-status: Draft (skeleton — finalise after all other docs reach Review)
+status: Review
 depends-on: [01-vision-and-principles.md]
 ---
 
@@ -7,6 +7,13 @@ depends-on: [01-vision-and-principles.md]
 
 Phases are sequential; each has exit criteria that gate the next. Component work within a
 phase parallelises freely.
+
+**Spec acceptance runs ahead of implementation, in batches.** Batch A (button, card,
+form-controls) gates Phase 0 exit; Batch B (remaining pure-CSS specs) reaches Accepted
+before Phase 3 implementation starts; Batch C (platform-primitive and JS-enhanced specs)
+before Phases 4–5; Batch D (the deferred combobox spec,
+[07](07-component-model.md)) before its Phase 5 slot. No component is implemented
+against a Draft spec.
 
 ## Phase 0 — Design documentation (this suite)
 
@@ -22,9 +29,17 @@ template frozen; Batch A component specs (button, card, form-controls) Accepted.
 useful product** — a "classless-ish" stylesheet that makes plain HTML look composed, themed
 by tokens. Ship it as a preview release for feedback.
 
+Engineering infrastructure lands here too: repo scaffolding and build pipeline
+([ADR-0002](decisions/ADR-0002-source-format-and-build.md),
+[ADR-0003](decisions/ADR-0003-distribution-and-imports.md)) and CI — stylelint, build
+check, CSS size-budget gate, a programmatic checker for the
+[05](05-design-tokens.md) contrast pairings, and an automated a11y smoke (axe,
+forced-colors, reduced-motion) over the kitchen-sink page. Later phases inherit these
+gates rather than adding tooling ad hoc.
+
 **Exit criteria:** token inventory implemented and typed (`@property`); dark mode working
 via `light-dark()`; a plain-HTML kitchen-sink page looks good with zero classes; contrast
-pairings verified.
+pairings verified programmatically in CI.
 
 ## Phase 2 — Layout primitives
 
@@ -45,10 +60,14 @@ pass; total CSS size tracked against budget.
 ## Phase 4 — Platform-primitive components
 
 Dialog, popover/menu, accordion, select, form validation styling, tooltip, carousel.
+The **CakePHP plugin** (required, [11-docs-site-and-dx.md](11-docs-site-and-dx.md)) is
+built here against the form-controls work: FormHelper templates emitting Welkin field
+markup, server-side validation errors mapped to `[aria-invalid="true"]` + the error
+element per [form-controls.md](components/form-controls.md).
 
 **Exit criteria:** each works with JS disabled; Enhanced-tier behaviour verified behind
 `@supports`; degradation contracts from [03-browser-support-policy.md](03-browser-support-policy.md)
-demonstrated.
+demonstrated; CakePHP plugin renders a validated form end-to-end.
 
 ## Phase 5 — JS-enhanced components
 
@@ -68,9 +87,10 @@ all pass; semver 1.0.0 published.
 
 ## v1 cut line
 
-**In:** everything listed in phases 1–6.
-**Out (post-v1):** date picker, data grid, tour/onboarding, framework wrappers, icon set,
-build-time class-prefixing option.
+**In:** everything listed in phases 1–6, including the CakePHP plugin.
+**Out (post-v1):** date picker, data grid, tour/onboarding, framework wrappers other than
+the required CakePHP plugin ([11](11-docs-site-and-dx.md)), icon set, build-time
+class-prefixing option.
 
 ## Risk register
 
