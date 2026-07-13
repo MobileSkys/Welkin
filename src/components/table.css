@@ -1,0 +1,174 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .table + .table-scroller — tabular data (docs/components/table.md, T-35).
+   The scroller is part of the contract: overflow-x (physical — ADR-0009
+   exception until overflow-inline graduates) preserves the table's 2-D
+   grid at any width. No cell-stacking "responsive" mode, by explicit spec
+   rejection — overriding table display types strips its implicit ARIA.
+   Sort STYLING (aria-sort) ships here; the sort behaviour module is the
+   JS-enhanced add-on (ADR-0011), not this file. */
+@layer components {
+  .table-scroller {
+    overflow-x: auto;
+  }
+
+  .table {
+    --wel-table-border: var(--wel-color-border);
+    --wel-table-bg: var(--wel-color-surface);
+    --wel-table-stripe-bg: var(--wel-color-surface-sunken);
+    --wel-table-hover-bg: var(--wel-color-accent-tint);
+    --wel-table-head-ink: var(--wel-color-ink-muted);
+    --wel-table-cell-padding-block: var(--wel-space-2);
+    --wel-table-cell-padding-inline: var(--wel-space-3);
+    --wel-table-sticky-shadow: var(--wel-shadow-1);
+
+    inline-size: 100%;
+    background-color: var(--wel-table-bg);
+    border-collapse: collapse;
+  }
+
+  .table :where(th, td) {
+    padding-block: var(--wel-table-cell-padding-block);
+    padding-inline: var(--wel-table-cell-padding-inline);
+    border-block-end: var(--wel-border-width) solid var(--wel-table-border);
+  }
+
+  .table :where(thead th) {
+    color: var(--wel-table-head-ink);
+  }
+
+  .table > :where(caption) {
+    padding-block: var(--wel-space-2);
+  }
+
+  /* Forced colors: stripe/hover backgrounds are stripped by the mode, so
+     row separation must never depend on them — every row keeps a
+     CanvasText rule, and the sticky edge affordance becomes a border. */
+  @media (forced-colors: active) {
+    .table :where(th, td) {
+      border-block-end: var(--wel-border-width) solid CanvasText;
+    }
+  }
+}
+
+@layer variants {
+  .table[data-variant="striped"] :where(tbody tr:nth-child(even)) {
+    background-color: var(--wel-table-stripe-bg);
+  }
+
+  .table[data-variant="ruled"] :where(th, td) {
+    border: var(--wel-border-width) solid var(--wel-table-border);
+  }
+
+  .table[data-size="sm"] {
+    --wel-table-cell-padding-block: var(--wel-space-1);
+    --wel-table-cell-padding-inline: var(--wel-space-2);
+
+    font-size: var(--wel-text-size--1);
+  }
+
+  .table[data-size="lg"] {
+    --wel-table-cell-padding-block: var(--wel-space-3);
+    --wel-table-cell-padding-inline: var(--wel-space-4);
+  }
+
+  /* Sticky cells must be opaque — content scrolls under them. */
+  .table[data-sticky="header"] :where(thead th),
+  .table[data-sticky="both"] :where(thead th) {
+    position: sticky;
+    inset-block-start: 0;
+    background-color: var(--wel-table-bg);
+    box-shadow: var(--wel-table-sticky-shadow);
+  }
+
+  .table[data-sticky="first-column"] :where(tr > :first-child),
+  .table[data-sticky="both"] :where(tr > :first-child) {
+    position: sticky;
+    inset-inline-start: 0;
+    background-color: var(--wel-table-bg);
+    box-shadow: var(--wel-table-sticky-shadow);
+  }
+
+  /* Enhanced (docs/03 additive-only): the sticky-edge shadow appears only
+     once the scroller has actually scrolled — a true affordance. Fallback
+     keeps the shadow permanently visible. Scroll-driven, not timed, so no
+     --wel-motion multiplier applies (nothing moves). */
+  @supports (animation-timeline: scroll()) {
+    .table-scroller {
+      scroll-timeline: --wel-table-scroll inline;
+    }
+
+    .table[data-sticky="first-column"] :where(tr > :first-child),
+    .table[data-sticky="both"] :where(tr > :first-child) {
+      animation: wel-table-edge linear both;
+      animation-timeline: --wel-table-scroll;
+      animation-range: 0 3rem;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .table[data-sticky] :where(th, td) {
+      box-shadow: none;
+    }
+
+    .table[data-sticky="first-column"] :where(tr > :first-child),
+    .table[data-sticky="both"] :where(tr > :first-child) {
+      border-inline-end: var(--wel-border-width) solid CanvasText;
+    }
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .table[data-hover] :where(tbody tr):hover {
+      background-color: var(--wel-table-hover-bg);
+    }
+  }
+
+  /* Current row: tint plus a start bar — never background-only. */
+  .table :where(tr[aria-current="true"]) {
+    background-color: var(--wel-color-accent-tint);
+    border-inline-start: var(--wel-border-width-strong) solid var(--wel-color-accent);
+  }
+
+  /* Sorted column: header ink strengthens; direction glyph is generated
+     content in currentColor (survives forced colors). aria-sort itself is
+     the announcement — the glyph is declared empty for AT where the
+     alternative-text syntax is supported. */
+  .table :where(th[aria-sort]) {
+    color: var(--wel-color-ink);
+  }
+
+  .table :where(th[aria-sort="ascending"])::after {
+    content: " ↑";
+  }
+
+  .table :where(th[aria-sort="descending"])::after {
+    content: " ↓";
+  }
+
+  @supports (content: "a" / "b") {
+    .table :where(th[aria-sort="ascending"])::after {
+      content: " ↑" / "";
+    }
+
+    .table :where(th[aria-sort="descending"])::after {
+      content: " ↓" / "";
+    }
+  }
+
+  .table[aria-busy="true"] :where(tbody) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+@keyframes wel-table-edge {
+  from {
+    box-shadow: none;
+  }
+
+  to {
+    box-shadow: var(--wel-table-sticky-shadow);
+  }
+}

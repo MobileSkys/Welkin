@@ -227,6 +227,74 @@
       </nav>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Table</h2>
+    <p>A real <code>&lt;table&gt;</code> in a focusable, labelled scroll region. No
+    cell-stacking "responsive" mode — narrow containers scroll, preserving the
+    row/column semantics.</p>
+
+    <h3>Striped + small, sorted column, current row</h3>
+    <div class="table-scroller" tabindex="0" role="region" aria-labelledby="inv-caption">
+      <table class="table" data-variant="striped" data-size="sm" data-hover>
+        <caption id="inv-caption">Q3 invoices</caption>
+        <thead>
+          <tr>
+            <th scope="col">Invoice</th>
+            <th scope="col" aria-sort="descending">Amount</th>
+            <th scope="col">Client</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">#1044</th><td>€3,150</td><td>Sirius Cybernetics</td>
+            <td><span class="badge" data-tone="warning">Overdue</span></td>
+          </tr>
+          <tr aria-current="true">
+            <th scope="row">#1043</th><td>€2,400</td><td>Tyrell</td>
+            <td><span class="badge" data-tone="info">Sent</span></td>
+          </tr>
+          <tr>
+            <th scope="row">#1042</th><td>€1,200</td><td>Acme</td>
+            <td><span class="badge" data-tone="success">Paid</span></td>
+          </tr>
+          <tr>
+            <th scope="row">#1041</th><td>€980</td><td>Initech</td>
+            <td><span class="badge" data-tone="success">Paid</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Ruled variant</h3>
+    <div class="table-scroller" tabindex="0" role="region" aria-labelledby="cmp-caption">
+      <table class="table" data-variant="ruled">
+        <caption id="cmp-caption">Bundle comparison</caption>
+        <thead>
+          <tr><th scope="col">Bundle</th><th scope="col">Contents</th><th scope="col">Size</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">welkin</th><td>everything</td><td>~5 KB</td></tr>
+          <tr><th scope="row">welkin-core</th><td>reset, tokens, base, layout</td><td>~3.5 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Sticky first column in a constrained scroller</h3>
+    <div class="table-scroller" tabindex="0" role="region" aria-labelledby="wide-caption" style="max-inline-size: 28rem">
+      <table class="table" data-sticky="first-column" style="min-inline-size: 56rem">
+        <caption id="wide-caption">Wide dataset — scroll horizontally</caption>
+        <thead>
+          <tr><th scope="col">Metric</th><th scope="col">Jan</th><th scope="col">Feb</th><th scope="col">Mar</th><th scope="col">Apr</th><th scope="col">May</th><th scope="col">Jun</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Sessions</th><td>12,411</td><td>13,208</td><td>15,090</td><td>14,551</td><td>16,882</td><td>18,003</td></tr>
+          <tr><th scope="row">Sign-ups</th><td>311</td><td>340</td><td>377</td><td>361</td><td>412</td><td>455</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </main>
 
 <hr>
