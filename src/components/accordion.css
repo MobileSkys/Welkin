@@ -1,0 +1,157 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .accordion — expandable sections on <details>/<summary>
+   (docs/components/accordion.md, T-42). The platform supplies disclosure
+   semantics, Enter/Space toggling, and expanded-state announcement; Welkin
+   ships zero accordion JS, ever. Exclusivity is <details name> (inert
+   where unsupported — degrades to independent multi-open, nothing breaks).
+   The open/close size animation stays instant: interpolate-size is
+   Chromium-only (rechecked at T-42) and blocked per ADR-0012; the Enhanced
+   tier here is a panel fade via ::details-content (Baseline Sept 2025). */
+@layer components {
+  .accordion {
+    --wel-accordion-bg: var(--wel-color-surface);
+    --wel-accordion-ink: var(--wel-color-ink);
+    --wel-accordion-border: var(--wel-color-border);
+    --wel-accordion-radius: var(--wel-radius-surface);
+    --wel-accordion-summary-padding-block: var(--wel-space-3);
+    --wel-accordion-summary-padding-inline: var(--wel-space-4);
+    --wel-accordion-panel-padding: var(--wel-space-4);
+    --wel-accordion-marker-color: var(--wel-color-ink-muted);
+
+    background-color: var(--wel-accordion-bg);
+    border: var(--wel-border-width) solid var(--wel-accordion-border);
+    border-radius: var(--wel-accordion-radius);
+    /* Hover tints must not poke past the rounded corners. */
+    overflow: clip;
+  }
+
+  .accordion > :where(details + details) {
+    border-block-start: var(--wel-border-width) solid var(--wel-accordion-border);
+  }
+
+  .accordion :where(summary) {
+    display: flex;
+    align-items: center;
+    gap: var(--wel-space-3);
+    padding-block: var(--wel-accordion-summary-padding-block);
+    padding-inline: var(--wel-accordion-summary-padding-inline);
+    min-block-size: 1.5rem;
+    color: var(--wel-color-ink-muted);
+    font-weight: 500;
+    cursor: pointer;
+    /* The UA triangle goes; the chevron below replaces it. */
+    list-style: none;
+    transition: color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  .accordion :where(summary)::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Marker: the select caret's gradient chevron (shared technique — the
+     spec's open marker question), currentColor-free so it consumes the
+     marker token; a real pseudo box, so it rotates through --wel-motion.
+     Points inline-end closed, down open; :dir() mirrors the closed
+     direction for RTL. */
+  .accordion :where(summary)::before {
+    content: "";
+    inline-size: 0.6em;
+    block-size: 0.6em;
+    flex: none;
+    background-image:
+      linear-gradient(135deg, var(--wel-accordion-marker-color) calc(50% - 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--wel-accordion-marker-color) calc(50% + 0.5px));
+    background-size: 50% 0.4em;
+    background-position: 100% 60%, 0 60%;
+    background-repeat: no-repeat;
+    rotate: -90deg;
+    transition: rotate calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  .accordion :where(summary:dir(rtl))::before {
+    rotate: 90deg;
+  }
+
+  .accordion :where(details[open]) > :where(summary) {
+    color: var(--wel-accordion-ink);
+  }
+
+  .accordion :where(details[open]) > :where(summary)::before {
+    rotate: 0deg;
+  }
+
+  /* Panel spacing on direct children — works in every engine (the
+     ::details-content box is Enhanced-only). */
+  .accordion :where(details) > :where(:not(summary)) {
+    padding-inline: var(--wel-accordion-panel-padding);
+  }
+
+  .accordion :where(details) > :where(:not(summary):last-child) {
+    padding-block-end: var(--wel-accordion-panel-padding);
+  }
+
+  /* Enhanced: content fades in on open (opacity only, riding --wel-motion).
+     The height change stays instant — interpolate-size is blocked at
+     intake (see header comment); when it lands, the size transition joins
+     this block. */
+  @supports selector(::details-content) and (transition-behavior: allow-discrete) {
+    .accordion :where(details)::details-content {
+      opacity: 0;
+      transition:
+        opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        content-visibility calc(var(--wel-motion-duration-2) * var(--wel-motion)) allow-discrete;
+    }
+
+    .accordion :where(details[open])::details-content {
+      opacity: 1;
+    }
+  }
+
+  /* Tight containers: padding steps down one space token. */
+  @container layout (inline-size < 20rem) {
+    .accordion {
+      --wel-accordion-summary-padding-inline: var(--wel-space-3);
+      --wel-accordion-panel-padding: var(--wel-space-3);
+    }
+  }
+}
+
+@layer variants {
+  /* Detached rounded blocks. */
+  .accordion[data-variant="separated"] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--wel-space-2);
+    background: none;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .accordion[data-variant="separated"] > :where(details) {
+    background-color: var(--wel-accordion-bg);
+    border: var(--wel-border-width) solid var(--wel-accordion-border);
+    border-radius: var(--wel-accordion-radius);
+    overflow: clip;
+  }
+
+  .accordion[data-variant="separated"] > :where(details + details) {
+    border-block-start: var(--wel-border-width) solid var(--wel-accordion-border);
+  }
+
+  /* Dividers only — for embedding in cards and sidebars. */
+  .accordion[data-variant="flush"] {
+    background: none;
+    border: none;
+    border-radius: 0;
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .accordion :where(summary):hover {
+      background-color: var(--wel-color-accent-tint);
+    }
+  }
+}

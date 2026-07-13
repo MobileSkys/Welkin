@@ -720,6 +720,46 @@
       </ul>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Accordion</h2>
+    <p><code>&lt;details&gt;</code>/<code>&lt;summary&gt;</code>: semantics, keyboard,
+    and expanded state are the platform's; exclusivity is one attribute
+    (<code>name</code>) that degrades to independent items where unsupported. Zero
+    accordion JS, ever. Height is instant (interpolate-size awaits intake); the panel
+    fades in under Enhanced.</p>
+
+    <h3>Exclusive FAQ group (default variant)</h3>
+    <div class="accordion" style="max-inline-size: 44rem">
+      <details name="faq" open>
+        <summary><h4>Can I self-host?</h4></summary>
+        <p>Yes — the toolkit is a static CSS file plus optional ESM modules; there is
+        no build step or runtime to operate.</p>
+      </details>
+      <details name="faq">
+        <summary><h4>Which browsers are supported?</h4></summary>
+        <p>Core works on Baseline Widely Available; Enhanced layers on top behind
+        <code>@supports</code> — see the browser support policy.</p>
+      </details>
+      <details name="faq">
+        <summary><h4>Why is opening one closing the other?</h4></summary>
+        <p>The shared <code>name</code> attribute — remove it for independent
+        multi-open items (the default recommendation).</p>
+      </details>
+    </div>
+
+    <h3>Separated, independent</h3>
+    <div class="accordion" data-variant="separated" style="max-inline-size: 44rem">
+      <details>
+        <summary>Advanced settings</summary>
+        <p>Detached rounded blocks with their own borders.</p>
+      </details>
+      <details>
+        <summary>Danger zone</summary>
+        <p>Both can be open at once — no <code>name</code>.</p>
+      </details>
+    </div>
+  </section>
 </main>
 
 <hr>

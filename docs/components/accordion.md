@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -116,6 +116,12 @@ does not at time of writing — a pure engine bonus, not a contract.
 Both animation rows share one wrapped block in practice (the animation needs both);
 durations route through `calc(var(--wel-motion-duration-2) * var(--wel-motion))`.
 
+Implementation status (T-42, rechecked live): `::details-content` reached Baseline
+Newly Available September 2025 and ships — used for an opacity fade on open.
+`interpolate-size` remains Chromium-only, so the size animation stays blocked per
+ADR-0012 and open/close height is instant everywhere; the transition joins the shipped
+block at intake.
+
 ### JS enhancement
 
 None.
@@ -177,7 +183,10 @@ recommended for document outline in FAQ use.
 - `interpolate-size` intake timing: revisit at each minor per ADR-0012; is a
   `calc-size()`-free grid-rows animation worth carrying as an interim? Leaning no
   (complexity vs. a cosmetic gain the contract already covers).
-- Marker asset: shared chevron with [select.md](select.md)'s caret?
+- ~~Marker asset: shared chevron with [select.md](select.md)'s caret?~~ **Resolved
+  (T-42): yes** — the same gradient-drawn chevron technique (gradients resolve the
+  marker token; no image asset), as a `summary::before` box so it rotates through
+  `--wel-motion`.
 
 ## References
 
