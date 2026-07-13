@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | Platform |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -83,7 +83,7 @@ the platform ([form-controls.md](form-controls.md)).
 
 | State | Trigger selector | Visual treatment | How announced (a11y) |
 |-------|------------------|------------------|----------------------|
-| Hover | `:hover` (`@media (hover: hover)`) | Border → `--wel-color-border-strong` | — |
+| Hover | `:hover` (`@media (hover: hover)`) | Border → `--wel-color-ink-muted` (rest border is already `border-strong`) | — |
 | Focus | `:focus-visible` | Global focus ring | — |
 | Disabled | `:disabled` | Reduced-contrast ink/bg pair; native semantics | Implicit via `disabled` |
 | Invalid | `:user-invalid` | `--wel-color-danger` border; error text via field wrapper | Error via `aria-describedby` (field pattern) |
@@ -99,7 +99,8 @@ the platform ([form-controls.md](form-controls.md)).
 | `--wel-select-border` | `var(--wel-color-border-strong)` | — | |
 | `--wel-select-radius` | `var(--wel-radius-control)` | — | |
 | `--wel-select-padding-block` / `-inline` | `var(--wel-space-2)` / `var(--wel-space-3)` | — | Scaled by `data-size` |
-| `--wel-select-caret-color` | `var(--wel-color-ink-muted)` | — | Fully honoured under Enhanced (`::picker-icon`); **Core limitation below** |
+| `--wel-select-caret-color` | `var(--wel-color-ink-muted)` | — | Fully honoured in **both** tiers: Core draws the caret with gradients (which resolve custom properties), Enhanced via `::picker-icon` |
+| `--wel-select-caret-size` | `0.4em` | — | Caret chevron block-size |
 | `--wel-select-picker-bg` | `var(--wel-color-surface-raised)` | — | Enhanced only |
 | `--wel-select-option-padding` | `var(--wel-space-2)` | — | Enhanced only |
 
@@ -110,11 +111,13 @@ the platform ([form-controls.md](form-controls.md)).
 The honest Core reality, stated plainly:
 
 - **Trigger:** fully styleable with `appearance: none` — border, radius, padding,
-  typography, colours, focus ring. The custom caret is a `background-image` SVG data-URI;
-  background images cannot consume `currentColor`/custom-property ink, so the Core caret
-  is baked per scheme (two data-URIs swapped on `color-scheme`), approximating
-  `--wel-select-caret-color` rather than consuming it. Documented limitation; resolved by
-  Enhanced `::picker-icon`.
+  typography, colours, focus ring. The custom caret is drawn with two
+  `linear-gradient()` background layers forming a chevron: gradients — unlike `url()`
+  images — resolve custom properties and `light-dark()`, so the caret **genuinely
+  consumes `--wel-select-caret-color`** in both schemes and under `[data-theme]`
+  pinning, with no per-scheme baking. One physical exception rides along:
+  `background-position` has no flow-relative syntax, so a `:dir(rtl)` rule mirrors the
+  caret lane (permitted exception, [ADR-0009](../decisions/ADR-0009-logical-properties-rtl.md)).
 - **Picker:** UA-rendered and effectively unstylable — engines honour at most
   `color`/`background-color` on `option`, inconsistently. Policy: **treat the picker as
   native; do not attempt Core option styling.**
@@ -197,12 +200,17 @@ interactive elements inside options; `.select` styling on JS-rebuilt listbox wid
 
 ## Open questions
 
-- Ship the Core caret as two scheme-baked data-URIs, or accept the UA arrow
-  (`appearance: auto`) in Core and restyle only under `base-select`? Leaning custom
-  caret — visual coherence with `.button` matters at rest — but the honest cost is the
-  token-approximation caveat above.
-- When `base-select` reaches intake: is the in-page picker on mobile acceptable as the
-  default, or should docs recommend gating the opt-in to pointer-fine contexts?
+- ~~Ship the Core caret as two scheme-baked data-URIs, or accept the UA arrow?~~
+  **Resolved (T-43):** neither — gradient-drawn chevron. Gradients resolve custom
+  properties, so the caret consumes `--wel-select-caret-color` directly; the data-URI
+  approach and its token-approximation caveat are dead.
+
+**Deferred to `base-select` intake** (pre-Baseline; blocked from source by
+[ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md), so these cannot be
+answered against shipping engines yet):
+
+- Is the in-page picker on mobile acceptable as the default, or should docs recommend
+  gating the opt-in to pointer-fine contexts?
 - Does `<selectedcontent>` clone markup we would rather not duplicate (ids inside
   options)? Verify and document the footgun at implementation.
 

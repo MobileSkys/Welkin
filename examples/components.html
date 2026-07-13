@@ -449,6 +449,63 @@
       </nav>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Select</h2>
+    <p>Native <code>&lt;select&gt;</code>, styled trigger, UA picker —
+    <code>color-scheme</code> keeps the dropdown dark in dark mode. The caret is
+    gradient-drawn, so it consumes <code>--wel-select-caret-color</code> in both
+    schemes. No JS, ever.</p>
+
+    <div class="cluster">
+      <label class="field">
+        <span>Country</span>
+        <select class="select" name="country">
+          <option value="">Choose…</option>
+          <optgroup label="Europe">
+            <option value="fr">France</option>
+            <option value="de">Germany</option>
+            <option value="gb">United Kingdom</option>
+          </optgroup>
+          <optgroup label="Americas">
+            <option value="br">Brazil</option>
+            <option value="ca">Canada</option>
+          </optgroup>
+        </select>
+      </label>
+      <label class="field">
+        <span>Small</span>
+        <select class="select" data-size="sm">
+          <option>Compact</option>
+          <option>Options</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Large</span>
+        <select class="select" data-size="lg">
+          <option>Spacious</option>
+          <option>Options</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Disabled</span>
+        <select class="select" disabled>
+          <option>Locked value</option>
+        </select>
+      </label>
+    </div>
+
+    <p>Required + <code>:user-invalid</code> — tab through without choosing, then
+    submit attempt shows the danger border only after interaction:</p>
+    <label class="field">
+      <span>Team (required)</span>
+      <select class="select" name="team" required>
+        <option value="">Choose…</option>
+        <option value="core">Core</option>
+        <option value="docs">Docs</option>
+      </select>
+    </label>
+  </section>
 </main>
 
 <hr>

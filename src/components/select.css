@@ -1,0 +1,118 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .select — native <select>, styled as far as the platform honestly allows
+   (docs/components/select.md, T-43). Core tier only: appearance: base-select
+   is pre-Baseline (Chromium-only) and ADR-0012 bars it from shipped source;
+   the spec's Enhanced tier is defined for intake the day it completes. The
+   picker stays UA-rendered by policy — color-scheme on :root already keeps
+   it dark in dark mode, which beats any Core styling trick. No JS, ever:
+   rebuilding <select> is the anti-pattern this component exists to end. */
+@layer components {
+  .select {
+    --wel-select-bg: var(--wel-color-surface);
+    --wel-select-ink: var(--wel-color-ink);
+    --wel-select-border: var(--wel-color-border-strong);
+    --wel-select-radius: var(--wel-radius-control);
+    --wel-select-padding-block: var(--wel-space-2);
+    --wel-select-padding-inline: var(--wel-space-3);
+    --wel-select-caret-color: var(--wel-color-ink-muted);
+    --wel-select-caret-size: 0.4em;
+
+    appearance: none;
+    padding-block: var(--wel-select-padding-block);
+    padding-inline: var(--wel-select-padding-inline);
+    /* Reserve the caret's lane so long labels never run under it. */
+    padding-inline-end: calc(var(--wel-select-padding-inline) + var(--wel-select-caret-size) + var(--wel-space-2));
+    /* WCAG 2.5.8: every size keeps a ≥ 24px block-size target. */
+    min-block-size: 1.5rem;
+    min-inline-size: 8rem;
+    background-color: var(--wel-select-bg);
+    color: var(--wel-select-ink);
+    border: var(--wel-border-width) solid var(--wel-select-border);
+    border-radius: var(--wel-select-radius);
+    font: inherit;
+    font-size: var(--wel-text-size-0);
+    line-height: var(--wel-text-leading-tight);
+    /* Caret: two gradient-drawn half-squares forming a chevron. Gradients —
+       unlike url() images — resolve custom properties and light-dark(), so
+       the caret genuinely consumes --wel-select-caret-color in both schemes
+       and under [data-theme] pinning. The ±0.5px stop softens the diagonal. */
+    background-image:
+      linear-gradient(135deg, var(--wel-select-caret-color) calc(50% - 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--wel-select-caret-color) calc(50% + 0.5px));
+    background-position:
+      calc(100% - var(--wel-select-padding-inline)) 50%,
+      calc(100% - var(--wel-select-padding-inline) - var(--wel-select-caret-size) / 2) 50%;
+    background-size: calc(var(--wel-select-caret-size) / 2) var(--wel-select-caret-size);
+    background-repeat: no-repeat;
+    transition: border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  /* background-position has no flow-relative syntax — a permitted physical
+     exception (ADR-0009). :dir() (not [dir]) so mixed-direction subtrees
+     resolve correctly; :where() keeps the budget at 0-1-0 (ADR-0010). */
+  .select:where(:dir(rtl)) {
+    /* The 45deg half must stay inline-left of the 135deg half or the
+       chevron breaks into two corners. */
+    background-position:
+      calc(var(--wel-select-padding-inline) + var(--wel-select-caret-size) / 2) 50%,
+      var(--wel-select-padding-inline) 50%;
+    padding-inline-end: var(--wel-select-padding-inline);
+    padding-inline-start: calc(var(--wel-select-padding-inline) + var(--wel-select-caret-size) + var(--wel-space-2));
+  }
+
+  /* The canonical .field wrapper owns the column; the trigger fills it. */
+  :where(.field) .select {
+    inline-size: 100%;
+  }
+
+  /* Forced colors: hand rendering back wholesale — appearance: auto restores
+     the native arrow (the gradient caret would be stripped with backgrounds
+     anyway) and the control's Field/FieldText mappings are the correct
+     experience. The one place in the toolkit we revert on purpose. */
+  @media (forced-colors: active) {
+    .select {
+      appearance: auto;
+      background-image: none;
+    }
+  }
+}
+
+@layer variants {
+  .select[data-size="sm"] {
+    --wel-select-padding-block: var(--wel-space-1);
+    --wel-select-padding-inline: var(--wel-space-2);
+
+    font-size: var(--wel-text-size--1);
+  }
+
+  .select[data-size="lg"] {
+    --wel-select-padding-block: var(--wel-space-3);
+    --wel-select-padding-inline: var(--wel-space-4);
+
+    font-size: var(--wel-text-size-1);
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .select:hover {
+      border-color: var(--wel-color-ink-muted);
+    }
+  }
+
+  /* Focus ring is the single global :focus-visible rule in base. */
+
+  .select:user-invalid {
+    border-color: var(--wel-color-danger);
+  }
+
+  /* Disabled last in the layer so it beats hover at equal specificity.
+     Reduced-contrast pair is the documented WCAG 1.4.3 exemption. */
+  .select:disabled {
+    background-color: var(--wel-color-surface-sunken);
+    color: var(--wel-color-ink-faint);
+    border-color: var(--wel-color-border);
+    --wel-select-caret-color: var(--wel-color-ink-faint);
+  }
+}
