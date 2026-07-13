@@ -131,6 +131,21 @@
     border-inline-start: var(--wel-border-width-strong) solid var(--wel-color-accent);
   }
 
+  /* The sort upgrader wraps header content in a real <button> (or
+     enhances a server sort link in place): both render as the header
+     text, not control chrome — aria-sort and the glyph carry the state,
+     and the global focus-visible ring stays intact. */
+  .table :where(th[data-sort]) :where(button, a) {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
   /* Sorted column: header ink strengthens; direction glyph is generated
      content in currentColor (survives forced colors). aria-sort itself is
      the announcement — the glyph is declared empty for AT where the

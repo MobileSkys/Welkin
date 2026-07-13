@@ -294,6 +294,28 @@
         </tbody>
       </table>
     </div>
+
+    <h3>Sortable headers (JS-enhanced — <code>table-sort.js</code>, ~1 KB)</h3>
+    <p>Click a header: real <code>&lt;button&gt;</code>s injected by the upgrader, state
+    lives entirely in <code>aria-sort</code>. No-JS baseline is this same table, plain
+    and readable.</p>
+    <div class="table-scroller" tabindex="0" role="region" aria-labelledby="sort-caption">
+      <table class="table" data-sortable data-hover>
+        <caption id="sort-caption">Releases</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-sort="text">Codename</th>
+            <th scope="col" data-sort="number">Downloads</th>
+            <th scope="col" data-sort="date">Released</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Stratus</th><td data-sort-value="48212">48,212</td><td data-sort-value="2026-03-02">2 Mar 2026</td></tr>
+          <tr><th scope="row">Cirrus</th><td data-sort-value="112480">112,480</td><td data-sort-value="2025-11-18">18 Nov 2025</td></tr>
+          <tr><th scope="row">Altocumulus</th><td data-sort-value="9330">9,330</td><td data-sort-value="2026-06-30">30 Jun 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
   <section class="stack">
@@ -777,6 +799,9 @@
     b.addEventListener('click', () =>
       document.getElementById(b.dataset.dialogOpen)?.showModal());
 </script>
+<!-- ES-module src is CORS-blocked under file:// — serve this page over HTTP
+     (e.g. npx http-server) for the sortable demo; everything else is CSS-only. -->
+<script type="module" src="../dist/js/table-sort.js"></script>
 
 </body>
 </html>
