@@ -1,0 +1,105 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .pagination — paged-collection navigation (docs/components/pagination.md,
+   T-39). Links in a nav, never buttons: every page is a URL. Current page
+   stays a link, styled from aria-current itself. No dead links — page 1
+   omits Previous rather than faking disabled. Below 26rem containers the
+   numbered links drop (display:none — AT sees what sighted users see),
+   leaving a Previous / current / Next stepper. */
+@layer components {
+  .pagination {
+    --wel-pagination-gap: var(--wel-space-1);
+    --wel-pagination-item-ink: var(--wel-color-ink-muted);
+    --wel-pagination-current-bg: var(--wel-color-accent);
+    --wel-pagination-current-ink: var(--wel-color-accent-contrast);
+    --wel-pagination-radius: var(--wel-radius-control);
+    --wel-pagination-item-size: 2.5rem;
+  }
+
+  .pagination > :where(ol) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--wel-pagination-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pagination :where(a) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 2.5.8 floor: the token keeps every item ≥ 24px even resized. */
+    min-inline-size: var(--wel-pagination-item-size);
+    min-block-size: var(--wel-pagination-item-size);
+    padding-inline: var(--wel-space-2);
+    color: var(--wel-pagination-item-ink);
+    text-decoration: none;
+    border-radius: var(--wel-pagination-radius);
+    transition:
+      background-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  /* Ellipsis items are presentational (aria-hidden in markup). */
+  .pagination :where(li[aria-hidden="true"]) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: var(--wel-pagination-item-size);
+    color: var(--wel-color-ink-faint);
+  }
+
+  /* Compact stepper in narrow containers: only prev/next (rel) and the
+     current page survive. */
+  @container layout (inline-size < 26rem) {
+    .pagination :where(li:not(:has(a[rel])):not(:has(a[aria-current]))) {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .pagination :where(a) {
+      color: LinkText;
+      text-decoration: underline;
+    }
+  }
+}
+
+@layer variants {
+  .pagination[data-size="sm"] {
+    --wel-pagination-item-size: 2rem;
+
+    font-size: var(--wel-text-size--1);
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .pagination :where(a):hover {
+      background-color: var(--wel-color-accent-tint);
+      color: var(--wel-color-ink);
+    }
+  }
+
+  .pagination :where(a):active {
+    background-color: oklch(from var(--wel-color-accent-tint) calc(l - 0.04) c h);
+    color: var(--wel-color-ink);
+  }
+
+  /* Current page — after hover/active so it wins at equal specificity. */
+  .pagination :where(a[aria-current="page"]) {
+    background-color: var(--wel-pagination-current-bg);
+    color: var(--wel-pagination-current-ink);
+  }
+
+  /* Current is background-only in normal rendering, so forced colors
+     gives it a border (the docs/09 rule) and drops the trail underline. */
+  @media (forced-colors: active) {
+    .pagination :where(a[aria-current="page"]) {
+      border: var(--wel-border-width-strong) solid CanvasText;
+      text-decoration: none;
+    }
+  }
+}

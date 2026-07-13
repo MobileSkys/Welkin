@@ -416,6 +416,39 @@
       </header>
     </div>
   </section>
+
+  <section class="stack">
+    <h2>Pagination</h2>
+    <p>Links in a landmark — navigation, not action. Page 1 omits Previous instead of
+    faking a disabled link.</p>
+
+    <nav class="pagination" aria-label="Pagination">
+      <ol>
+        <li><a href="#" rel="prev">‹ Previous</a></li>
+        <li><a href="#">1</a></li>
+        <li aria-hidden="true">…</li>
+        <li><a href="#">4</a></li>
+        <li><a href="#" aria-current="page">5</a></li>
+        <li><a href="#">6</a></li>
+        <li aria-hidden="true">…</li>
+        <li><a href="#">12</a></li>
+        <li><a href="#" rel="next">Next ›</a></li>
+      </ol>
+    </nav>
+
+    <p>Narrow container — numbered links drop, leaving a stepper:</p>
+    <div class="stack" style="inline-size: 18rem">
+      <nav class="pagination" aria-label="Pagination compact example">
+        <ol>
+          <li><a href="#" rel="prev">‹ Previous</a></li>
+          <li><a href="#">4</a></li>
+          <li><a href="#" aria-current="page">5</a></li>
+          <li><a href="#">6</a></li>
+          <li><a href="#" rel="next">Next ›</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
 </main>
 
 <hr>
