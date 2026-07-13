@@ -219,8 +219,12 @@ controls in one field; interactive content inside `.hint`/`.error`.
   hidden-description targets is inconsistent; verify against the 09 testing floor
   (NVDA/VoiceOver) during Phase 1, else switch to visually-hidden-until-invalid.
 - Cross-field label alignment via subgrid — worth a `data-align` opt-in on `.stack`?
-- Does the `data-show-valid` opt-in for `:user-valid` styling live on the form or the
-  field?
+- ~~Does the `data-show-valid` opt-in for `:user-valid` styling live on the form or the
+  field?~~ **Resolved (T-44):** any ancestor — the selector matches
+  `:where([data-show-valid])` above the field, so the canonical placement is the
+  `<form>` but a single field (or a whole page) can opt in too. A server-rendered
+  `[aria-invalid="true"]` suppresses the valid affirmation: the server knows things the
+  constraint API cannot.
 
 ## References
 

@@ -1,0 +1,221 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* .field — form control + label + hint + error composition, and the styled
+   native controls inside it (docs/components/form-controls.md, T-44).
+   Validation is platform state: :user-invalid (waits for interaction — bare
+   :invalid would paint errors at page load) plus [aria-invalid="true"] as
+   the server-rendered twin (the CakePHP FormHelper contract). The .error
+   element ships in markup, wired into aria-describedby, and CSS reveals it.
+   No JS: native constraint validation is the engine. */
+@layer components {
+  .field {
+    --wel-field-gap: var(--wel-space-1);
+    --wel-input-bg: var(--wel-color-surface);
+    --wel-input-ink: var(--wel-color-ink);
+    --wel-input-border: var(--wel-color-border-strong);
+    --wel-input-radius: var(--wel-radius-control);
+    --wel-input-padding-block: var(--wel-space-2);
+    --wel-input-padding-inline: var(--wel-space-3);
+    --wel-control-accent: var(--wel-color-accent);
+    --wel-field-hint-ink: var(--wel-color-ink-muted);
+    --wel-field-error-ink: var(--wel-color-danger);
+
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--wel-field-gap);
+  }
+
+  .field > :where(label),
+  .field > :where(legend) {
+    font-weight: 500;
+  }
+
+  /* Box styling applies to text-like controls only; checks/radios/range/
+     color/file keep native form. Buttons never sit in a field. */
+  .field :where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"])),
+  .field :where(textarea) {
+    inline-size: 100%;
+    padding-block: var(--wel-input-padding-block);
+    padding-inline: var(--wel-input-padding-inline);
+    background-color: var(--wel-input-bg);
+    color: var(--wel-input-ink);
+    border: var(--wel-border-width) solid var(--wel-input-border);
+    border-radius: var(--wel-input-radius);
+    font: inherit;
+    line-height: var(--wel-text-leading-tight);
+    transition: border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  .field :where(textarea) {
+    resize: vertical;
+  }
+
+  /* Enhanced (03 contract row): textarea grows with content to a cap;
+     fallback is the fixed box with its native resize handle above. */
+  @supports (field-sizing: content) {
+    .field :where(textarea) {
+      field-sizing: content;
+      min-block-size: 2lh;
+      max-block-size: var(--wel-textarea-max-block, 12lh);
+    }
+  }
+
+  /* Checks and radios: native rendering retinted through the component
+     token (accent-color), sized to the 24px WCAG 2.5.8 floor at every
+     data-size — the default shipped path; dark mode and forced colors stay
+     the UA's. */
+  .field :where(input[type="checkbox"], input[type="radio"]) {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    accent-color: var(--wel-control-accent);
+    flex: none;
+  }
+
+  /* Check/radio/switch fields put the label after the control on one line.
+     :where() keeps :has() out of the specificity budget (0-1-0). */
+  .field:where(:has(> input[type="checkbox"], > input[type="radio"])) {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--wel-space-2);
+  }
+
+  .field:where(:has(> input[type="checkbox"], > input[type="radio"])) > :where(label) {
+    font-weight: 400;
+  }
+
+  /* Radio/checkbox groups: fieldset.field wraps single-control fields. */
+  .field:where(fieldset) {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .field :where(.hint) {
+    color: var(--wel-field-hint-ink);
+    font-size: var(--wel-text-size--1);
+  }
+
+  /* Error text is present in markup (aria-describedby association is
+     static) and revealed only when the control is invalid — client state
+     (:user-invalid) or the server-rendered path ([aria-invalid="true"]). */
+  .field :where(.error) {
+    display: none;
+    color: var(--wel-field-error-ink);
+    font-size: var(--wel-text-size--1);
+    font-weight: 500;
+  }
+
+  .field:where(:has(:user-invalid, [aria-invalid="true"])) :where(.error) {
+    display: block;
+  }
+
+  .field:where(:has(:user-invalid, [aria-invalid="true"])) > :where(label, legend) {
+    color: var(--wel-field-error-ink);
+  }
+
+  .field:where(:has(:disabled)) > :where(label, legend) {
+    color: var(--wel-color-ink-faint);
+  }
+
+  /* .switch — a checkbox with switch semantics (role="switch") and switch
+     drawing: appearance: none track, thumb as a radial-gradient layer so no
+     pseudo-element is needed on the replaced element (unreliable there).
+     Thumb travel rides background-position through --wel-motion. */
+  .field :where(input.switch) {
+    appearance: none;
+    inline-size: 2.75rem;
+    block-size: 1.5rem;
+    border: var(--wel-border-width) solid var(--wel-input-border);
+    border-radius: var(--wel-radius-full);
+    background-color: var(--wel-color-surface-sunken);
+    background-image: radial-gradient(circle closest-side, var(--wel-color-ink-muted) 92%, transparent);
+    background-size: 1.125rem 1.125rem;
+    background-position: 0.1875rem 50%;
+    background-repeat: no-repeat;
+    transition:
+      background-position calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      background-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  /* background-position has no flow-relative syntax — permitted physical
+     exception (ADR-0009): the resting thumb sits at the inline start. */
+  .field :where(input.switch:dir(rtl)) {
+    background-position: calc(100% - 0.1875rem) 50%;
+  }
+
+  /* Forced colors: gradients and backgrounds are erased, so the drawn thumb
+     cannot survive — hand the control back to the UA's checkbox rendering
+     (role="switch" still announces correctly). Same wholesale-revert policy
+     as .select. */
+  @media (forced-colors: active) {
+    .field :where(input.switch) {
+      appearance: auto;
+      background-image: none;
+    }
+  }
+}
+
+@layer variants {
+  .field[data-size="sm"] {
+    --wel-input-padding-block: var(--wel-space-1);
+    --wel-input-padding-inline: var(--wel-space-2);
+
+    font-size: var(--wel-text-size--1);
+  }
+
+  .field[data-size="lg"] {
+    --wel-input-padding-block: var(--wel-space-3);
+    --wel-input-padding-inline: var(--wel-space-4);
+
+    font-size: var(--wel-text-size-1);
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    .field :where(input, textarea):hover {
+      border-color: var(--wel-color-ink-muted);
+    }
+  }
+
+  /* Focus ring is the single global :focus-visible rule in base. */
+
+  /* Read-only: sunken but bordered — distinguishable from disabled. Text
+     controls only (checks/radios are always :read-only by definition). */
+  .field :where(input:not([type="checkbox"], [type="radio"]), textarea):read-only {
+    background-color: var(--wel-color-surface-sunken);
+  }
+
+  .field :where(input, textarea):user-invalid,
+  .field :where(input, textarea)[aria-invalid="true"] {
+    border-color: var(--wel-color-danger);
+  }
+
+  /* Valid-state affirmation is opt-in (data-show-valid on the <form> or
+     any ancestor): green borders everywhere by default read as noise. A
+     server-rendered error outranks client-side validity — the server knows
+     things the constraint API can't (e.g. username taken). */
+  :where([data-show-valid]) .field :where(input, textarea):user-valid:where(:not([aria-invalid="true"])) {
+    border-color: var(--wel-color-success);
+  }
+
+  .field :where(input.switch):checked {
+    background-color: var(--wel-control-accent);
+    background-image: radial-gradient(circle closest-side, var(--wel-color-accent-contrast) 92%, transparent);
+    background-position: calc(100% - 0.1875rem) 50%;
+    border-color: var(--wel-control-accent);
+  }
+
+  .field :where(input.switch:dir(rtl)):checked {
+    background-position: 0.1875rem 50%;
+  }
+
+  /* Disabled last in the layer so it beats hover at equal specificity;
+     reduced-contrast pair is the documented WCAG 1.4.3 exemption. */
+  .field :where(input, textarea):disabled {
+    background-color: var(--wel-color-surface-sunken);
+    color: var(--wel-color-ink-faint);
+    border-color: var(--wel-color-border);
+  }
+}

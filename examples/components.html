@@ -506,6 +506,72 @@
       </select>
     </label>
   </section>
+
+  <section class="stack">
+    <h2>Form controls &amp; validation</h2>
+    <p>Native constraint validation is the engine: errors ship in markup (wired into
+    <code>aria-describedby</code>) and appear via <code>:user-invalid</code> — after
+    interaction, never at page load. <code>[aria-invalid="true"]</code> is the
+    server-rendered twin. Try submitting empty.</p>
+
+    <form class="stack" data-show-valid style="max-inline-size: 28rem">
+      <div class="field">
+        <label for="demo-email">Email</label>
+        <input id="demo-email" name="email" type="email" required
+               aria-describedby="demo-email-hint demo-email-error">
+        <p class="hint" id="demo-email-hint">We never share it.</p>
+        <p class="error" id="demo-email-error">Enter a valid email address.</p>
+      </div>
+
+      <div class="field">
+        <label for="demo-server">Username (server-rendered error)</label>
+        <input id="demo-server" name="username" aria-invalid="true"
+               aria-describedby="demo-server-error" value="taken-name">
+        <p class="error" id="demo-server-error">That username is taken.</p>
+      </div>
+
+      <div class="field">
+        <label for="demo-notes">Notes (auto-grows under Enhanced)</label>
+        <textarea id="demo-notes" name="notes" rows="2"></textarea>
+      </div>
+
+      <div class="field" data-size="sm">
+        <label for="demo-sm">Small</label>
+        <input id="demo-sm">
+      </div>
+
+      <div class="field">
+        <label for="demo-ro">Read-only</label>
+        <input id="demo-ro" readonly value="Sunken but bordered">
+      </div>
+
+      <div class="field">
+        <label for="demo-dis">Disabled</label>
+        <input id="demo-dis" disabled value="Reduced contrast">
+      </div>
+
+      <fieldset class="field">
+        <legend>Billing cycle</legend>
+        <div class="field"><input id="demo-m" type="radio" name="cycle" checked><label for="demo-m">Monthly</label></div>
+        <div class="field"><input id="demo-y" type="radio" name="cycle"><label for="demo-y">Yearly</label></div>
+      </fieldset>
+
+      <div class="field">
+        <input id="demo-tos" name="tos" type="checkbox" required>
+        <label for="demo-tos">I accept the terms</label>
+      </div>
+
+      <div class="field">
+        <input id="demo-notify" type="checkbox" role="switch" class="switch" checked>
+        <label for="demo-notify">Email notifications</label>
+      </div>
+
+      <div class="cluster">
+        <button class="button" data-variant="primary">Submit</button>
+        <button class="button" type="reset">Reset</button>
+      </div>
+    </form>
+  </section>
 </main>
 
 <hr>
