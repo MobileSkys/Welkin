@@ -18,6 +18,15 @@ say so there.
 
 ### Added
 
+- **`.edge-fade` mask utility (T-106)**: gradient `mask-image` so media
+  melts into the backdrop (hero bleeds). Default fades all four edges
+  (two-layer `mask-composite: intersect`); a `data-edges` axis narrows it
+  (`block`, `inline`, `block-start`/`-end`, `inline-start`/`-end`, or
+  `radial` vignette) — the asymmetric inline values flip under `:dir(rtl)`.
+  Fade depth is `--wel-edge-fade` (default `--wel-space-8`). Applied
+  directly to the element, no wrapper; engines without mask support show
+  the unfaded image. Second of the image-FX wave (T-118).
+
 - **`.duotone` image utility (T-103)**: wrapper class that grayscales the
   media and gradient-maps it through two `mix-blend-mode` overlays —
   blacks rise to `--wel-duotone-shadow`, whites drop to

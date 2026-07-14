@@ -81,4 +81,59 @@
       filter: none;
     }
   }
+
+  /* Edge-fade mask (T-106) — the element melts into whatever is behind it
+     (hero bleeds, sidebar media). Applied directly to the media (or any
+     element); no wrapper. The fade band is --wel-edge-fade deep. Default
+     fades all four edges: two gradient layers intersected. data-edges
+     narrows the fade to one axis or edge; "radial" is an elliptical
+     vignette. Engines without mask-image show the unfaded image — a clean
+     static fallback (image-FX doctrine, D-11).
+     Gradient directions are physical (CSS has no logical gradient
+     keywords): correct for horizontal-tb; the asymmetric inline variants
+     get :dir(rtl) flips below, vertical writing modes are out of scope. */
+  .edge-fade {
+    --wel-edge-fade: var(--wel-space-8);
+
+    mask-image:
+      linear-gradient(to bottom, transparent, black var(--wel-edge-fade), black calc(100% - var(--wel-edge-fade)), transparent),
+      linear-gradient(to right, transparent, black var(--wel-edge-fade), black calc(100% - var(--wel-edge-fade)), transparent);
+    mask-composite: intersect;
+  }
+
+  .edge-fade[data-edges="block"] {
+    mask-image: linear-gradient(to bottom, transparent, black var(--wel-edge-fade), black calc(100% - var(--wel-edge-fade)), transparent);
+  }
+
+  .edge-fade[data-edges="inline"] {
+    mask-image: linear-gradient(to right, transparent, black var(--wel-edge-fade), black calc(100% - var(--wel-edge-fade)), transparent);
+  }
+
+  .edge-fade[data-edges="block-start"] {
+    mask-image: linear-gradient(to bottom, transparent, black var(--wel-edge-fade));
+  }
+
+  .edge-fade[data-edges="block-end"] {
+    mask-image: linear-gradient(to bottom, black calc(100% - var(--wel-edge-fade)), transparent);
+  }
+
+  .edge-fade[data-edges="inline-start"] {
+    mask-image: linear-gradient(to right, transparent, black var(--wel-edge-fade));
+  }
+
+  .edge-fade[data-edges="inline-end"] {
+    mask-image: linear-gradient(to right, black calc(100% - var(--wel-edge-fade)), transparent);
+  }
+
+  .edge-fade[data-edges="inline-start"]:dir(rtl) {
+    mask-image: linear-gradient(to left, transparent, black var(--wel-edge-fade));
+  }
+
+  .edge-fade[data-edges="inline-end"]:dir(rtl) {
+    mask-image: linear-gradient(to left, black calc(100% - var(--wel-edge-fade)), transparent);
+  }
+
+  .edge-fade[data-edges="radial"] {
+    mask-image: radial-gradient(farthest-side, black calc(100% - var(--wel-edge-fade)), transparent);
+  }
 }
