@@ -18,6 +18,17 @@ say so there.
 
 ### Added
 
+- **`.dim` dark-mode image dimming (T-102)**: photos glare on dark
+  surfaces — `.dim` on media applies `--wel-img-dim`, which resolves to
+  the identity filter in light scheme and `--wel-img-dim-amount`
+  (default `brightness(0.85) contrast(1.05)`) in dark. Scheme resolution
+  is pin-faithful: OS preference at the root, re-declared per
+  `[data-theme]` subtree exactly like the palette; forced-colors resets
+  to identity. The token is composable by design (identity, never
+  `none`, inside filter lists) — `.duotone` + `.dim` combine via an
+  explicit rule that dims the grayscale base before the overlays remap
+  it. Completes the image-FX wave 1 features (T-118).
+
 - **VT image morph — `data-vt-image` (T-109)**: the view-transitions module
   gains an image treatment. Tag a `--wel-vt`-named image on both sides and
   its snapshots cover-fit the morphing group (no stretch between aspect

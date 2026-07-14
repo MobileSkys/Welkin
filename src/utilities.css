@@ -43,6 +43,20 @@
     filter: grayscale(1);
   }
 
+  /* Dark-mode dimming (T-102) — apply to the media element; the token
+     resolves to the identity filter in light scheme and a gentle
+     brightness/contrast pull-down in dark (tokens/color.css). */
+  .dim {
+    filter: var(--wel-img-dim);
+  }
+
+  /* Composing with .duotone: its child selector outranks .dim, so the
+     combination is stated explicitly — dim the grayscale base, then the
+     overlays remap it (dark mode duotones read less glary too). */
+  .duotone :is(img.dim, video.dim) {
+    filter: var(--wel-img-dim) grayscale(1);
+  }
+
   .duotone::before,
   .duotone::after {
     content: "";

@@ -286,6 +286,8 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-color-success-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-success) 12%, var(--wel-color-surface))` | under `success` 5.1; under `ink` 12.9 |
 | `--wel-color-warning-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-warning) 12%, var(--wel-color-surface))` | under `warning` 5.5; under `ink` 12.9 |
 | `--wel-color-danger-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-danger) 12%, var(--wel-color-surface))` | under `danger` 5.9; under `ink` 12.9 |
+| `--wel-img-dim-amount` | semantic | — | `brightness(0.85) contrast(1.05)` | — |
+| `--wel-img-dim` | semantic | — | `var(--wel-img-dim-amount)` | — |
 
 #### Focus ring (`src/tokens/focus-ring.css`)
 
@@ -411,6 +413,6 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `accent` | `surface-sunken` | 3:1 | 4.29:1 | 7.80:1 | 4.29:1 | progress fill vs track (1.4.11) |
 | `accent` | `border` | 3:1 | 3.57:1 | 3.88:1 | 3.57:1 | spinner arc vs track (1.4.11) |
 
-Totals: 140 tokens, 31 pairings × 2 schemes.
+Totals: 142 tokens, 31 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->
