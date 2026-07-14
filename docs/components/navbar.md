@@ -76,7 +76,58 @@ current page is marked with `aria-current="page"`, never a class.
 |-----------|--------|--------|
 | `data-variant` | *(none in v1)* | Bare `.navbar` is the only visual style; theming is via tokens |
 | `data-size` | *(none in v1)* | Height derives from content + `--wel-navbar-padding-block` |
-| `data-sticky` | *(boolean, present/absent)* | `position: sticky` at block-start, plus the scroll-padding companion (see Accessibility) |
+| `data-sticky` | *(boolean, present/absent)* | `position: sticky` at block-start, plus the scroll-padding companion (see Sticky navbar) |
+
+## Sticky navbar (`data-sticky`)
+
+One attribute makes the bar stick: `position: sticky` at block-start, a raised
+shadow, and — Enhanced, behind `@supports (animation-timeline: scroll())` — the
+shadow appearing only once the page has scrolled.
+
+Two scaffolding rules make it actually work. Both follow from how CSS positions
+sticky elements, and both live in the host page, not the component:
+
+1. **The bar's containing block must be taller than the bar.** A sticky element
+   travels only within its containing block. Wrap the navbar in a bar-height
+   wrapper, or make it the `auto` header row of a page-shell grid (the grid
+   area is the containing block), and it has zero travel — `data-sticky`
+   appears to do nothing. Since the navbar also *requires* a `page` named
+   container ancestor (Container behaviour), the recommended scaffold makes
+   **that wrapper the sticky element** — the sticky chrome pattern
+   ([06](../06-layout-system.md)):
+
+   ```html
+   <div class="chrome">  <!-- page container AND sticky element -->
+     <header class="navbar" data-sticky>…</header>
+   </div>
+   <main>…</main>
+   ```
+
+   ```css
+   .chrome {
+     container-name: page; container-type: inline-size;
+     position: sticky; inset-block-start: 0; z-index: 10;
+   }
+   ```
+
+   A stuck wrapper sits at viewport top, which also keeps the collapsed
+   panel's Core fixed placement (Behaviour tiers) honest at any scroll
+   position: the bar never leaves its contract position. If the page uses a
+   footer-pinning shell grid, the chrome sits *above* the shell and the shell
+   drops its header row (`grid-template-rows: 1fr auto`;
+   `min-block-size: calc(100dvb - var(--wel-navbar-block-size, 3.5rem))`).
+
+2. **Re-declare the height token at the root.** The reset's
+   `scroll-padding-block-start` reads `--wel-navbar-block-size` from the root
+   element, where the component's own scoped `3.5rem` declaration is invisible
+   — without a root re-declaration the `1rem` fallback applies and anchor
+   targets land under the stuck bar (2.4.11 Focus Not Obscured):
+
+   ```css
+   :root { --wel-navbar-block-size: 4rem; }  /* bar height + breathing room */
+   ```
+
+   The navbar keeps its own scoped value, so panel placement is unaffected.
 
 ## States
 
