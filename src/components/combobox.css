@@ -1,0 +1,74 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* wel-combobox — filtered suggestion listbox on a native input
+   (docs/components/combobox.md, T-48). The input itself is styled by
+   form-controls; everything here is the generated listbox, keyed to the
+   roles/attributes wel-combobox.js writes. Deliberately NOT a top-layer
+   popover: plain absolute positioning inside the relative root works in
+   every engine, needs no anchor positioning, and stays inside an open
+   dialog's top-layer box. Pre-upgrade/no-JS the native datalist UI
+   renders — nothing here to style, nothing to hide. */
+@layer components {
+  wel-combobox {
+    --wel-combobox-bg: var(--wel-color-surface-raised);
+    --wel-combobox-ink: var(--wel-color-ink);
+    --wel-combobox-border: var(--wel-color-border);
+    --wel-combobox-radius: var(--wel-radius-surface);
+    --wel-combobox-shadow: var(--wel-shadow-3);
+    --wel-combobox-active-bg: var(--wel-color-accent-tint);
+    --wel-combobox-max-block-size: 18rem;
+
+    display: block;
+    position: relative;
+  }
+
+  wel-combobox [role="listbox"] {
+    position: absolute;
+    inset-block-start: calc(100% + var(--wel-space-1));
+    inset-inline: 0;
+    z-index: 1;
+    max-block-size: var(--wel-combobox-max-block-size);
+    overflow-y: auto;
+    margin: 0;
+    padding: var(--wel-space-1);
+    list-style: none;
+    background-color: var(--wel-combobox-bg);
+    color: var(--wel-combobox-ink);
+    /* Hairline normally; THE panel edge under forced colors. */
+    border: var(--wel-border-width) solid var(--wel-combobox-border);
+    border-radius: var(--wel-combobox-radius);
+    box-shadow: var(--wel-combobox-shadow);
+  }
+
+  /* Options pad themselves to ~24px+ targets (2.5.8). */
+  wel-combobox [role="option"] {
+    padding-block: var(--wel-space-2);
+    padding-inline: var(--wel-space-2);
+    min-block-size: 1.5rem;
+    border-radius: var(--wel-radius-sm);
+    cursor: pointer;
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    wel-combobox [role="option"]:hover {
+      background-color: var(--wel-combobox-active-bg);
+    }
+  }
+
+  /* Virtual focus (aria-activedescendant) — the only "focus ring" the
+     option gets, so the fill must survive forced colors: the same
+     Highlight/HighlightText convention the UA select uses. */
+  wel-combobox [role="option"][aria-selected="true"] {
+    background-color: var(--wel-combobox-active-bg);
+  }
+
+  @media (forced-colors: active) {
+    wel-combobox [role="option"][aria-selected="true"] {
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+}
