@@ -7,6 +7,15 @@ say so there.
 
 ## Unreleased
 
+### Changed
+
+- **Navbar sticky shadow legibility** (T-101): the `data-sticky` shadow is now
+  `--wel-shadow-2` (was `-1`, which doesn't read on dark surfaces — both in
+  the scroll-driven reveal and the static fallback shown by browsers without
+  scroll-driven animations, e.g. Firefox). The menu-open bar raises
+  `--wel-shadow-3` so the open-state raise stays one tier above the stuck
+  rest shadow. Visual-only; no API surface change.
+
 ### Added
 
 - **Showcase 6 — Waypoint** (docs site): a multi-page travel journal
