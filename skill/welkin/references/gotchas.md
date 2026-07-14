@@ -114,6 +114,11 @@ morph (`--wel-vt: <name>` pairs elements across pages). It is **never** in
   Don't re-gate it, and don't expect `pagereveal.viewTransition` under reduce.
 - **Navigating during a running morph skips the next one** — spec behaviour,
   not a bug.
+- **Morphing images? Tag both sides `data-vt-image`.** Snapshots then
+  cover-fit the morphing box and swap opaquely — untagged image pairs stretch
+  between aspect ratios and double-expose mid-morph. Also applies to your own
+  same-document `startViewTransition` while the module is linked
+  (see references/image-fx.md).
 - **White blink between dark pages?** The pre-CSS canvas is white until the
   stylesheet's `color-scheme` applies. Put
   `<meta name="color-scheme" content="light dark">` in the `<head>` of every

@@ -7,8 +7,9 @@ description: >
   dependency, CDN link, or dist/welkin*.css files), or the user asks to add or
   install Welkin, build or style pages with it, theme it, or mentions "welkin",
   "welkincss", --wel- tokens, or wel- custom elements. Covers install
-  (npm/CDN/à-la-carte), layout primitives, the component catalogue, and
-  token-based theming.
+  (npm/CDN/à-la-carte), layout primitives, the component catalogue,
+  token-based theming, and image effect utilities (duotone, edge-fade,
+  scroll reveal, dark-mode dimming, view-transition morphs).
 ---
 
 # Welkin — the CSS-first toolkit
@@ -116,6 +117,22 @@ basis, `auto` grid track, float, `inline-block`, abs-pos) collapses to zero
 width — give it `flex-grow`/explicit basis or a sized track. Nesting
 primitives inside primitives is safe.
 
+## Image effects (full detail: references/image-fx.md)
+
+Utilities-layer image treatments, post-1.0.1. Token-driven, zero JS, and safe
+by default (no feature → plain image; motion gates off under reduced motion):
+
+| Class / attribute | Effect | Main knobs |
+|-------------------|--------|-----------|
+| `.dim` (on media) | Dark-scheme dimming, pin-faithful | `--wel-img-dim-amount` |
+| `.duotone` (wrapper) | Grayscale + accent-derived two-tone remap | `--wel-color-accent`, `--wel-duotone-shadow`/`-highlight` |
+| `.edge-fade` (on media) | Gradient mask melt into the backdrop | `data-edges`, `--wel-edge-fade` |
+| `.reveal` (on media) | Scroll-driven fade/scale entry, no JS | `--wel-reveal-scale`, `--wel-reveal-distance` |
+| `data-vt-image` (VT module) | Thumb→detail morph: cover-fit, no cross-fade flash | pairs with `--wel-vt` |
+
+Combination rules matter (wrapper vs media) — copy from the reference, don't
+guess.
+
 ## Component catalogue (markup patterns: references/components.md)
 
 - **Pure CSS:** button, card, badge/tag, alert/callout, breadcrumb, table,
@@ -158,6 +175,8 @@ Escape hatches when tokens genuinely aren't enough, in order:
   all 20 components + JS module hookup.
 - [references/theming.md](references/theming.md) — token tiers, theming levels
   1–3, `light-dark()`, contrast-safe pairings, escape hatches.
+- [references/image-fx.md](references/image-fx.md) — image effect utilities
+  (.dim, .duotone, .edge-fade, .reveal, data-vt-image) + combination rules.
 - [references/gotchas.md](references/gotchas.md) — file:// CORS, layer facts,
   anti-patterns with fixes.
 - [references/recipes.md](references/recipes.md) — page scaffolds: app shell,

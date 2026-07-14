@@ -18,6 +18,13 @@ say so there.
 
 ### Added
 
+- **Consumer skill: image FX (T-121)**: `skill/welkin` gains
+  `references/image-fx.md` (per-utility markup, knobs, fallbacks, and the
+  wrapper-vs-media combination table), a SKILL.md effects section +
+  updated trigger description, and a `data-vt-image` trap entry in
+  gotchas.md. Live copy at `~/.claude/skills/welkin` re-synced
+  (dual-copy rule).
+
 - **Image FX spec + doctrine touchpoints (T-119)**: new
   `docs/components/image-fx.md` documents the wave-1 utilities — shared
   never-a-broken-image doctrine, per-utility fallback contracts, the token
