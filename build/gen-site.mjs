@@ -121,12 +121,26 @@ function page({ title, crumb, body, depth, modules = [], extra = '', prose = tru
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)} · Welkin</title>
 <link rel="stylesheet" href="${p}dist/welkin.css">
+<style>
+/* Sticky-navbar companion (navbar spec, Accessibility): the reset's
+   scroll-padding reads this token from the root, where the navbar's own
+   3.5rem declaration (scoped to .navbar) is invisible — without it the
+   1rem fallback leaves anchor targets under the stuck bar. 4rem = bar
+   height (3.5rem + border) plus breathing room; the navbar itself keeps
+   its scoped value, so panel placement is unaffected. */
+:root { --wel-navbar-block-size: 4rem; }
+</style>
 </head>
 <body>
 <!-- The page container the navbar collapses against (doc 06 naming
-     convention; scaffolding container-name is the host page's job). -->
-<div style="container-name: page; container-type: inline-size">
-  <header class="navbar">
+     convention; scaffolding container-name is the host page's job). The
+     WRAPPER is the sticky element, not the navbar: inline-size containment
+     makes this div the navbar's containing block, so a sticky navbar inside
+     a navbar-height box has zero travel — and a stuck wrapper sits at
+     viewport top, which keeps the collapsed panel's fixed placement correct
+     at any scroll position. data-sticky still supplies the shadow. -->
+<div style="container-name: page; container-type: inline-size; position: sticky; inset-block-start: 0; z-index: 10">
+  <header class="navbar" data-sticky>
     <nav aria-label="Site">
       <a class="navbar-brand" href="${p}index.html">Welkin</a>
       <button class="navbar-menu-button" popovertarget="site-menu">
