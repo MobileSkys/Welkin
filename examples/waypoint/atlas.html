@@ -183,7 +183,7 @@
 
         </div>
 
-        <p id="q-empty" hidden>
+        <p id="q-empty" style="display: none">
           <span class="alert" data-tone="warning" role="status" style="display: block">No routes match that filter — try a region like “alps” or a mode like “by sea”.</span>
         </p>
       </section>
@@ -227,5 +227,30 @@
   </footer>
 
 </div>
+
+<!-- jQuery interop (T-90): Welkin ships no framework and fights none — this
+     is the JS most long-lived sites already have. Vendored beside the page so
+     file:// works offline (script src from a CDN would too, but not on a
+     train). Classic DOM mutation: .toggle() writes inline display, .text()
+     rewrites the live count — Welkin's grid and tokens don't care who moves
+     the DOM. With JS off, the full list simply stays put. -->
+<script src="jquery.min.js"></script>
+<script>
+  jQuery(function ($) {
+    var $cards = $('.atlas-grid .card');
+    var total = $cards.length;
+    $('#q').on('input', function () {
+      var q = $(this).val().trim().toLowerCase();
+      var shown = 0;
+      $cards.each(function () {
+        var hit = !q || $(this).text().toLowerCase().indexOf(q) !== -1;
+        $(this).toggle(hit);
+        if (hit) shown++;
+      });
+      $('#q-count small').text(shown + ' of ' + total + ' routes shown');
+      $('#q-empty').toggle(shown === 0);
+    });
+  });
+</script>
 </body>
 </html>

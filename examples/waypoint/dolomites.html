@@ -175,7 +175,10 @@
 
       <div class="cluster" style="--wel-cluster-justify: space-between">
         <a class="button" href="atlas.html">← All routes</a>
-        <a class="button" data-variant="primary" href="about.html">Send a field note</a>
+        <div class="cluster">
+          <button class="button" id="save-route" type="button" aria-pressed="false">☆ Save this route</button>
+          <a class="button" data-variant="primary" href="about.html">Send a field note</a>
+        </div>
       </div>
 
     </article>
@@ -218,5 +221,22 @@
   </footer>
 
 </div>
+
+<!-- jQuery interop (T-90), part three: variant axes are just attributes, so
+     any DOM mutator can drive them — .attr() flips the button between its
+     default and primary variants and Welkin restyles it, tokens, states,
+     forced-colors treatment and all. Vendored beside the page for file://. -->
+<script src="jquery.min.js"></script>
+<script>
+  jQuery(function ($) {
+    $('#save-route').on('click', function () {
+      var saved = $(this).attr('aria-pressed') === 'true';
+      $(this)
+        .attr('aria-pressed', String(!saved))
+        .attr('data-variant', saved ? null : 'primary')
+        .text(saved ? '☆ Save this route' : '★ Saved to my routes');
+    });
+  });
+</script>
 </body>
 </html>
