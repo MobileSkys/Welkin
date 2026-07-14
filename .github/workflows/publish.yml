@@ -1,0 +1,36 @@
+# npm publish pipeline (T-53, ADR-0003). Trigger: push a version tag
+# (v0.2.0 …). Gates: the full CI surface — lint, build, size budgets,
+# a11y smoke — then publishes with npm provenance. Requires an
+# `NPM_TOKEN` repository secret (npm automation token); until the repo
+# has a remote + secret, `npm publish` from a clean checkout is the
+# documented manual path (prepublishOnly runs the same npm test gate).
+name: Publish
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm test
+      - run: npx playwright install chromium --with-deps
+      - run: npm run test:a11y
+      # tag must match package.json (guards against publishing a stale tag)
+      - run: |
+          [ "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}" ] \
+            || { echo "tag ${GITHUB_REF_NAME} != package version"; exit 1; }
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -4,9 +4,9 @@
 compile target: cascade layers, design tokens, `light-dark()` colour schemes,
 container queries — plain, readable CSS with **zero required build step**.
 
-> **Status: preview (0.1.x).** This release ships the foundation — design tokens,
-> reset, and base element styles — for early feedback. Layout primitives and
-> components follow; token names may still change before 1.0.
+> **Status: preview (0.2.x).** Tokens, reset, base, the layout primitives, and the
+> full component set (pure-CSS, platform-primitive, and JS-enhanced) are in.
+> Token names may still change before 1.0; the docs site and v1 audit remain.
 
 ## Install
 
@@ -24,14 +24,41 @@ Or link a stylesheet directly — every dist file is valid standalone CSS:
 <link rel="stylesheet" href="node_modules/welkincss/dist/welkin.min.css">
 ```
 
+### CDN — no install at all
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/welkin.min.css">
+<!-- or -->
+<link rel="stylesheet" href="https://unpkg.com/welkincss@0.2/dist/welkin.min.css">
+```
+
+JS-enhanced components are plain ES modules, one per component, loaded the same way:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/js/wel-tabs.js"></script>
+```
+
+### À la carte
+
+Cascade layers fix rule order up front, so **any subset of files works in any
+order** (ADR-0003): link core plus exactly the components you use.
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/welkin-core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/components/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/components/card.min.css">
+```
+
 Bundles:
 
-| File | Contents |
-|------|----------|
-| `welkin.css` / `.min.css` | Everything: reset, tokens, base, layout, components, utilities |
-| `welkin-core.css` / `.min.css` | Foundation only: reset, tokens, base, layout |
+| File | Contents | min+gzip |
+|------|----------|----------|
+| `welkin.css` / `.min.css` | Everything: reset, tokens, base, layout, components, utilities | ~11 KB |
+| `welkin-core.css` / `.min.css` | Foundation only: reset, tokens, base, layout | ~3.5 KB |
+| `components/*.min.css` | One file per component, on top of core | ≤ 3 KB each |
+| `js/*.js` | Optional ES modules for JS-enhanced components | ≤ 2 KB each |
 
-Current preview weighs ~2.8 KB min+gzip (CI-enforced budget).
+All budgets are CI-enforced.
 
 ## What you get in the preview
 

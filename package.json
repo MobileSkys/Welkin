@@ -1,9 +1,20 @@
 {
   "name": "welkincss",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Welkin — a CSS-first UI toolkit built on modern CSS: cascade layers, design tokens, container queries, zero required build step.",
   "type": "module",
   "license": "MIT",
+  "keywords": [
+    "css",
+    "design-tokens",
+    "cascade-layers",
+    "container-queries",
+    "dark-mode",
+    "ui-toolkit",
+    "no-build"
+  ],
+  "unpkg": "dist/welkin.min.css",
+  "jsdelivr": "dist/welkin.min.css",
   "files": [
     "dist"
   ],
@@ -22,7 +33,8 @@
     "test:a11y": "node test/a11y-smoke.mjs",
     "gen:appendix": "node build/gen-token-appendix.mjs",
     "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-media-queries.mjs && node build/check-contrast.mjs && node build/gen-token-appendix.mjs --check",
-    "test": "npm run lint && npm run build && npm run check:size"
+    "test": "npm run lint && npm run build && npm run check:size",
+    "prepublishOnly": "npm test"
   },
   "browserslist": [
     "last 2 Chrome versions",
