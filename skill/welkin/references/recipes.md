@@ -8,7 +8,12 @@
 
 The page shell is authored (not shipped). It must establish the `page` named
 container — the navbar's collapse queries it — and pin the footer on short
-pages:
+pages. The **sticky chrome** pattern below also makes the bar stick: the page
+container wrapper is the sticky element, because a sticky navbar inside a
+bar-height wrapper (or an `auto` shell-grid row) has zero travel — its
+containing block is no taller than the bar, so `data-sticky` appears inert.
+Don't want a sticky bar? Drop `.chrome`'s `position/inset/z-index` lines and
+`data-sticky` — keep the container declarations:
 
 ```html
 <!doctype html>
@@ -19,17 +24,24 @@ pages:
   <title>…</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/welkin.min.css">
   <style>
-    .shell {
+    /* Sticky chrome: page container AND sticky element in one wrapper. */
+    .chrome {
       container-name: page; container-type: inline-size;
-      display: grid; grid-template-rows: auto 1fr auto;
-      min-block-size: 100dvb;
+      position: sticky; inset-block-start: 0; z-index: 10;
+    }
+    /* Companion: the reset's scroll-padding reads this from the root (the
+       navbar's own 3.5rem is scoped and invisible there) — without it,
+       anchor targets land under the stuck bar. Bar height + breathing. */
+    :root { --wel-navbar-block-size: 4rem; }
+    .shell {
+      display: grid; grid-template-rows: 1fr auto;
+      min-block-size: calc(100dvb - var(--wel-navbar-block-size, 3.5rem));
     }
   </style>
 </head>
 <body>
-<div class="shell">
-
-  <header class="navbar">
+<div class="chrome">
+  <header class="navbar" data-sticky>
     <nav aria-label="Primary">
       <a class="navbar-brand" href="/">Brand</a>
       <button class="navbar-menu-button" popovertarget="nav-menu">Menu</button>
@@ -42,7 +54,9 @@ pages:
       </div>
     </nav>
   </header>
+</div>
 
+<div class="shell">
   <main><!-- recipe body goes here --></main>
 
   <footer class="center">
@@ -63,10 +77,13 @@ Dark mode already works (OS-following). Brand it with a Level-1 token block
 ## Recipe: content / article page
 
 `.center` caps the measure; `.prose` styles the editorial body; breakout for
-full-bleed figures. Components stay **outside** `.prose`.
+full-bleed figures. Components stay **outside** `.prose`. One element, one
+primitive (doc 06): children sit flat in `.center` (so `data-breakout` still
+works — it must be a *direct* child) and a `row-gap` supplies the rhythm a
+nested `.stack` would otherwise own.
 
 ```html
-<main class="center stack">
+<main class="center" style="row-gap: var(--wel-space-5)">
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol>
       <li><a href="/">Home</a></li>
@@ -101,13 +118,15 @@ scoped dark theme.
 ```html
 <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
 
-  <section class="cover center" style="--wel-cover-min-height: 70dvb">
-    <div class="stack" data-principal>
-      <h1 style="font-size: var(--wel-text-size-5)">Headline that sells</h1>
-      <p style="color: var(--wel-color-ink-muted)">One-sentence value proposition.</p>
-      <div class="cluster">
-        <a class="button" data-variant="primary" data-size="lg" href="/signup">Get started</a>
-        <a class="button" data-variant="ghost" data-size="lg" href="/docs">Read the docs</a>
+  <section class="cover" style="--wel-cover-min-height: 70dvb">
+    <div class="center" data-principal style="--wel-center-max: 70rem">
+      <div class="stack">
+        <h1 style="font-size: var(--wel-text-size-5)">Headline that sells</h1>
+        <p style="color: var(--wel-color-ink-muted)">One-sentence value proposition.</p>
+        <div class="cluster">
+          <a class="button" data-variant="primary" data-size="lg" href="/signup">Get started</a>
+          <a class="button" data-variant="ghost" data-size="lg" href="/docs">Read the docs</a>
+        </div>
       </div>
     </div>
   </section>
@@ -126,10 +145,12 @@ scoped dark theme.
   <!-- data-theme (≥1.0.1) re-resolves every token for the subtree AND paints
        its own surface + ink — no inline background needed (theming.md, Level 2) -->
   <section data-theme="dark">
-    <div class="center cover" style="--wel-cover-min-height: 30dvb">
-      <div class="cluster" data-principal style="--wel-cluster-justify: space-between">
-        <h2>Ready?</h2>
-        <a class="button" data-variant="primary" data-size="lg" href="/signup">Start free</a>
+    <div class="cover" style="--wel-cover-min-height: 30dvb">
+      <div class="center" data-principal style="--wel-center-max: 70rem">
+        <div class="cluster" style="--wel-cluster-justify: space-between">
+          <h2>Ready?</h2>
+          <a class="button" data-variant="primary" data-size="lg" href="/signup">Start free</a>
+        </div>
       </div>
     </div>
   </section>
@@ -148,7 +169,8 @@ Native validation; errors in markup; `.stack` for rhythm; `.switcher` pairs
 fields that sit side-by-side when space allows.
 
 ```html
-<main class="center stack">
+<main class="center">
+  <div class="stack">
   <h1>Create account</h1>
 
   <form class="stack" style="max-inline-size: 28rem">
@@ -192,6 +214,7 @@ fields that sit side-by-side when space allows.
       <a class="button" data-variant="ghost" href="/login">I have an account</a>
     </div>
   </form>
+  </div>
 </main>
 ```
 
@@ -271,7 +294,8 @@ small — no breakpoints to manage. Notes:
 ## Recipe: FAQ / docs section
 
 ```html
-<main class="center stack">
+<main class="center">
+  <div class="stack">
   <h1>FAQ</h1>
   <div class="accordion">
     <details name="faq">
@@ -282,6 +306,7 @@ small — no breakpoints to manage. Notes:
       <summary><h3>Question two?</h3></summary>
       <p>Answer.</p>
     </details>
+  </div>
   </div>
 </main>
 ```
