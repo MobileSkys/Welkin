@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" role="img" aria-label="Stylised alpine valley at daybreak">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfe3f7"/>
+      <stop offset="0.55" stop-color="#f6e3c8"/>
+      <stop offset="1" stop-color="#f9d9a8"/>
+    </linearGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8fa8c8"/>
+      <stop offset="1" stop-color="#5c7699"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d5570"/>
+      <stop offset="1" stop-color="#1d2c3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#sky)"/>
+  <circle cx="290" cy="78" r="26" fill="#fff3d6"/>
+  <polygon points="0,150 70,70 130,140 190,90 260,160 400,120 400,250 0,250" fill="url(#far)"/>
+  <polygon points="70,70 90,95 60,98" fill="#f2f6fb"/>
+  <polygon points="190,90 210,115 172,116" fill="#eef3f9"/>
+  <polygon points="0,200 90,150 180,205 290,155 400,195 400,250 0,250" fill="url(#near)"/>
+  <ellipse cx="205" cy="235" rx="150" ry="22" fill="#16222f"/>
+</svg>

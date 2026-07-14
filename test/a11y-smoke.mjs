@@ -9,7 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const exampleUrl = (name) =>
   pathToFileURL(fileURLToPath(new URL(`../examples/${name}`, import.meta.url))).href;
 const page_url = exampleUrl('kitchen-sink.html');
-const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html',
+const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html', 'image-fx.html',
   'showcase-solstice.html', 'showcase-nimbus.html', 'showcase-aster.html', 'showcase-fern.html',
   'showcase-cadence.html',
   // Waypoint is a directory-shaped showcase (T-90). These run from file://,

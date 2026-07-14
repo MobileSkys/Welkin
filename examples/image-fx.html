@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image effects · Welkin</title>
+<!-- Run `npm run build` first; this page loads the built bundle. The image-FX
+     page of the docs site (T-120): every wave-1 utility live, each with its
+     copyable markup. gen-site copies it verbatim into site/examples/, so
+     chrome links are written for that depth. The <style> below is demo
+     harness only — it styles nothing the toolkit ships. The view-transitions
+     module link is this page's opt-in (its image-morph rules also serve the
+     same-document gallery demo); no other site page links it, so no
+     cross-document transition can run against this page.
+     The only script is the gallery's startViewTransition wiring, inline so
+     the page keeps working double-clicked from disk (file:// v1 gotcha). -->
+<link rel="stylesheet" href="../dist/welkin.css">
+<link rel="stylesheet" href="../dist/components/view-transitions.css">
+<style>
+  /* Sticky chrome (navbar spec): see layout.html. */
+  .chrome {
+    container-name: page; container-type: inline-size;
+    position: sticky; inset-block-start: 0; z-index: 10;
+  }
+  :root { --wel-navbar-block-size: 4rem; }
+
+  main.center { row-gap: var(--wel-space-6); padding-block: var(--wel-space-5) var(--wel-space-7); }
+
+  .demo-row { display: flex; flex-wrap: wrap; gap: var(--wel-space-4); align-items: start; }
+  .demo-row > figure { flex: 1 1 14rem; max-inline-size: 22rem; }
+  .demo-row figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-start: var(--wel-space-1); }
+  .demo-row img { inline-size: 100%; display: block; border-radius: var(--wel-radius-sm); }
+  pre { background: var(--wel-color-surface-sunken); border: var(--wel-border-width) solid var(--wel-color-border); border-radius: var(--wel-radius-sm); padding: var(--wel-space-3); overflow-x: auto; font-size: var(--wel-text-size--1); }
+
+  /* dim demo: a dark-pinned panel so the effect shows regardless of the
+     reader's OS scheme */
+  .dim-panel { background: var(--wel-color-surface); color: var(--wel-color-ink); border-radius: var(--wel-radius-surface); padding: var(--wel-space-4); }
+
+  /* edge-fade hero bleed well: a sunken backdrop the image melts into */
+  .fade-well { background: var(--wel-color-surface-sunken); border-radius: var(--wel-radius-surface); padding: var(--wel-space-4); }
+  .fade-well img { border-radius: 0; }
+
+  /* gallery demo */
+  .fx-thumbs { display: flex; gap: var(--wel-space-3); flex-wrap: wrap; padding: 0; margin: 0; list-style: none; }
+  .fx-thumbs button { border: none; background: none; padding: 0; cursor: pointer; border-radius: var(--wel-radius-sm); }
+  .fx-thumbs img { inline-size: 8rem; display: block; border-radius: var(--wel-radius-sm); }
+  #fx-stage { margin: var(--wel-space-4) 0 0; }
+  #fx-stage img { inline-size: 100%; max-inline-size: 28rem; display: block; border-radius: var(--wel-radius-surface); }
+</style>
+</head>
+<body>
+<div class="chrome">
+  <header class="navbar" data-sticky>
+    <nav aria-label="Site">
+      <a class="navbar-brand" href="../index.html">Welkin</a>
+      <button class="navbar-menu-button" popovertarget="site-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="site-menu" popover>
+        <li><a href="../index.html#components">Components</a></li>
+        <li><a href="../index.html#docs">Design docs</a></li>
+        <li><a href="layout.html">Layout</a></li>
+        <li><a href="image-fx.html" aria-current="page">Image FX</a></li>
+        <li><a href="../index.html#showcase">Showcase</a></li>
+        <li><a href="../playground.html">Playground</a></li>
+        <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>
+<main class="center" style="--wel-center-max: 52rem">
+  <nav class="breadcrumb" aria-label="You are here"><ol>
+    <li><a href="../index.html">Welkin</a></li><li aria-current="page">Image FX</li>
+  </ol></nav>
+
+  <div class="stack">
+    <h1>Image effects</h1>
+    <p>Pure-CSS image treatments from the utilities layer — token-driven, zero
+    JS, and safe by default: engines without a feature show the plain image,
+    and every motion effect gates off under
+    <code>prefers-reduced-motion</code>. The artwork on this page is inline
+    SVG, so filters map its full tonal range like a photograph.</p>
+  </div>
+
+  <section class="stack">
+    <h2><code>.dim</code> — dark-mode dimming</h2>
+    <p>Photos glare on dark surfaces. <code>.dim</code> applies
+    <code>--wel-img-dim</code>: the identity filter in light scheme, a gentle
+    <code>brightness/contrast</code> pull-down in dark — and it follows
+    <code>data-theme</code> pins exactly like the colour palette. The panel
+    below is pinned dark, so the difference shows in either OS scheme.</p>
+    <div class="dim-panel" data-theme="dark">
+      <div class="demo-row">
+        <figure>
+          <img class="dim" src="img/fx-harbour.svg" alt="Harbour at dusk, dimmed for dark surfaces" width="400" height="250">
+          <figcaption><code>.dim</code> — dimmed on this dark-pinned panel</figcaption>
+        </figure>
+        <figure>
+          <img src="img/fx-harbour.svg" alt="Harbour at dusk at full brightness" width="400" height="250">
+          <figcaption>untreated — full brightness</figcaption>
+        </figure>
+      </div>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="dim" src="harbour.jpg" alt="…"&gt;
+
+/* the dark amount is one themable token */
+:root { --wel-img-dim-amount: brightness(0.8) contrast(1.1); }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.duotone</code> — token-driven two-tone</h2>
+    <p>A wrapper class: the media is desaturated, then two blend overlays map
+    blacks to <code>--wel-duotone-shadow</code> and whites to
+    <code>--wel-duotone-highlight</code>. Both endpoints derive from the
+    cascaded <code>--wel-color-accent</code>, so one accent override retints
+    the whole effect. Under forced colors the overlays drop and the original
+    image shows.</p>
+    <div class="demo-row">
+      <figure>
+        <div class="duotone">
+          <img src="img/fx-alpine.svg" alt="Alpine valley rendered in the accent duotone" width="400" height="250">
+        </div>
+        <figcaption>default — accent-derived endpoints</figcaption>
+      </figure>
+      <figure>
+        <div class="duotone" style="--wel-color-accent: var(--wel-green-600)">
+          <img src="img/fx-alpine.svg" alt="The same valley retinted green via one accent override" width="400" height="250">
+        </div>
+        <figcaption>retinted — <code>--wel-color-accent</code> override</figcaption>
+      </figure>
+      <figure>
+        <div class="duotone" style="--wel-duotone-shadow: oklch(30% 0.09 25); --wel-duotone-highlight: oklch(93% 0.04 80)">
+          <img src="img/fx-alpine.svg" alt="The same valley in custom sepia endpoints" width="400" height="250">
+        </div>
+        <figcaption>custom endpoints — sepia mapping</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;figure class="duotone"&gt;
+  &lt;img src="valley.jpg" alt="…"&gt;
+&lt;/figure&gt;
+
+/* retint: one accent override moves both endpoints */
+.duotone.brand-alt { --wel-color-accent: var(--wel-green-600); }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.edge-fade</code> — gradient mask bleeds</h2>
+    <p>A gradient <code>mask-image</code> melts the element into whatever is
+    behind it. The default fades all four edges; <code>data-edges</code>
+    narrows it to an axis, one edge, or a radial vignette. Fade depth is
+    <code>--wel-edge-fade</code>. Engines without mask support simply show the
+    unfaded image.</p>
+    <div class="fade-well">
+      <div class="demo-row">
+        <figure>
+          <img class="edge-fade" src="img/fx-dunes.svg" alt="Dunes fading out at every edge" width="400" height="250">
+          <figcaption>default — all four edges</figcaption>
+        </figure>
+        <figure>
+          <img class="edge-fade" data-edges="block-end" src="img/fx-dunes.svg" alt="Dunes fading out at the bottom edge only" width="400" height="250">
+          <figcaption><code>data-edges="block-end"</code> — hero bleed</figcaption>
+        </figure>
+        <figure>
+          <img class="edge-fade" data-edges="radial" src="img/fx-dunes.svg" alt="Dunes inside an elliptical vignette" width="400" height="250">
+          <figcaption><code>data-edges="radial"</code> — vignette</figcaption>
+        </figure>
+      </div>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="edge-fade" data-edges="block-end" src="dunes.jpg" alt="…"
+     style="--wel-edge-fade: 6rem"&gt;
+
+&lt;!-- data-edges: block | inline | block-start | block-end |
+     inline-start | inline-end | radial (omit = all four) --&gt;</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.reveal</code> — scroll-driven entry</h2>
+    <p>Fade/scale-in driven by the element's own viewport entry
+    (<code>animation-timeline: view()</code>) — no observers, no JS. The
+    hidden start state only exists where the feature (and motion) is allowed,
+    so Firefox and reduced-motion readers always see the images. Scroll these
+    into view:</p>
+    <div class="demo-row">
+      <figure>
+        <img class="reveal" src="img/fx-alpine.svg" alt="" width="400" height="250">
+        <figcaption>default reveal</figcaption>
+      </figure>
+      <figure>
+        <img class="reveal" style="--wel-reveal-distance: 1.5rem" src="img/fx-dunes.svg" alt="" width="400" height="250">
+        <figcaption>with <code>--wel-reveal-distance</code> rise</figcaption>
+      </figure>
+      <figure>
+        <img class="reveal" style="--wel-reveal-scale: 0.85" src="img/fx-harbour.svg" alt="" width="400" height="250">
+        <figcaption>deeper <code>--wel-reveal-scale</code></figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="reveal" src="peak.jpg" alt="…"&gt;
+
+/* knobs: start scale and block-axis rise */
+.reveal.hero { --wel-reveal-scale: 0.9; --wel-reveal-distance: 1rem; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>data-vt-image</code> — view-transition morph</h2>
+    <p>From the opt-in view-transitions module: tag a
+    <code>--wel-vt</code>-named image with <code>data-vt-image</code> and its
+    snapshots cover-fit the morphing box and swap without the cross-fade
+    double-exposure. It works for cross-document morphs (see the
+    <a href="waypoint/index.html">Waypoint showcase</a>) and equally for your
+    own same-document transitions — pick a thumbnail below; the few lines of
+    gallery wiring are this page's only script. Without view-transition
+    support (or with reduced motion) the stage simply swaps instantly.</p>
+    <ul class="fx-thumbs">
+      <li><button type="button" data-full="img/fx-alpine.svg"><img data-vt-image src="img/fx-alpine.svg" alt="Show the alpine valley on the stage" width="400" height="250"></button></li>
+      <li><button type="button" data-full="img/fx-dunes.svg"><img data-vt-image src="img/fx-dunes.svg" alt="Show the dunes on the stage" width="400" height="250"></button></li>
+      <li><button type="button" data-full="img/fx-harbour.svg"><img data-vt-image src="img/fx-harbour.svg" alt="Show the harbour on the stage" width="400" height="250"></button></li>
+    </ul>
+    <figure id="fx-stage">
+      <img data-vt-image src="img/fx-alpine.svg" alt="Gallery stage" width="400" height="250">
+      <figcaption>the stage — thumbnails morph into it</figcaption>
+    </figure>
+    <pre tabindex="0"><code>&lt;img data-vt-image src="thumb.jpg" alt="…"&gt;   &lt;!-- both sides tagged --&gt;
+
+/* name the pair only while the swap is in flight (tabs pattern) */
+thumb.style.setProperty('--wel-vt', 'stage');
+const vt = document.startViewTransition(() =&gt; {
+  thumb.style.removeProperty('--wel-vt');
+  stage.style.setProperty('--wel-vt', 'stage');
+  stage.src = thumb.src;
+});
+vt.finished.finally(() =&gt; stage.style.removeProperty('--wel-vt'));</code></pre>
+  </section>
+</main>
+<script>
+  // Gallery wiring (demo-only): morph a thumbnail into the stage. Falls back
+  // to an instant swap without startViewTransition or under reduced motion.
+  const stage = document.querySelector('#fx-stage img');
+  for (const btn of document.querySelectorAll('.fx-thumbs button')) {
+    btn.addEventListener('click', () => {
+      const thumb = btn.querySelector('img');
+      const commit = () => { stage.src = btn.dataset.full; stage.alt = thumb.alt.replace('Show the', 'Stage:'); };
+      if (!document.startViewTransition
+          || matchMedia('(prefers-reduced-motion: reduce)').matches
+          || stage.src.endsWith(btn.dataset.full)) { commit(); return; }
+      thumb.style.setProperty('--wel-vt', 'fx-stage');
+      const vt = document.startViewTransition(() => {
+        thumb.style.removeProperty('--wel-vt');
+        stage.style.setProperty('--wel-vt', 'fx-stage');
+        commit();
+      });
+      vt.ready.catch(() => {}); // skipped transitions reject ready — expected
+      const clean = () => stage.style.removeProperty('--wel-vt');
+      vt.finished.then(clean, clean);
+    });
+  }
+</script>
+</body>
+</html>

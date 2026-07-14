@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" role="img" aria-label="Stylised harbour at dusk with sailboats">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b6ea6"/>
+      <stop offset="0.6" stop-color="#b884a5"/>
+      <stop offset="1" stop-color="#e8a184"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d78f7e"/>
+      <stop offset="1" stop-color="#3a4668"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="160" fill="url(#sky)"/>
+  <circle cx="200" cy="128" r="22" fill="#ffe9c9"/>
+  <rect y="160" width="400" height="90" fill="url(#sea)"/>
+  <rect x="180" y="158" width="40" height="52" fill="#f4c592" opacity="0.45"/>
+  <path d="M96,196 L128,196 L120,206 L104,206 Z" fill="#2a3149"/>
+  <path d="M112,150 L112,196 L92,196 Z" fill="#e9e2d2"/>
+  <path d="M286,186 L314,186 L308,195 L292,195 Z" fill="#232a40"/>
+  <path d="M300,148 L300,186 L318,186 Z" fill="#ded6c4"/>
+  <ellipse cx="200" cy="248" rx="220" ry="14" fill="#242c45"/>
+</svg>

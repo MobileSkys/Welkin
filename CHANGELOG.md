@@ -18,6 +18,16 @@ say so there.
 
 ### Added
 
+- **Image FX page** (docs site, T-120): `examples/image-fx.html` demos every
+  wave-1 image utility live with copyable markup — `.dim` (inside a
+  dark-pinned panel so it shows in either OS scheme), `.duotone`
+  (default/retinted/custom endpoints), `.edge-fade` (all-edges, hero
+  bleed, vignette), `.reveal` (scroll to see), and a `data-vt-image`
+  same-document gallery morph whose few lines of wiring are the page's
+  only script (inline, so file:// keeps working). Artwork is local SVG
+  (`examples/img/`). Site + example navbars gain an "Image FX" item and
+  the a11y smoke covers the page in both schemes and forced colors.
+
 - **`.dim` dark-mode image dimming (T-102)**: photos glare on dark
   surfaces — `.dim` on media applies `--wel-img-dim`, which resolves to
   the identity filter in light scheme and `--wel-img-dim-amount`
