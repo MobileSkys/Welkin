@@ -9,23 +9,21 @@
    initial-value is the concrete light-scheme value — registrations cannot
    carry var()/light-dark(), so these back-stop the :root declarations. */
 @layer tokens {
-  /* ---- Scheme wiring (ADR-0007). Declaring both schemes lets the UA pick
-     per user preference and render form controls/scrollbars/system colours
-     accordingly; every light-dark() token below follows. [data-theme] on any
-     subtree pins the scheme — page-level toggle and scoped mixed-mode
-     regions with one mechanism. A JS toggle only ever sets data-theme.
+  /* ---- Scheme wiring (ADR-0007, amended 1.0.1). [data-theme] on any subtree
+     pins the scheme — page-level toggle and scoped mixed-mode regions with one
+     mechanism. A JS toggle only ever sets data-theme.
+     Because the semantic tokens are typed (@property "<color>"), light-dark()
+     and the accent derivations resolve at computed-value time ON THE ELEMENT
+     THAT DECLARES THEM — descendants inherit the already-resolved colour. A
+     pin that only set color-scheme was therefore inert for tokens (T-84): the
+     token block below re-declares on every [data-theme] subtree root, so the
+     whole palette re-resolves against the pinned scheme and the locally
+     cascaded accent. Consequence for themes: declare on `:root, [data-theme]`
+     (doc 10) or a :root-only theme stops at the first data-theme boundary.
+     The pin rules live AFTER the token block: equal specificity, so source
+     order is what lets them beat its `color-scheme: light dark`.
      Fallback stance: engines without light-dark() resolve each typed token
-     to its @property initial-value — the static light palette (ADR-0007).
-     color-scheme: light dark itself is declared in the primitives :root
-     block below (one :root rule per file, lint-enforced). */
-  [data-theme="light"] {
-    color-scheme: light;
-  }
-
-  [data-theme="dark"] {
-    color-scheme: dark;
-  }
-
+     to its @property initial-value — the static light palette (ADR-0007). */
   @property --wel-color-surface        { syntax: "<color>"; inherits: true; initial-value: oklch(97% 0.002 250); }
   @property --wel-color-surface-raised { syntax: "<color>"; inherits: true; initial-value: oklch(99.5% 0.001 250); }
   @property --wel-color-surface-sunken { syntax: "<color>"; inherits: true; initial-value: oklch(94% 0.003 250); }
@@ -52,7 +50,7 @@
      generation at build time; a docs-phase script may rewrite this block).
      Fixed lightness targets per step, per-hue chroma curve peaking mid-ramp,
      so every ramp reads evenly spaced. Never consumed by components. */
-  :root {
+  :root, [data-theme] {
     color-scheme: light dark;
 
     /* grey (hue 250, near-neutral) */
@@ -158,5 +156,27 @@
     --wel-color-success-tint: color-mix(in oklch, var(--wel-color-success) 12%, var(--wel-color-surface));
     --wel-color-warning-tint: color-mix(in oklch, var(--wel-color-warning) 12%, var(--wel-color-surface));
     --wel-color-danger-tint:  color-mix(in oklch, var(--wel-color-danger) 12%, var(--wel-color-surface));
+  }
+
+  /* Scheme pins — after the token block on purpose (see the wiring note):
+     same specificity as its [data-theme] arm, so source order is what makes
+     the pin win over `color-scheme: light dark`. */
+  [data-theme="light"] {
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  /* Forced colors: the user demanded the system palette — a scoped scheme
+     pin is meaningless there, and Chromium resolves forced CanvasText per
+     the pinned scheme while forcing backgrounds to the page Canvas, which
+     turns a dark pin into white-on-white. Un-pin so text and background
+     force consistently. (After the pins: same specificity, source order.) */
+  @media (forced-colors: active) {
+    [data-theme] {
+      color-scheme: light dark;
+    }
   }
 }

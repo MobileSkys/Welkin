@@ -16,7 +16,7 @@
     }
 
     /* Aster & Vale — a complete Welkin theme. Token declarations only. */
-    :root {
+    :root, [data-theme] {
       --wel-color-accent: light-dark(oklch(50% 0.15 25), oklch(74% 0.12 25)); /* oxblood */
       --wel-color-surface: light-dark(oklch(97% 0.012 85), oklch(23% 0.015 60)); /* warm paper / warm dark */
       --wel-color-surface-raised: light-dark(oklch(99% 0.008 85), oklch(27% 0.015 60));
@@ -299,7 +299,7 @@
         <details>
           <summary><h3>View this page’s theme</h3></summary>
           <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
-          <pre tabindex="0"><code>:root {
+          <pre tabindex="0"><code>:root, [data-theme] {
   --wel-color-accent: light-dark(oklch(50% 0.15 25), oklch(74% 0.12 25)); /* oxblood */
   --wel-color-surface: light-dark(oklch(97% 0.012 85), oklch(23% 0.015 60)); /* warm paper / warm dark */
   --wel-color-surface-raised: light-dark(oklch(99% 0.008 85), oklch(27% 0.015 60));

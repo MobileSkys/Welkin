@@ -58,6 +58,41 @@ await axePass('dark scheme', { colorScheme: 'dark' });
   await context.close();
 }
 
+// 3b. Scheme pinning re-resolves tokens (ADR-0007 amendment, T-84): a
+// data-theme="dark" subtree on a light page must get the DARK surface —
+// typed tokens resolve where declared, so the token block re-declares on
+// [data-theme] roots. Also: a scoped accent must re-derive its hover shade.
+{
+  const context = await browser.newContext({ colorScheme: 'light' });
+  const page = await context.newPage();
+  await page.goto(page_url);
+  const r = await page.evaluate(() => {
+    const g = (el, t) => getComputedStyle(el).getPropertyValue(t).trim();
+    const pin = document.createElement('div');
+    pin.setAttribute('data-theme', 'dark');
+    const brand = document.createElement('div');
+    brand.setAttribute('data-theme', 'probe-brand');
+    brand.style.setProperty('--wel-color-accent', 'oklch(50% 0.11 190)');
+    document.body.append(pin, brand);
+    return {
+      rootSurface: g(document.documentElement, '--wel-color-surface'),
+      pinSurface: g(pin, '--wel-color-surface'),
+      pinShadow: g(pin, '--wel-shadow-color'),
+      brandHover: g(brand, '--wel-color-accent-hover'),
+    };
+  });
+  r.pinSurface !== r.rootSurface && r.pinSurface.includes('0.17')
+    ? ok('scheme pin: dark surface re-resolves inside data-theme="dark"')
+    : fail(`scheme pin: pinned surface "${r.pinSurface}" (root "${r.rootSurface}")`);
+  r.pinShadow.includes('0.55')
+    ? ok('scheme pin: shadow colour deepens inside the pin')
+    : fail(`scheme pin: pinned shadow "${r.pinShadow}"`);
+  r.brandHover.includes('190')
+    ? ok('sub-brand: hover re-derives from the scoped accent')
+    : fail(`sub-brand: hover "${r.brandHover}" did not re-derive from hue 190`);
+  await context.close();
+}
+
 // 4. Forced colors: page renders, boundaries survive (table row rules are
 // borders, not backgrounds — the docs/09 bg-only-state rule), and axe's
 // non-contrast rules stay clean (contrast is UA-controlled under forced

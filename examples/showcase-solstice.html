@@ -16,7 +16,7 @@
     }
 
     /* Solstice theme — Level 1: token declarations only. */
-    :root {
+    :root, [data-theme] {
       --wel-color-accent: light-dark(oklch(54% 0.17 300), oklch(72% 0.15 300)); /* violet */
       --wel-text-font-display: "Segoe UI", "Avenir Next", system-ui, sans-serif;
       --wel-radius-control: 0.75rem;
@@ -149,9 +149,10 @@
       </div>
     </section>
 
-    <!-- CTA band — painted with the accent's derived tint, so it retints with
-         the theme's one accent token in both schemes. -->
-    <section style="background: var(--wel-color-accent-tint)">
+    <!-- CTA band — Level 2 scheme pin (doc 10, ADR-0007 amendment): the pinned
+         subtree re-resolves every light-dark() token, and the base [data-theme]
+         rule paints the (now dark) surface + ink for the band. -->
+    <section data-theme="dark">
       <div class="center cover" style="--wel-cover-min-height: 30dvb">
         <div class="cluster" data-principal style="--wel-cluster-justify: space-between">
           <h2>Reclaim your team's week</h2>
@@ -269,7 +270,7 @@
       <details>
         <summary><h3>View this page's theme</h3></summary>
         <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
-        <pre tabindex="0"><code>:root {
+        <pre tabindex="0"><code>:root, [data-theme] {
   --wel-color-accent: light-dark(oklch(54% 0.17 300), oklch(72% 0.15 300)); /* violet */
   --wel-text-font-display: "Segoe UI", "Avenir Next", system-ui, sans-serif;
   --wel-radius-control: 0.75rem;

@@ -18,7 +18,7 @@
   }
 
   /* Nimbus theme — a complete Welkin theme is this token block. */
-  :root {
+  :root, [data-theme] {
     --wel-color-accent: light-dark(oklch(54% 0.16 265), oklch(72% 0.14 265)); /* indigo */
     --wel-radius-control: 0.25rem;
     --wel-radius-surface: 0.5rem;
@@ -307,7 +307,7 @@
       <details>
         <summary><h2>View this page's theme</h2></summary>
         <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
-        <pre tabindex="0"><code>:root {
+        <pre tabindex="0"><code>:root, [data-theme] {
   --wel-color-accent: light-dark(oklch(54% 0.16 265), oklch(72% 0.14 265)); /* indigo */
   --wel-radius-control: 0.25rem;
   --wel-radius-surface: 0.5rem;

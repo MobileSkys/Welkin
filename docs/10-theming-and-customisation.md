@@ -18,13 +18,13 @@ override, and it belongs at level 3 or in the escape hatches below.
 
 ## The three customisation levels
 
-### Level 1 — Retheme the system (semantic tokens on `:root`)
+### Level 1 — Retheme the system (semantic tokens on `:root, [data-theme]`)
 
 The 80% case. Set brand colour, type, shape, density:
 
 ```css
 /* my-brand.css — a complete Welkin theme */
-:root {
+:root, [data-theme] {
   --wel-color-accent: oklch(60% 0.19 145);        /* brand green */
   --wel-text-font-body: "Inter", system-ui, sans-serif;
   --wel-text-font-display: "Fraunces", serif;
@@ -44,14 +44,25 @@ Dark mode needs no separate theme: brand tokens are defined with `light-dark()`,
 theme sets both halves at the definition site
 ([ADR-0007](decisions/ADR-0007-dark-mode-mechanism.md)).
 
+**Why `:root, [data-theme]` and not just `:root`?** Welkin's colour tokens are typed
+(`@property "<color>"`), so `light-dark()` and the accent derivations resolve **on the
+element that declares them** and descendants inherit the finished colour. Welkin therefore
+re-declares its whole palette on every `[data-theme]` subtree root (that is what makes
+scheme pinning and sub-brand derivation work — ADR-0007, amended 1.0.1). A theme declared
+only on `:root` would be shadowed by those re-declarations at the first `data-theme`
+boundary; declaring on both keeps your theme in force everywhere. (Selector list, same
+token block — still "a theme is a token file".)
+
 ### Level 2 — Scoped themes (`[data-theme]` subtrees)
 
 Any token block can scope to a subtree. Two orthogonal uses:
 
 - **Scheme pinning:** `[data-theme="dark"]` pins `color-scheme: dark` for a subtree
-  (dark hero on a light page) — mechanism in ADR-0007.
+  (dark hero on a light page) — the pinned subtree re-resolves every `light-dark()`
+  token against the pinned scheme; mechanism in ADR-0007.
 - **Named sub-brands:** `[data-theme="campaign"] { --wel-color-accent: … }` restyles a
-  section without touching the page theme. Inheritance does the rest.
+  section without touching the page theme; hover/active/tint/contrast re-derive from
+  the scoped accent automatically. Inheritance does the rest.
 
 ### Level 3 — Component-token surgery (one-offs)
 

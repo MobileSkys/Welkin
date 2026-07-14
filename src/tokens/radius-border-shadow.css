@@ -14,7 +14,10 @@
   @property --wel-radius-surface { syntax: "<length>"; inherits: true; initial-value: 0.75rem; }
   @property --wel-shadow-color { syntax: "<color>"; inherits: true; initial-value: oklch(25% 0.01 250 / 0.15); }
 
-  :root {
+  /* `:root, [data-theme]` — --wel-shadow-color is typed, so its light-dark()
+     resolves where declared; re-declaring on pinned subtrees keeps dark-mode
+     elevation working inside them (T-84, same mechanism as tokens/color.css). */
+  :root, [data-theme] {
     --wel-radius-sm: 0.25rem;
     --wel-radius-md: 0.5rem;
     --wel-radius-lg: 1rem;

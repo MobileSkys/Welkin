@@ -20,7 +20,7 @@
 
   /* Level 1 — the theme (theming.md, doc 10): token declarations only.
      Earthy fern green, warm off-white paper, generous organic radii. */
-  :root {
+  :root, [data-theme] {
     --wel-color-accent: light-dark(oklch(52% 0.14 150), oklch(72% 0.13 150)); /* fern green */
     --wel-color-surface: light-dark(oklch(98% 0.008 120), oklch(22% 0.015 140));
     --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(26% 0.015 140));
@@ -447,7 +447,7 @@
       <details>
         <summary><h2>View this page's theme</h2></summary>
         <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
-        <pre tabindex="0"><code>:root {
+        <pre tabindex="0"><code>:root, [data-theme] {
   --wel-color-accent: light-dark(oklch(52% 0.14 150), oklch(72% 0.13 150)); /* fern green */
   --wel-color-surface: light-dark(oklch(98% 0.008 120), oklch(22% 0.015 140));
   --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(26% 0.015 140));

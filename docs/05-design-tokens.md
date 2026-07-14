@@ -113,18 +113,21 @@ Per [ADR-0007](decisions/ADR-0007-dark-mode-mechanism.md): `color-scheme: light 
 `:root`, every semantic colour token defined **once** with `light-dark()`:
 
 ```css
-:root { color-scheme: light dark; }
-:root {
+:root, [data-theme] {
+  color-scheme: light dark;
   --wel-color-surface: light-dark(oklch(98% 0.005 250), oklch(18% 0.01 250));
   --wel-color-ink:     light-dark(oklch(22% 0.02 250), oklch(92% 0.01 250));
 }
+/* after the token block — source order lets the pin win */
 [data-theme="light"] { color-scheme: light; }
 [data-theme="dark"]  { color-scheme: dark; }
 ```
 
-Manual override is `data-theme` on any subtree — it just pins `color-scheme`, and every
-`light-dark()` token in that subtree follows. No duplicated token blocks, and the UA
-renders form controls, scrollbars, and system colours correctly for free.
+Manual override is `data-theme` on any subtree — it pins `color-scheme`, and because the
+token block re-declares on every `[data-theme]` subtree root, each `light-dark()` token
+re-resolves there against the pinned scheme (the tokens are typed, so they resolve where
+declared — ADR-0007, amended 1.0.1). No duplicated token blocks, and the UA renders form
+controls, scrollbars, and system colours correctly for free.
 
 ## Typography
 

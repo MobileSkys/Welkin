@@ -358,9 +358,9 @@ const playgroundBody = `
 <h1>Token playground</h1>
 <p class="prose">A Welkin theme is a token file — nothing else
 (<a href="docs/10-theming-and-customisation.html">doc 10</a>, Level 1). Every control
-below writes one semantic token onto <code>:root</code>; hover/active shades, tints,
-and the focus ring re-derive in the browser. This page is styled by the same tokens,
-so it restyles itself.</p>
+below writes one semantic token onto the theme scope (<code>:root, [data-theme]</code> —
+doc 10 explains why both); hover/active shades, tints, and the focus ring re-derive in
+the browser. This page is styled by the same tokens, so it restyles itself.</p>
 <noscript><div class="alert" data-tone="info"><p class="alert-title">The playground
 needs JavaScript</p><p>The toolkit doesn't — but live editing does. The theme format
 it teaches is just the CSS shown below.</p></div></noscript>
@@ -402,7 +402,7 @@ ${CONTROLS.map(([token, label, type, attrs]) => `    <div class="field">
 </div>
 
 <h2>Your theme</h2>
-<pre tabindex="0"><code id="pg-css">:root {
+<pre tabindex="0"><code id="pg-css">:root, [data-theme] {
   /* move a control to start your theme */
 }</code></pre>
 
@@ -425,6 +425,11 @@ ${PAIRINGS.map(([fg, bg, min, why]) => `    <tr data-fg="${fg}" data-bg="${bg}" 
 const playgroundScript = `
 <script type="module">
   const rootStyle = document.documentElement.style;
+  // The tokens re-declare on every [data-theme] subtree root (ADR-0007
+  // amendment), so the per-scheme probes would shadow an inline :root
+  // edit — mirror every edit onto them, exactly as the exported
+  // ":root, [data-theme]" theme selector does in stylesheet form.
+  const probes = ['pg-probe-light', 'pg-probe-dark'].map((id) => document.getElementById(id));
   const dirty = new Map();
   const css2d = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
 
@@ -457,8 +462,8 @@ const playgroundScript = `
 
   function emit() {
     document.getElementById('pg-css').textContent = dirty.size
-      ? ':root {\\n' + [...dirty].map(([t, v]) => '  ' + t + ': ' + v + ';').join('\\n') + '\\n}'
-      : ':root {\\n  /* move a control to start your theme */\\n}';
+      ? ':root, [data-theme] {\\n' + [...dirty].map(([t, v]) => '  ' + t + ': ' + v + ';').join('\\n') + '\\n}'
+      : ':root, [data-theme] {\\n  /* move a control to start your theme */\\n}';
   }
 
   document.getElementById('pg').addEventListener('input', (e) => {
@@ -467,6 +472,7 @@ const playgroundScript = `
     if (!token) return;
     const value = el.value + (el.dataset.unit || '');
     rootStyle.setProperty(token, value);
+    for (const pr of probes) pr.style.setProperty(token, value);
     dirty.set(token, value);
     emit(); contrast();
   });
@@ -478,7 +484,10 @@ const playgroundScript = `
   });
 
   document.getElementById('pg').addEventListener('reset', () => {
-    for (const t of dirty.keys()) rootStyle.removeProperty(t);
+    for (const t of dirty.keys()) {
+      rootStyle.removeProperty(t);
+      for (const pr of probes) pr.style.removeProperty(t);
+    }
     dirty.clear();
     requestAnimationFrame(() => { emit(); contrast(); });
   });
