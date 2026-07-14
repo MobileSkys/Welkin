@@ -34,7 +34,8 @@
     "gen:appendix": "node build/gen-token-appendix.mjs",
     "lint": "stylelint \"src/**/*.css\" && node build/check-layer-line.mjs && node build/check-media-queries.mjs && node build/check-contrast.mjs && node build/gen-token-appendix.mjs --check",
     "test": "npm run lint && npm run build && npm run check:size",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "build:site": "npm run build && node build/gen-site.mjs"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -47,6 +48,7 @@
     "@axe-core/playwright": "^4.12.1",
     "browserslist": "^4.24.0",
     "lightningcss": "^1.27.0",
+    "marked": "^18.0.6",
     "playwright": "^1.61.1",
     "stylelint": "^16.10.0"
   }

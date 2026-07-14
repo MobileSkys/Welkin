@@ -25,3 +25,4 @@ desktop.ini
 
 # Kanban board (local state incl. auth token)
 .kanban/
+site/
