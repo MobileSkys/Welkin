@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waypoint — Crossing the Dolomites</title>
+<!-- Waypoint, page 3 of 4 (T-90): the journal entry. Its hero artwork shares
+     --wel-vt: entry-dolomites with the featured card on the home page — click
+     through from there and the card picture grows into this masthead. The
+     whole entry sits under data-theme="alpine" (theming Level 2). -->
+<link rel="stylesheet" href="../../dist/welkin.css">
+<link rel="stylesheet" href="../../dist/components/view-transitions.css">
+<style>
+  /* Page shell (recipes.md): the `page` container the navbar queries. */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Level 1 — the theme (doc 10): map-paper cream, night-atlas navy,
+     compass-orange accent; crisp cartographic corners. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45));
+    --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+    --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.75rem;
+  }
+
+  /* Level 2 — named sub-brand (doc 10): alpine sections cool to glacier teal. */
+  [data-theme="alpine"] {
+    --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+  }
+
+  /* Level 3 — component-token surgery (doc 10): stamp-square tags, sitewide. */
+  .tag { --wel-tag-radius: 0; }
+
+  /* The escape hatch (doc 04): user CSS in @layer overrides outranks every
+     Welkin layer (applies on the Atlas page's cards). */
+  @layer overrides {
+    .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="index.html" style="--wel-vt: brand">Waypoint</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="atlas.html">Atlas</a></li>
+        <li><a href="dolomites.html" aria-current="page">Journal</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-7); padding-block: var(--wel-space-6)">
+    <div class="center" style="--wel-center-max: 70rem">
+    <article class="stack" data-theme="alpine" style="--wel-stack-gap: var(--wel-space-6)">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="atlas.html">Atlas</a></li>
+          <li><a href="" aria-current="page">Crossing the Dolomites</a></li>
+        </ol>
+      </nav>
+
+      <!-- The morph target: same --wel-vt name as the home page's featured
+           card artwork. One name, once per page — that's the whole API. -->
+      <header class="stack">
+        <div class="frame" role="img" aria-label="Stylised jagged limestone peaks at dawn"
+             style="--wel-vt: entry-dolomites; --wel-frame-ratio: 21 / 9; border-radius: var(--wel-radius-surface); overflow: clip;
+                    background: linear-gradient(165deg, oklch(85% 0.06 200), oklch(55% 0.1 250))">
+          <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice" style="inline-size: 100%; block-size: 100%; color: oklch(35% 0.06 250)">
+            <path fill="currentColor" d="M0 40 16 8l7 12 9-16 11 22 9-10 15 24 13-18 11 12 15-10 14 14v2z"/>
+          </svg>
+        </div>
+        <div class="stack" style="--wel-stack-gap: var(--wel-space-2)">
+          <h1 style="text-wrap: balance">Crossing the Dolomites</h1>
+          <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2); --wel-cluster-align: center">
+            <span class="badge" data-tone="success">Entry 112</span>
+            <span class="tag">Alps</span>
+            <span class="tag">On foot</span>
+            <small style="color: var(--wel-color-ink-muted)">South Tyrol, Italy · June 2026 · 14 min read</small>
+          </div>
+        </div>
+      </header>
+
+      <div class="sidebar-layout" data-side="end" style="--wel-sidebar-width: 18rem; --wel-sidebar-gap: var(--wel-space-7)">
+        <div class="prose">
+          <p><strong>The Alta Via 1 begins in a bus queue.</strong> Braies is
+          postcard-famous now, and the lake car park fills before the espresso
+          machine at the kiosk has warmed up. But walk twenty minutes up the
+          first switchbacks and the crowd thins to people carrying their own
+          weight — the great sorting mechanism of every mountain range.</p>
+
+          <p>The Dolomites are not like other Alps. There is no gentle green
+          introduction; the limestone stands straight up out of the meadows,
+          pale as bone, and the trail threads the gaps. Geologists will tell
+          you these were coral reefs once, which explains both the colour and
+          the vertigo — you are, in a sense, walking the rim of a fossil
+          lagoon two kilometres in the sky.</p>
+
+          <blockquote>
+            <p>Every rifugio on the route serves polenta, and every one of
+            them is certain the next hut over does it wrong.</p>
+          </blockquote>
+
+          <h2>Rifugio arithmetic</h2>
+          <p>Hut-to-hut walking replaces navigation anxiety with dinner
+          anxiety. Beds book out months ahead in high summer, so the route
+          plans itself backwards from wherever said yes. Ours worked out to
+          four stages, which the table below records the honest way — with
+          the espresso stops counted.</p>
+
+          <p>What the table can't record is the light. At seven each evening
+          the enrosadira arrives — the alpenglow the Ladin valleys named
+          centuries ago — and the whole range goes rose-pink for a quarter of
+          an hour. Conversation on the terraces stops. It does this every
+          clear evening, and it is somehow never routine.</p>
+
+          <h2>What I'd change</h2>
+          <p>Nothing about the route; everything about the pack. The classic
+          mistake survives every generation of gear: take the sleeping-bag
+          liner, leave the second fleece. The huts are warm, the blankets are
+          thick, and the climbs are long.</p>
+        </div>
+
+        <aside class="stack" aria-label="Route details">
+          <div class="card" data-variant="outlined">
+            <header class="card-header"><h2 style="font-size: var(--wel-text-size-1)">Route card</h2></header>
+            <div class="card-body">
+              <dl class="stack" style="--wel-stack-gap: var(--wel-space-2)">
+                <div><dt><small style="color: var(--wel-color-ink-muted)">Start</small></dt><dd>Lago di Braies</dd></div>
+                <div><dt><small style="color: var(--wel-color-ink-muted)">End</small></dt><dd>Passo Duran</dd></div>
+                <div><dt><small style="color: var(--wel-color-ink-muted)">Distance</small></dt><dd>120 km · 4 stages</dd></div>
+                <div><dt><small style="color: var(--wel-color-ink-muted)">Sleeps</small></dt><dd>Rifugi Biella, Lagazuoi, Nuvolau</dd></div>
+              </dl>
+            </div>
+          </div>
+          <aside class="alert" data-tone="warning">
+            <p class="alert-title">Snow note</p>
+            <p>The Forcella del Lago crossing holds snow into July. Poles, not
+            heroics.</p>
+          </aside>
+        </aside>
+      </div>
+
+      <section class="stack" aria-labelledby="stages-title">
+        <h2 id="stages-title">The stages</h2>
+        <div class="table-scroller" tabindex="0" role="region" aria-labelledby="stages-caption">
+          <table class="table" data-variant="ruled">
+            <caption class="visually-hidden" id="stages-caption">Alta Via 1 stages walked, with distance, ascent and espresso stops</caption>
+            <thead>
+              <tr><th scope="col">Stage</th><th scope="col">From → to</th><th scope="col">Distance</th><th scope="col">Ascent</th><th scope="col">Espressi</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">1</th><td>Braies → Rif. Biella</td><td>12 km</td><td>900 m</td><td>2</td></tr>
+              <tr><th scope="row">2</th><td>Biella → Rif. Lagazuoi</td><td>34 km</td><td>1,400 m</td><td>3</td></tr>
+              <tr><th scope="row">3</th><td>Lagazuoi → Rif. Nuvolau</td><td>28 km</td><td>1,100 m</td><td>2</td></tr>
+              <tr><th scope="row">4</th><td>Nuvolau → Passo Duran</td><td>46 km</td><td>1,900 m</td><td>4</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="cluster" style="--wel-cluster-justify: space-between">
+        <a class="button" href="atlas.html">← All routes</a>
+        <a class="button" data-variant="primary" href="about.html">Send a field note</a>
+      </div>
+
+    </article>
+    </div>
+  </main>
+
+  <footer class="center" style="--wel-center-max: 70rem; padding-block: var(--wel-space-6)">
+    <div class="stack">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Waypoint. Words and wrong turns by E. Marsh.</small>
+      <a href="../../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h2>View this page's theme</h2></summary>
+        <p>Identical to every Waypoint page — plus this entry wraps itself in
+        <code>data-theme="alpine"</code>, so the accent runs glacier teal
+        (theming Level 2, one attribute).</p>
+        <pre tabindex="0"><code>:root, [data-theme] {
+  --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45)); /* compass orange */
+  --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+  --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+  --wel-radius-control: 0.25rem;
+  --wel-radius-surface: 0.75rem;
+}
+
+[data-theme="alpine"] {
+  --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+}
+
+.tag { --wel-tag-radius: 0; }
+
+/* The escape hatch (doc 04): user CSS beats every Welkin layer */
+@layer overrides {
+  .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+}</code></pre>
+      </details>
+    </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
