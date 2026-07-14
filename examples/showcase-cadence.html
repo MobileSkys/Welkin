@@ -17,7 +17,8 @@
     --wel-text-font-display: ui-monospace, "Cascadia Mono", Consolas, monospace;
     --wel-radius-control: 0.25rem;
     --wel-radius-surface: 0.5rem;
-    --wel-motion-ease: var(--wel-motion-ease-spring);  /* every transition springs */
+    --wel-motion-ease: var(--wel-motion-ease-spring);  /* transitions overshoot + settle */
+    --wel-motion-duration-1: 180ms;                    /* room for the spring to read */
     --wel-motion-duration-2: 250ms;                    /* a touch more theatrical */
   }
 
@@ -39,6 +40,12 @@
     transition-delay: calc(var(--rise-order, 0) * 90ms * var(--wel-motion));
     @starting-style { opacity: 0; translate: 0 1.25rem; }
   }
+
+  /* Demo 1's visible half: buttons already transition `translate` with the
+     themed easing — one unlayered line (the sanctioned escape hatch) gives
+     hover a destination, and the spring does the rest. Multiplying the lift
+     by --wel-motion means motion-off users get no position jump either. */
+  .button:hover { translate: 0 calc(-3px * var(--wel-motion)); }
 
   /* Demo 3 — the work grid morphs when filtered: each card owns a
      view-transition-name; the group animation rides the same multiplier. */
@@ -114,16 +121,22 @@
     <!-- Demo 1: motion is themed like colour. -->
     <section class="center stack" style="--wel-center-max: 46rem">
       <h2>Motion is a token, tuned like a colour</h2>
-      <p>Hover any button on this page — everything springs, because the theme
-      swapped one easing token. Welkin components never hard-code a duration;
-      they all say <code>calc(token × --wel-motion)</code>, so two lines retune
-      the whole site's character:</p>
+      <p>Hover any button on this page — it lifts, overshoots, and settles.
+      The lift is one line; the <em>spring</em> and its timing are theme
+      tokens, set the same way this page sets its colours. Welkin components
+      never hard-code a duration — everything says
+      <code>calc(token × --wel-motion)</code> — so retuning three tokens
+      changes the whole site's character:</p>
       <div class="accordion" data-variant="separated"><details>
         <summary>The lines behind this — the page's motion theme</summary>
         <pre tabindex="0"><code>:root, [data-theme] {
-  --wel-motion-ease: var(--wel-motion-ease-spring);  /* hovers, dialogs, toasts, tabs */
+  --wel-motion-ease: var(--wel-motion-ease-spring);  /* dialogs, toasts, tabs, hovers */
+  --wel-motion-duration-1: 180ms;                    /* room for the spring to read */
   --wel-motion-duration-2: 250ms;
-}</code></pre>
+}
+/* the lift itself — the button already transitions `translate`,
+   so the themed spring is what animates it */
+.button:hover { translate: 0 calc(-3px * var(--wel-motion)); }</code></pre>
       </details></div>
     </section>
 
@@ -330,7 +343,8 @@ button.addEventListener('click', () =&gt;
     --wel-text-font-display: ui-monospace, "Cascadia Mono", Consolas, monospace;
     --wel-radius-control: 0.25rem;
     --wel-radius-surface: 0.5rem;
-    --wel-motion-ease: var(--wel-motion-ease-spring);  /* every transition springs */
+    --wel-motion-ease: var(--wel-motion-ease-spring);  /* transitions overshoot + settle */
+    --wel-motion-duration-1: 180ms;                    /* room for the spring to read */
     --wel-motion-duration-2: 250ms;                    /* a touch more theatrical */
   }</code></pre>
     </details></div>
