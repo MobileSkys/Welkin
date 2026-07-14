@@ -42,7 +42,7 @@ each.
 
 | Preference | System-wide mechanism |
 |------------|----------------------|
-| `prefers-reduced-motion: reduce` | All durations route through the `--wel-motion` multiplier token, set to `0` under the preference ([05-design-tokens.md](05-design-tokens.md)). No component writes a raw duration. Scroll-driven and view-transition effects are additionally gated off. Opacity-only fades may remain (non-vestibular). |
+| `prefers-reduced-motion: reduce` | All durations route through the `--wel-motion` multiplier token, set to `0` under the preference ([05-design-tokens.md](05-design-tokens.md)). No component writes a raw duration. Scroll-driven and view-transition effects are additionally gated off — a timeline-driven animation has no duration for the multiplier to zero, so the media gate is the mechanism: the carousel progress bar, the `.reveal` image utility (whose hidden start state exists only inside its gate, so reduced-motion users never meet a blank), and the view-transitions module with its `data-vt-image` morphs ([image-fx spec](components/image-fx.md)). Opacity-only fades may remain (non-vestibular). |
 | `prefers-contrast: more` | Semantic border/divider tokens strengthen; low-contrast decorative tints deepen. Handled in the `tokens` layer, not per component. |
 | `prefers-reduced-transparency: reduce` | Any translucent surface treatment falls back to an opaque equivalent; no shipped token pairing may rely on transparency to meet contrast. |
 | `forced-colors: active` | See below. |

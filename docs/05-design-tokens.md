@@ -129,6 +129,15 @@ re-resolves there against the pinned scheme (the tokens are typed, so they resol
 declared — ADR-0007, amended 1.0.1). No duplicated token blocks, and the UA renders form
 controls, scrollbars, and system colours correctly for free.
 
+**Non-colour scheme-coupled tokens** (first occupant: `--wel-img-dim`, the
+image-dimming filter — [image-fx spec](components/image-fx.md)) cannot ride
+`light-dark()`, which is colour-only. They reconstruct the same pin fidelity
+manually: an OS-preference arm on `:root` (`@media (prefers-color-scheme:
+dark)`), then a re-declaration inside each `[data-theme]` pin rule, in that
+order, so the pin wins by source order exactly as `color-scheme` does. Any
+future scheme-coupled non-colour token must follow this pattern rather than a
+bare media query, or it will ignore pinned subtrees.
+
 ## Typography
 
 - Font stacks: `--wel-text-font-body` (system stack default), `--wel-text-font-display`,
