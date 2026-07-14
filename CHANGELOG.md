@@ -9,6 +9,17 @@ say so there.
 
 ### Added
 
+- **Showcase 6 — Waypoint** (docs site): a multi-page travel journal
+  (`examples/waypoint/`, four pages) demonstrating the cross-document
+  view-transitions module end to end — brand wordmark, hero panorama, and the
+  featured entry's artwork morph between pages (Chrome/Safari over http;
+  Firefox 151 verified falling back to instant navigation, no errors) — plus
+  vendored jQuery 3.7.1 enhancing Welkin components with zero conflicts (live
+  card filter, `wel-toast-region.push()` on form submit, `data-variant`
+  toggling) and an `@layer overrides` escape-hatch rule beating a component
+  style. The docs-site generator now copies directory-shaped showcases; the
+  a11y smoke covers all four pages. jQuery stays showcase-side, never in dist.
+
 - **Cross-document view transitions module (T-89)** —
   `dist/components/view-transitions.css`, an **opt-in** à-la-carte file that is
   deliberately excluded from `welkin.css`/`welkin-core.css` (linking it is the
