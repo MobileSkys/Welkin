@@ -1,18 +1,21 @@
-// Docs-site generator (docs/11, T-51). Static HTML from the markdown
-// sources, styled EXCLUSIVELY by the built Welkin bundle — dogfooding is
-// the acceptance test (AC-126), and every page works with JS disabled
-// (AC-127): navigation is plain links, content is server-rendered, and
-// the only site JS is the component modules themselves plus the loader
-// that implements the no-JS toggle (a plain ?nojs=1 link, usable with
-// scripting off in either direction).
+// Docs-site generator (docs/11, T-51 + T-67 review). Static HTML from
+// the markdown sources, styled EXCLUSIVELY by the built Welkin bundle —
+// dogfooding is the acceptance test (AC-126) — and every page works with
+// JS disabled (AC-127): navigation is plain links, content is
+// server-rendered, the only JS is the component modules themselves
+// (inlined verbatim so the site works from file://) plus the toast
+// demo's wiring. The no-JS toggle is a static "--nojs" twin page.
 //
 //   node build/gen-site.mjs          -> site/
 //
 // Component pages render the spec verbatim (the spec IS the docs —
-// _TEMPLATE.md structure), with: a live example lifted from the first
-// "HTML structure" code fence, tier badges on the Behaviour-tiers
-// headings, and the raw markup in a <details> accordion. Core docs
-// (01–12) render under /docs. No client-side rendering anywhere.
+// _TEMPLATE.md structure) with tier badges on the Behaviour-tiers
+// headings, PLUS a live demo embedded from the reviewed demo page
+// (examples/components.html) — spec fences document (they contain
+// example scripts, dead hrefs, "…" elisions); the demo page
+// demonstrates. Demos sit OUTSIDE .prose, whose descendant list/table
+// rules otherwise fight component styling (T-67). Core docs (01–12),
+// ADRs, and the changelog render under /docs.
 //
 // Known limitation: docs links into the repo source tree (../src/…,
 // ../build/…) pass through untranslated — they resolve in the repo, not
@@ -51,7 +54,9 @@ marked.use({
     const [path, hash] = t.href.split('#');
     const p = path.replace(/^\.\//, '');
     let m;
-    if ((m = p.match(/^(?:\.\.\/)?decisions\/([\w-]+)\.md$/))) t.href = rel('docs') + m[1];
+    if ((m = p.match(/^(?:\.\.\/|docs\/)?decisions\/([\w-]+)\.md$/))) t.href = rel('docs') + m[1];
+    else if ((m = p.match(/^docs\/(\d\d-[\w-]+)\.md$/))) t.href = rel('docs') + m[1];
+    else if ((m = p.match(/^docs\/components\/([\w-]+)\.md$/))) t.href = rel('components') + m[1];
     else if ((m = p.match(/^(?:\.\.\/)?(\d\d-[\w-]+)\.md$/))) t.href = rel('docs') + m[1];
     else if ((m = p.match(/^(?:\.\.\/)?components\/([\w-]+)\.md$/))) t.href = rel('components') + m[1];
     else if ((m = p.match(/^([\w-]+)\.md$/))) {
@@ -86,19 +91,25 @@ const MODULES = {
 
 const TIER_TONE = { Core: 'success', Enhanced: 'info', 'JS enhancement': 'warning' };
 
-function page({ title, crumb, body, depth, modules = [], extra = '', prose = true }) {
+function page({ title, crumb, body, depth, modules = [], extra = '', prose = true, self = '', nojs = false }) {
   const p = '../'.repeat(depth);
-  // The loader is the no-JS toggle (docs/11 req 4): with ?nojs=1 the
-  // component modules are simply not injected. Both toggle directions
-  // are plain links, so the toggle itself works with scripting off.
-  const loader = modules.length ? `
-<script type="module">
-  if (!new URLSearchParams(location.search).has('nojs'))
-    for (const m of ${JSON.stringify(modules)})
-      import('${p}dist/js/' + m);
-</script>` : '';
-  const toggle = modules.length ? `
-      <li><a id="nojs-toggle" href="?nojs=1">Disable JS (show the no-JS baseline)</a></li>` : '';
+  // Modules are inlined VERBATIM (as the demo page does at build): a
+  // dynamic import() is CORS-blocked under file://, and the docs must
+  // work double-clicked from disk (T-67 review — dead tab/toast demos).
+  // The no-JS toggle (docs/11 req 4) is a static twin page ("--nojs")
+  // with the scripts simply absent — both directions are plain links,
+  // no chrome JS at all.
+  const loader = nojs ? '' : modules
+    .map((m) => `<script type="module">\n${read('js', m)}</script>`).join('\n');
+  const toggle = modules.length ? (nojs
+    ? `
+        <li><a href="${self}.html">Re-enable JS</a></li>`
+    : `
+        <li><a href="${self}--nojs.html">Disable JS (show the no-JS baseline)</a></li>`) : '';
+  const banner = nojs ? `
+    <div class="alert" data-tone="info"><p class="alert-title">No-JS mode</p>
+    <p>This copy of the page loads no JavaScript — everything below is the
+    component's no-JS baseline, exactly as a scripting-disabled visitor gets it.</p></div>` : '';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -130,9 +141,9 @@ function page({ title, crumb, body, depth, modules = [], extra = '', prose = tru
 </div>
 <main class="center" style="--wel-center-max: 52rem">
   <div class="stack">
-    ${crumb ? `<nav class="breadcrumb" aria-label="Breadcrumb"><ol>
+    ${crumb ? `<nav class="breadcrumb" aria-label="You are here"><ol>
       <li><a href="${p}index.html">Welkin</a></li><li aria-current="page">${esc(crumb)}</li>
-    </ol></nav>` : ''}
+    </ol></nav>` : ''}${banner}
     ${prose ? '<div class="prose">' : '<div class="stack">'}
 ${body}
     </div>
@@ -142,25 +153,62 @@ ${body}
   <p><small>Built with Welkin itself — this site loads <code>dist/welkin.css</code>
   and nothing else. MIT.</small></p>
 </footer>
-<script type="module">
-  // Round-trip affordance only; the links work without this script.
-  const t = document.getElementById('nojs-toggle');
-  if (t && new URLSearchParams(location.search).has('nojs')) {
-    t.href = location.pathname;
-    t.textContent = 'Re-enable JS';
-  }
-</script>${loader}${extra}
+${loader}${nojs ? '' : extra}
 </body>
 </html>
 `;
 }
 
-/* Lift the first code fence of the "## HTML structure" section for the
-   live example. */
-function liveExample(md) {
-  const m = md.match(/## HTML structure[\s\S]*?```html\n([\s\S]*?)```/);
-  return m ? m[1] : null;
+/* Live demos come from the reviewed demo page, not auto-lifted spec
+   fences (T-67: fences carry example <script> blocks, root-absolute
+   hrefs, and elided "…" content — they document, the demo demonstrates).
+   Split examples/components.html into its <h2>-titled sections. */
+const demoDoc = read('examples', 'components.html');
+const demoSections = {};
+for (const m of demoDoc.matchAll(/<section class="stack">\s*<h2>([\s\S]*?)<\/h2>([\s\S]*?)<\/section>\n(?=\s*(?:<section|<\/main>))/g)) {
+  // demo-page links are relative to examples/; re-home them for components/
+  demoSections[m[1].trim()] = m[2]
+    .replace(/href="\.\.\/docs\/decisions\/([\w-]+)\.md"/g, 'href="../docs/$1.html"')
+    .replace(/href="\.\.\/docs\/components\/([\w-]+)\.md"/g, 'href="$1.html"')
+    .replace(/href="\.\.\/docs\/([\w-]+)\.md"/g, 'href="../docs/$1.html"');
 }
+const DEMO_TITLE = {
+  button: 'Button', card: 'Card', 'badge-tag': 'Badge &amp; Tag',
+  'alert-callout': 'Alert / Callout', breadcrumb: 'Breadcrumb', table: 'Table',
+  prose: 'Prose', 'progress-spinner-skeleton': 'Progress / Spinner / Skeleton',
+  navbar: 'Navbar', pagination: 'Pagination', select: 'Select',
+  'form-controls': 'Form controls &amp; validation', tooltip: 'Tooltip',
+  carousel: 'Carousel', dialog: 'Dialog', 'popover-menu': 'Popover / Dropdown menu',
+  accordion: 'Accordion', tabs: 'Tabs', combobox: 'Combobox', toast: 'Toast',
+};
+
+/* A section may invoke elements that live in ANOTHER section of the demo
+   page (the popover menu opens the dialog section's #confirm-delete).
+   Pull any missing invocation targets in, so every button on the page
+   does something. */
+function resolveTargets(html) {
+  for (const m of html.matchAll(/(?:data-dialog-open|popovertarget)="([\w-]+)"/g)) {
+    const id = m[1];
+    if (new RegExp(`id="${id}"`).test(html)) continue;
+    const el = demoDoc.match(new RegExp(`<(dialog|div)[^>]*id="${id}"[\\s\\S]*?</\\1>`));
+    if (el) html += `\n${el[0]}`;
+  }
+  return html;
+}
+
+// The toast demo buttons are wired by a page script on the demo page;
+// the toast docs page carries the same wiring.
+const TOAST_WIRING = `
+<script type="module">
+  const region = document.querySelector('wel-toast-region');
+  let n = 0;
+  document.getElementById('toast-status')?.addEventListener('click', () =>
+    region.push(\`Upload \${++n} complete.\`, { tone: 'info' }));
+  document.getElementById('toast-sticky')?.addEventListener('click', () =>
+    region.push('Working offline — changes stored locally.', { tone: 'warning', duration: 0 }));
+  document.getElementById('toast-error')?.addEventListener('click', () =>
+    region.push('Connection lost.', { tone: 'danger' }));
+</script>`;
 
 function componentPage(file) {
   const name = basename(file, '.md');
@@ -168,31 +216,46 @@ function componentPage(file) {
   const title = (md.match(/^# Component: (.+)$/m) || [, name])[1];
 
   outDir = 'components';
-  let body = a11y(marked.parse(md));
+  let spec = a11y(marked.parse(md));
   // Tier badges (docs/11 req 5): label the Behaviour-tiers headings.
-  body = body.replace(/<h3>(Core|Enhanced|JS enhancement)([^<]*)<\/h3>/g, (m, tier, rest) =>
+  spec = spec.replace(/<h3>(Core|Enhanced|JS enhancement)([^<]*)<\/h3>/g, (m, tier, rest) =>
     `<h3>${tier}${rest} <span class="badge" data-tone="${TIER_TONE[tier]}">${
       tier === 'Core' ? 'works everywhere' : tier === 'Enhanced' ? '@supports-gated' : '≤ 2 KB module'
     }</span></h3>`);
 
-  const example = liveExample(md);
-  if (example) {
-    const live = `
-<h2>Live example</h2>
-<p>The canonical markup from the spec, rendered by this page's stylesheet.
-${MODULES[name] ? 'This component\'s JS module is loaded; use “Disable JS” above to see the no-JS baseline.' : 'No JavaScript involved.'}</p>
-<div class="card" data-variant="outlined"><div class="card-body stack">
-${example}
-</div></div>
-<div class="accordion" data-variant="separated"><details>
-<summary>Markup</summary>
-<pre tabindex="0"><code>${esc(example)}</code></pre>
-</details></div>`;
-    body = body.replace('<h2>Anatomy</h2>', `${live}\n<h2>Anatomy</h2>`);
+  const demo = demoSections[DEMO_TITLE[name]];
+  const fence = (md.match(/## HTML structure[\s\S]*?```html\n([\s\S]*?)```/) || [])[1];
+  const modules = MODULES[name] || [];
+  let live = '';
+  if (demo) {
+    live = `
+<section class="stack">
+<h2>Live demo</h2>
+${resolveTargets(demo)}
+${fence ? `<div class="accordion" data-variant="separated"><details>
+<summary>Canonical markup (from the spec)</summary>
+<pre tabindex="0"><code>${esc(fence)}</code></pre>
+</details></div>` : ''}
+</section>`;
   }
 
-  writeFileSync(join(out, 'components', `${name}.html`),
-    page({ title, crumb: title, body, depth: 1, modules: MODULES[name] || [] }));
+  // Demos live OUTSIDE .prose — its descendant list/table rules tie with
+  // component styles on specificity and win on source order (T-67:
+  // misrendered examples). Split the spec around the demo instead.
+  const at = spec.indexOf('<h2>Anatomy</h2>');
+  const body = at === -1 || !live
+    ? `<div class="prose">\n${spec}\n</div>${live}`
+    : `<div class="prose">\n${spec.slice(0, at)}\n</div>${live}\n<div class="prose">\n${spec.slice(at)}\n</div>`;
+
+  const opts = {
+    title, crumb: title, body, depth: 1, prose: false, self: name, modules,
+    extra: name === 'toast' ? TOAST_WIRING : '',
+  };
+  writeFileSync(join(out, 'components', `${name}.html`), page(opts));
+  // Static no-JS twin for pages that otherwise load modules (docs/11 req 4).
+  if (modules.length || name === 'toast') {
+    writeFileSync(join(out, 'components', `${name}--nojs.html`), page({ ...opts, nojs: true }));
+  }
   return { name, title };
 }
 
@@ -227,6 +290,8 @@ const docs = readdirSync(join(root, 'docs'))
 const adrs = readdirSync(join(root, 'docs', 'decisions'))
   .filter((f) => f.startsWith('ADR-'))
   .map((f) => docPage(f, ['docs', 'decisions']));
+
+docPage('CHANGELOG.md', []); // linked from the README on the index page
 
 // Index: README intro + component/doc directories, all Welkin-styled.
 const readme = read('README.md');
