@@ -54,8 +54,9 @@
   <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
 
     <!-- Hero -->
-    <section class="cover center" style="--wel-cover-min-height: 70dvb">
-      <div class="stack" data-principal>
+    <section class="cover" style="--wel-cover-min-height: 70dvb">
+      <div class="center" data-principal style="--wel-center-max: 70rem">
+      <div class="stack">
         <p><span class="badge" data-tone="info">New — Solstice 2.0</span></p>
         <h1 style="font-size: var(--wel-text-size-5)">Team scheduling that runs itself</h1>
         <p style="color: var(--wel-color-ink-muted)">Solstice reads your team's
@@ -67,10 +68,12 @@
           <a class="button" data-variant="ghost" data-size="lg" href="#features">See how it works</a>
         </div>
       </div>
+      </div>
     </section>
 
     <!-- Features -->
-    <section class="center stack" id="features" style="--wel-center-max: 70rem">
+    <section class="center" id="features" style="--wel-center-max: 70rem">
+      <div class="stack">
       <h2>Everything between "we should meet" and "meeting booked"</h2>
       <div class="grid" data-align="rows">
 
@@ -147,23 +150,27 @@
         </article>
 
       </div>
+      </div>
     </section>
 
     <!-- CTA band — Level 2 scheme pin (doc 10, ADR-0007 amendment): the pinned
          subtree re-resolves every light-dark() token, and the base [data-theme]
          rule paints the (now dark) surface + ink for the band. -->
     <section data-theme="dark">
-      <div class="center cover" style="--wel-cover-min-height: 30dvb">
-        <div class="cluster" data-principal style="--wel-cluster-justify: space-between">
+      <div class="cover" style="--wel-cover-min-height: 30dvb">
+        <div class="center" data-principal style="--wel-center-max: 70rem">
+        <div class="cluster" style="--wel-cluster-justify: space-between">
           <h2>Reclaim your team's week</h2>
           <button class="button" type="button" data-variant="primary" data-size="lg"
                   data-dialog-open="signup">Start free</button>
+        </div>
         </div>
       </div>
     </section>
 
     <!-- Pricing -->
-    <section class="center stack" id="pricing" style="--wel-center-max: 70rem">
+    <section class="center" id="pricing" style="--wel-center-max: 70rem">
+      <div class="stack">
       <h2>Pricing that scales with the team, not the meetings</h2>
       <div class="grid" data-align="rows" style="--wel-grid-min: 15rem">
 
@@ -218,10 +225,12 @@
         </article>
 
       </div>
+      </div>
     </section>
 
     <!-- FAQ — independent items: no shared name attribute -->
-    <section class="center stack" id="faq">
+    <section class="center" id="faq">
+      <div class="stack">
       <h2>Frequently asked questions</h2>
       <div class="accordion">
         <details>
@@ -252,11 +261,13 @@
           you can export your automations and history first.</p>
         </details>
       </div>
+      </div>
     </section>
 
   </main>
 
-  <footer class="center stack">
+  <footer class="center">
+    <div class="stack">
     <div class="cluster" style="--wel-cluster-justify: space-between">
       <small>© 2026 Solstice Labs — a fictional company.</small>
       <nav class="cluster" aria-label="Footer">
@@ -279,6 +290,7 @@
   --wel-text-anchor-min: 1.05rem;
 }</code></pre>
       </details>
+    </div>
     </div>
   </footer>
 
