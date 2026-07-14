@@ -32,7 +32,7 @@ for (const name of ['welkin.min.css', 'welkin-core.min.css']) {
 const compDir = join(dist, 'components');
 if (existsSync(compDir)) {
   for (const f of readdirSync(compDir).filter((f) => f.endsWith('.min.css'))) {
-    check(`components/${f}`, join(compDir, f), budgets['per-component-css']);
+    check(`components/${f}`, join(compDir, f), budgets[`components/${f}`] ?? budgets['per-component-css']);
   }
 }
 

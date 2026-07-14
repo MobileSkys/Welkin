@@ -50,13 +50,23 @@ absent. Component specs that use an Enhanced feature must reference the contract
 | `@starting-style` + `transition-behavior: allow-discrete` | Entry/exit transitions for dialogs, popovers, toasts | Elements appear/disappear instantly; no animation |
 | `interpolate-size` / `::details-content` | Smooth accordion open/close animation | Accordion opens/closes instantly |
 | Scroll-driven animations (`animation-timeline`) | Scroll progress bars, reveal-on-scroll effects | Effects simply absent; content static and fully readable |
-| View transitions | Cross-state/page morph animations | Instant state change |
+| View transitions (same-document) | Cross-state morph animations (tabs indicator, toast stack) | Instant state change. Cross-engine since Firefox shipped View Transitions Level 1 |
+| Cross-document view transitions (`@view-transition`) | **Opt-in module** `components/view-transitions.css` (never bundled): same-origin MPA navigations cross-fade and `--wel-vt`-named elements morph — full effect in Chrome 126+ / Safari 18.2+ | Firefox (View Transitions Level 1 only, same-document) ignores the unknown at-rule: instant navigation, fully functional. Additive by nature — no `@supports` gate exists for an at-rule, and none is needed |
 | `field-sizing: content` | Auto-growing textareas/inputs | Fixed-size textarea with manual resize handle |
 | `light-dark()` | Single-declaration dual-mode colour tokens | See [ADR-0007](decisions/ADR-0007-dark-mode-mechanism.md) — treated as core-eligible pending graduation audit; static light fallback if audit fails |
 | `::scroll-marker` / `::scroll-button` | CSS-only carousel markers and prev/next buttons | Carousel remains a scroll-snap scroller; navigation by swipe/scrollbar only, or JS-enhanced buttons |
 | `appearance: base-select` | Fully styleable `<select>` with rich options | Native select rendering — always usable |
 | `<details name>` exclusive grouping | Single-open accordion groups with no JS | Browsers ignoring `name` render independent `<details>` — multiple panels may be open at once; fully functional (additive by nature: no `@supports` gate exists for HTML attributes) |
 | Style queries (`@container style(…)`) | Context-aware component variants (e.g. auto-invert on dark surface) | Component keeps its explicit variant; context awareness absent |
+
+> **Opt-in modules — a narrow third lane.** A feature *below* Newly Available may
+> still ship when all three hold: (1) it is distributed **only** as an à-la-carte
+> file that no bundle includes, so linking the file is an explicit, revocable
+> opt-in; (2) its absence degrades additively with no possible `@supports` gate
+> (an unknown at-rule/pseudo-class is ignored wholesale); (3) its spec documents
+> the engines honestly. Cross-document view transitions (T-89) is the first and
+> only occupant. Opt-in modules still follow the ADR-0012 review cadence — the
+> row above graduates into the normal Enhanced tier when Firefox ships Level 2.
 
 > **Baseline-status audit note.** The tier assignments above reflect the state of
 > Baseline at the time of writing; several rows (anchor positioning, `interpolate-size`,

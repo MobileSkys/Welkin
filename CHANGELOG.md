@@ -5,6 +5,29 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
+## Unreleased
+
+### Added
+
+- **Cross-document view transitions module (T-89)** —
+  `dist/components/view-transitions.css`, an **opt-in** à-la-carte file that is
+  deliberately excluded from `welkin.css`/`welkin-core.css` (linking it is the
+  opt-in; `@view-transition { navigation: auto }` changes every same-origin
+  navigation, and both pages of a navigation must carry it). Pages cross-fade on
+  navigation; elements sharing a `--wel-vt: <name>` custom property (the tabs
+  `--wel-tabs-vt` convention, registered non-inheriting) morph between pages.
+  Everything sits under `@media (prefers-reduced-motion: no-preference)` per
+  docs/09 — reduce means instant navigations, and durations ride
+  `--wel-motion-duration-3 * --wel-motion`. Firefox (View Transitions Level 1,
+  same-document only) ignores the unknown at-rule and navigates instantly — no
+  `@supports` gate exists or is needed; see the new opt-in-module lane in
+  [docs/03](docs/03-browser-support-policy.md). ≤ 0.5 KB min+gzip, budget-gated.
+  Probed (Chromium 149, local HTTP): the module also ships
+  `:root:active-view-transition { scroll-behavior: auto }` because the reset's
+  smooth scrolling animates cross-document *fragment* navigations from the top of
+  the new page under a running transition (history back/forward restoration is
+  immune); with the rule, capture lands at the fragment.
+
 ## 1.0.1 — 2026-07-14
 
 ### Fixed

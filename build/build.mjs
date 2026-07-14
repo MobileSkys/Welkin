@@ -27,7 +27,12 @@ const coreFiles = [
   ...cssIn(join(src, 'layout')),
 ];
 const componentFiles = cssIn(join(src, 'components'));
-const fullFiles = [...coreFiles, ...componentFiles, join(src, 'utilities.css')];
+// Opt-in modules (T-89): page-behaviour files that must never ride along in
+// welkin.css — @view-transition opts every navigation in, so linking the
+// dist/components file is the user's opt-in. Still emitted per-file below.
+const OPT_IN = new Set(['view-transitions.css']);
+const bundledComponents = componentFiles.filter((f) => !OPT_IN.has(basename(f)));
+const fullFiles = [...coreFiles, ...bundledComponents, join(src, 'utilities.css')];
 
 // The canonical layer pre-declaration is THE ordering contract (doc 04,
 // ADR-0003: any subset of dist files concatenates correctly in any order).

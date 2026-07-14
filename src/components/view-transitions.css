@@ -1,0 +1,63 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* view-transitions — cross-document (MPA) page morphs
+   (docs/components/view-transitions.md, T-89). OPT-IN ONLY: the build
+   excludes this file from welkin.css — linking it IS the opt-in, because
+   @view-transition changes the feel of every same-origin navigation and
+   both the outgoing and incoming page must carry it. Firefox (View
+   Transitions Level 1, no cross-document rules) ignores the unknown
+   at-rule and navigates instantly; additive by nature, so no @supports
+   gate exists or is needed (docs/03 contract row). */
+
+/* Shared-element hook, following the tabs --wel-tabs-vt pattern: set
+   --wel-vt to the same ident on one element of each page (--wel-vt: hero)
+   and the pair morphs across the navigation. Registered non-inheriting —
+   outside the motion gate, registration is inert — so a hero's name
+   cannot cascade into its children: duplicate names abort the whole
+   transition. */
+@property --wel-vt {
+  syntax: "*";
+  inherits: false;
+}
+
+/* The --wel-motion multiplier cannot zero a UA-driven navigation
+   animation, so the preference gates the whole feature off instead
+   (docs/09: view-transition effects are gated, not just shortened). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  @layer components {
+    * {
+      view-transition-name: var(--wel-vt, none);
+    }
+
+    /* The universal rule above matches the root too and would strip the
+       UA's `:root { view-transition-name: root }` — which is the whole
+       default page cross-fade. Restore it (probe finding, T-89). */
+    :root {
+      view-transition-name: var(--wel-vt, root);
+    }
+
+    /* The reset's smooth scrolling animates cross-document FRAGMENT
+       navigations (page.html#section) from the top of the new page —
+       the transition captures at scroll 0 and then morphs against a
+       page that is still scrolling thousands of pixels underneath
+       (probed, T-89; history back/forward restoration is immune — it
+       lands before capture). Instant scrolling while a transition is
+       active puts the capture at the fragment. */
+    :root:active-view-transition {
+      scroll-behavior: auto;
+    }
+
+    /* Durations ride the motion tokens like everything else in Welkin;
+       old/new stated too — engines don't inherit them from the group. */
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation-duration: calc(var(--wel-motion-duration-3) * var(--wel-motion));
+      animation-timing-function: var(--wel-motion-ease);
+    }
+  }
+}
