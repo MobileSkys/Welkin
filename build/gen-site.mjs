@@ -107,18 +107,26 @@ function page({ title, crumb, body, depth, modules = [] }) {
 <link rel="stylesheet" href="${p}dist/welkin.css">
 </head>
 <body>
-<header class="navbar">
-  <nav aria-label="Site">
-    <a class="navbar-brand" href="${p}index.html">Welkin</a>
-    <ul>
-      <li><a href="${p}index.html#components">Components</a></li>
-      <li><a href="${p}index.html#docs">Design docs</a></li>
-      <li><a href="${p}examples/components.html">Demos</a></li>
-      <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>${toggle}
-    </ul>
-  </nav>
-</header>
-<main class="center" style="--wel-center-max-inline-size: 52rem">
+<!-- The page container the navbar collapses against (doc 06 naming
+     convention; scaffolding container-name is the host page's job). -->
+<div style="container-name: page; container-type: inline-size">
+  <header class="navbar">
+    <nav aria-label="Site">
+      <a class="navbar-brand" href="${p}index.html">Welkin</a>
+      <button class="navbar-menu-button" popovertarget="site-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="site-menu" popover>
+        <li><a href="${p}index.html#components">Components</a></li>
+        <li><a href="${p}index.html#docs">Design docs</a></li>
+        <li><a href="${p}examples/components.html">Demos</a></li>
+        <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>${toggle}
+      </ul>
+    </nav>
+  </header>
+</div>
+<main class="center" style="--wel-center-max: 52rem">
   <div class="stack">
     ${crumb ? `<nav class="breadcrumb" aria-label="Breadcrumb"><ol>
       <li><a href="${p}index.html">Welkin</a></li><li aria-current="page">${esc(crumb)}</li>
@@ -128,7 +136,7 @@ ${body}
     </div>
   </div>
 </main>
-<footer class="center" style="--wel-center-max-inline-size: 52rem">
+<footer class="center" style="--wel-center-max: 52rem">
   <p><small>Built with Welkin itself — this site loads <code>dist/welkin.css</code>
   and nothing else. MIT.</small></p>
 </footer>
