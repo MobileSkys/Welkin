@@ -7,12 +7,19 @@
   <meta name="description" content="Aster & Vale, a literary journal — a Welkin showcase theme built entirely from design tokens.">
   <link rel="stylesheet" href="../dist/welkin.css">
   <style>
-    /* Page shell — establishes the `page` named container the navbar queries,
-       and pins the footer on short pages. */
-    .shell {
+    /* Sticky chrome (navbar spec): the page container is the sticky element —
+       inline-size containment makes it the navbar's containing block, so
+       data-sticky inside a bar-height box has zero travel; the stuck wrapper
+       also keeps the collapsed panel's fixed placement correct. */
+    .chrome {
       container-name: page; container-type: inline-size;
-      display: grid; grid-template-rows: auto 1fr auto;
-      min-block-size: 100dvb;
+      position: sticky; inset-block-start: 0; z-index: 10;
+    }
+
+    /* Page shell — pins the footer below the remaining viewport. */
+    .shell {
+      display: grid; grid-template-rows: 1fr auto;
+      min-block-size: calc(100dvb - var(--wel-navbar-block-size, 3.5rem));
     }
 
     /* Aster & Vale — a complete Welkin theme. Token declarations only. */
@@ -39,9 +46,8 @@
   </style>
 </head>
 <body>
-<div class="shell">
-
-  <header class="navbar">
+<div class="chrome">
+  <header class="navbar" data-sticky>
     <nav aria-label="Primary">
       <a class="navbar-brand" href="#">Aster &amp; Vale</a>
       <button class="navbar-menu-button" popovertarget="nav-menu">Menu</button>
@@ -53,6 +59,9 @@
       </ul>
     </nav>
   </header>
+</div>
+
+<div class="shell">
 
   <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
 

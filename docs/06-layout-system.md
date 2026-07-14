@@ -123,8 +123,13 @@ The one place viewport queries are legitimate:
 - **Content column with breakout**: `.center` implements the measure-capped column;
   a `data-breakout` child (full-bleed figures, edge-to-edge sections) escapes to the
   padded or full viewport width via named grid lines.
-- **Sticky chrome**: sticky header pattern including the `scroll-padding-block-start`
-  companion rule (focus-not-obscured, [09-accessibility.md](09-accessibility.md)).
+- **Sticky chrome**: the page-container wrapper is the sticky element (a sticky
+  navbar inside a bar-height wrapper or an `auto` shell-grid row has zero travel —
+  its containing block is no taller than the bar), plus the
+  `scroll-padding-block-start` companion rule re-declared at the root
+  (focus-not-obscured, [09-accessibility.md](09-accessibility.md)). Full pattern:
+  the navbar spec's Sticky navbar section
+  ([components/navbar.md](components/navbar.md)).
 
 ## Style queries (Enhanced tier)
 

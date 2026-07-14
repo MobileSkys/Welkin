@@ -212,7 +212,33 @@ the navbar never collapses. Current page: `aria-current="page"`.
 </header>
 ```
 
-The reset's `scroll-padding` reads `--wel-navbar-block-size` for sticky navbars.
+**Sticky bar**: add `data-sticky` (sticky position + shadow; the shadow fades
+in on scroll where scroll-driven animations are supported). Two host-page
+rules make it work:
+
+1. **The sticky element must be the page-container wrapper, not the bar** — a
+   sticky navbar inside a bar-height wrapper or an `auto` shell-grid row has
+   zero travel (its containing block is no taller than the bar), so
+   `data-sticky` appears to do nothing:
+
+   ```css
+   .chrome {  /* wraps ONLY the navbar; page shell sits after it */
+     container-name: page; container-type: inline-size;
+     position: sticky; inset-block-start: 0; z-index: 10;
+   }
+   ```
+
+2. **Re-declare the height token at the root** — the reset's
+   `scroll-padding-block-start` reads `--wel-navbar-block-size` from the root,
+   where the navbar's own scoped `3.5rem` is invisible; without it the `1rem`
+   fallback leaves anchor targets under the stuck bar:
+
+   ```css
+   :root { --wel-navbar-block-size: 4rem; }  /* bar height + breathing room */
+   ```
+
+Full scaffold (chrome + footer-pinning shell): recipes.md → "The shell every
+page shares".
 
 Knobs: `--wel-navbar-bg` / `-ink` / `-border` / `-gap` / `-padding-block` /
 `-padding-inline` / `-panel-bg` (collapsed menu), `--wel-navbar-block-size`.

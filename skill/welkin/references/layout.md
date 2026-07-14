@@ -46,8 +46,10 @@ Setting a knob:
 Prefer the `--wel-space-*` scale over raw lengths so density theming still
 works. Inline knob/token styles like these are sanctioned — knobs exist to be
 set at the use site. Likewise, ad-hoc **page-shell CSS is author territory**:
-section `padding-block`, shell grids, sticky headers are yours to write —
-"don't write new layout CSS" means don't reimplement what a primitive does.
+section `padding-block`, shell grids, the sticky-chrome wrapper are yours to
+write ("don't write new layout CSS" means don't reimplement what a primitive
+does) — though the navbar's stickiness itself ships as `data-sticky` (see the
+sticky-header bullet under Page scaffolding).
 
 `.cover` centres only the child marked `data-principal` (auto block margins);
 header/footer children keep to the edges:
@@ -132,10 +134,14 @@ legitimate. Two things it must do:
 - Content column: `.center` (cap = `--wel-center-max`); a `data-breakout`
   child (full-bleed figure, edge-to-edge band) escapes to full width via the
   named grid lines.
-- Sticky header: `position: sticky` on the header is author CSS; the reset
-  already wires `scroll-padding-block-start` to `--wel-navbar-block-size` so
-  anchored targets aren't hidden under it — set that token if your header
-  height differs.
+- Sticky header: the navbar ships `data-sticky`, but the **page-container
+  wrapper must be the sticky element** — sticky inside a bar-height wrapper or
+  an `auto` shell-grid row has zero travel (containing block no taller than
+  the bar). Also re-declare `--wel-navbar-block-size` on `:root` (bar height +
+  breathing room): the reset's `scroll-padding-block-start` reads it there,
+  where the navbar's scoped `3.5rem` default is invisible — without it anchor
+  targets land under the stuck bar. Full pattern: components.md → Navbar,
+  recipes.md → shell.
 
 ## Style queries (Enhanced tier — progressive)
 
