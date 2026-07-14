@@ -18,4 +18,67 @@
     white-space: nowrap !important;
     border: 0 !important;
   }
+
+  /* Duotone image treatment (T-103) — wrapper class around img/video.
+     The media is desaturated, then two full-bleed overlays gradient-map it:
+     lighten raises blacks to the shadow colour, darken pulls whites to the
+     highlight colour (result: min(max(pixel, shadow), highlight)).
+     Endpoints derive from the cascaded --wel-color-accent at fixed
+     lightnesses, so one accent override retints the whole effect (docs/05
+     derivation pattern); override the two endpoint tokens directly for a
+     custom mapping. The media is forced to fill the wrapper's inline size —
+     the overlays cover the wrapper, and any uncovered backdrop would blend
+     to a solid colour slab. */
+  .duotone {
+    --wel-duotone-shadow: oklch(from var(--wel-color-accent) 0.28 c h);
+    --wel-duotone-highlight: oklch(from var(--wel-color-accent) 0.95 calc(c / 3) h);
+
+    position: relative;
+    isolation: isolate; /* blending stops here, never the page backdrop */
+  }
+
+  .duotone :is(img, video) {
+    display: block;
+    inline-size: 100%;
+    filter: grayscale(1);
+  }
+
+  .duotone::before,
+  .duotone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* the media's filter makes it a stacking context painted at the z-0
+       level in tree order, i.e. above a z-auto ::before — lift both
+       overlays over it (tree order keeps ::after above ::before) */
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .duotone::before {
+    background-color: var(--wel-duotone-shadow);
+    mix-blend-mode: lighten;
+  }
+
+  /* ::after paints above ::before, so darken applies to the lightened
+     composite — the order the gradient map needs. */
+  .duotone::after {
+    background-color: var(--wel-duotone-highlight);
+    mix-blend-mode: darken;
+  }
+
+  /* Forced colors: backgrounds are forced, which would turn the overlays
+     into opaque system-colour slabs over the media — drop the effect and
+     show the original image. */
+  @media (forced-colors: active) {
+    .duotone::before,
+    .duotone::after {
+      display: none;
+    }
+
+    .duotone :is(img, video) {
+      filter: none;
+    }
+  }
 }

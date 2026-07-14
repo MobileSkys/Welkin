@@ -18,6 +18,16 @@ say so there.
 
 ### Added
 
+- **`.duotone` image utility (T-103)**: wrapper class that grayscales the
+  media and gradient-maps it through two `mix-blend-mode` overlays —
+  blacks rise to `--wel-duotone-shadow`, whites drop to
+  `--wel-duotone-highlight`. Both endpoints derive from the cascaded
+  `--wel-color-accent` (relative oklch at fixed lightnesses), so one accent
+  override retints the effect; override the endpoint tokens for a custom
+  mapping. Zero JS, `utilities` layer, `isolation: isolate` so blending
+  never reaches the page backdrop; under forced colors the overlays are
+  dropped and the original image shows. First of the image-FX wave (T-118).
+
 - **Showcase 6 — Waypoint** (docs site): a multi-page travel journal
   (`examples/waypoint/`, four pages) demonstrating the cross-document
   view-transitions module end to end — brand wordmark, hero panorama, and the
