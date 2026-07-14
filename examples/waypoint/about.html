@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>Waypoint — About</title>
 <!-- Waypoint, page 4 of 4 (T-90). The hero shares --wel-vt: hero with Home and
      the Atlas. The field-note form is the second jQuery demo: submit spawns a
@@ -10,6 +11,11 @@
      modern custom element, zero friction (script at the end of <body>). -->
 <link rel="stylesheet" href="../../dist/welkin.css">
 <link rel="stylesheet" href="../../dist/components/view-transitions.css">
+<!-- async, NOT defer: deferred scripts hold DOMContentLoaded back, and the
+     inbound cross-document view transition is skipped when first paint wins
+     that race (probed: defer + slow fetch = no transition, ever). async only
+     delays the load event — which is exactly what the wiring below waits for. -->
+<script src="jquery.min.js" async></script>
 <style>
   /* Page shell (recipes.md): the `page` container the navbar queries. */
   .shell {
@@ -321,9 +327,10 @@ customElements.define('wel-toast-region', WelToastRegion);
      element's API. The submit handler only takes over when the region has
      upgraded; otherwise the form submits like it's 2004. Vendored beside the
      page so file:// works offline. -->
-<script src="jquery.min.js"></script>
-<script>
-  jQuery(function ($) {
+<script type="module">
+  // 'load' and not jQuery.ready: jquery.min.js is async (see <head>), and
+  // the load event is the earliest moment it is guaranteed to have run.
+  addEventListener('load', () => jQuery(function ($) {
     $('#field-note').on('submit', function (e) {
       var region = $('wel-toast-region')[0];
       if (!region || !region.push) return; // no enhancement: normal submit
@@ -332,7 +339,7 @@ customElements.define('wel-toast-region', WelToastRegion);
       region.push('Thanks' + (name ? ', ' + name : '') + ' — field note logged. Reply travels by the next ferry.', { tone: 'success' });
       this.reset();
     });
-  });
+  }));
 </script>
 </body>
 </html>

@@ -17,7 +17,12 @@ say so there.
   vendored jQuery 3.7.1 enhancing Welkin components with zero conflicts (live
   card filter, `wel-toast-region.push()` on form submit, `data-variant`
   toggling) and an `@layer overrides` escape-hatch rule beating a component
-  style. The docs-site generator now copies directory-shaped showcases; the
+  style. jQuery loads `async` — probing the review kickback showed Chrome
+  skips the inbound cross-document transition whenever a destination page's
+  `DOMContentLoaded` loses the race to first paint, which slow `defer`red
+  scripts guarantee; the constraint is documented in the module spec. Pages
+  also carry an early `<meta name="color-scheme">` so the pre-CSS canvas
+  matches the scheme (kills Firefox's white first paint). The docs-site generator now copies directory-shaped showcases; the
   a11y smoke covers all four pages. jQuery stays showcase-side, never in dist.
 
 - **Cross-document view transitions module (T-89)** —
