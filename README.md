@@ -50,6 +50,12 @@ order** (ADR-0003): link core plus exactly the components you use.
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/components/card.min.css">
 ```
 
+One file is à-la-carte **only** and never rides in `welkin.css`:
+`components/view-transitions.css` opts every same-origin navigation into
+cross-document view transitions (MPA page morphs), so linking it is the opt-in —
+add it to every page of the site and name shared elements with `--wel-vt`
+([spec](docs/components/view-transitions.md)).
+
 Bundles:
 
 | File | Contents | min+gzip |

@@ -1,7 +1,8 @@
 {
-  "comment": "Size budgets, min+gzip bytes (docs/12 Phase 3 exit; JS figure is the hard ADR-0011 gate). CSS numbers are provisional until ratified — see board T-55.",
+  "comment": "Size budgets, min+gzip bytes (docs/12 Phase 3 exit; JS figure is the hard ADR-0011 gate). CSS numbers are provisional until ratified — see board T-55. A components/<file> key overrides per-component-css for that artifact.",
   "welkin.min.css": 30720,
   "welkin-core.min.css": 10240,
   "per-component-css": 3072,
+  "components/view-transitions.min.css": 512,
   "per-js-module": 2048
 }
