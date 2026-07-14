@@ -150,7 +150,7 @@ function page({ title, crumb, body, depth, modules = [], extra = '', prose = tru
       <ul class="navbar-menu" id="site-menu" popover>
         <li><a href="${p}index.html#components">Components</a></li>
         <li><a href="${p}index.html#docs">Design docs</a></li>
-        <li><a href="${p}examples/components.html">Demos</a></li>
+        <li><a href="${p}examples/layout.html">Layout</a></li>
         <li><a href="${p}index.html#showcase">Showcase</a></li>
         <li><a href="${p}playground.html">Playground</a></li>
         <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>${toggle}

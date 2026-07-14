@@ -3,15 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welkin layout primitives</title>
-<!-- Run `npm run build` first; this page loads the built core bundle.
-     Phase 2 demo page (docs/06): each primitive is shown at three container
-     widths per its acceptance criterion. The <style> below is demo harness
-     only — fixed-width wells so behaviour at each width is visible side by
-     side; it styles nothing the toolkit ships. -->
-<link rel="stylesheet" href="../dist/welkin-core.css">
+<title>Layout primitives · Welkin</title>
+<!-- Run `npm run build` first; this page loads the built bundle. The layout
+     page of the docs site (docs/06): each primitive shown at three container
+     widths per its acceptance criterion. gen-site copies it verbatim into
+     site/examples/, so chrome links are written for that depth. The <style>
+     below is demo harness only — fixed-width wells so behaviour at each
+     width is visible side by side; it styles nothing the toolkit ships. -->
+<link rel="stylesheet" href="../dist/welkin.css">
 <style>
-  .demo-row { display: flex; flex-wrap: wrap; gap: var(--wel-space-4); align-items: start; }
+  /* Sticky chrome (navbar spec): the page container is the sticky element —
+     inline-size containment makes it the navbar's containing block, so
+     data-sticky inside a bar-height box has zero travel. */
+  .chrome {
+    container-name: page; container-type: inline-size;
+    position: sticky; inset-block-start: 0; z-index: 10;
+  }
+  /* Companion (navbar spec, Accessibility): root scroll-padding token. */
+  :root { --wel-navbar-block-size: 4rem; }
+
+  /* Docs-page rhythm: flat .center children (sections stay in the measure,
+     demo rows break out), so the column owns the vertical gap. */
+  main.center { row-gap: var(--wel-space-6); padding-block: var(--wel-space-5) var(--wel-space-7); }
+
+  .demo-row { display: flex; flex-wrap: wrap; gap: var(--wel-space-4); align-items: start; justify-content: center; padding-inline: var(--wel-space-gutter); }
   .demo-well { border: var(--wel-border-width) dashed var(--wel-color-border-strong); padding: var(--wel-space-3); }
   .demo-well > figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-end: var(--wel-space-2); }
   .demo-well[data-w="narrow"] > div { inline-size: 16rem; }
@@ -22,25 +37,48 @@
 </style>
 </head>
 <body>
+<div class="chrome">
+  <header class="navbar" data-sticky>
+    <nav aria-label="Site">
+      <a class="navbar-brand" href="../index.html">Welkin</a>
+      <button class="navbar-menu-button" popovertarget="site-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="site-menu" popover>
+        <li><a href="../index.html#components">Components</a></li>
+        <li><a href="../index.html#docs">Design docs</a></li>
+        <li><a href="layout.html" aria-current="page">Layout</a></li>
+        <li><a href="../index.html#showcase">Showcase</a></li>
+        <li><a href="../playground.html">Playground</a></li>
+        <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>
+<main class="center" style="--wel-center-max: 52rem">
+  <nav class="breadcrumb" aria-label="You are here"><ol>
+    <li><a href="../index.html">Welkin</a></li><li aria-current="page">Layout</li>
+  </ol></nav>
 
-<header>
-  <h1>Welkin layout primitives</h1>
-  <p>Container-query-first, intrinsic layout (<a href="../docs/06-layout-system.md">docs/06</a>).
-  Each primitive is one class configured by custom-property knobs, shown here in
-  narrow, medium, and wide containers. No viewport breakpoints anywhere on this page.</p>
-</header>
+  <div class="stack">
+    <h1>Layout primitives</h1>
+    <p>Container-query-first, intrinsic layout
+    (<a href="../docs/06-layout-system.html">doc 06</a>). Each primitive is one
+    class configured by custom-property knobs, shown here in narrow, medium, and
+    wide containers. No viewport breakpoints anywhere on this page.</p>
+  </div>
 
-<hr>
-
-<main>
-  <section>
+  <section class="stack">
     <h2><code>.stack</code></h2>
     <p>Vertical flow with consistent rhythm — the stack owns the space between
     siblings that the reset removed. Knob: <code>--wel-stack-gap</code>
     (default <code>--wel-space-4</code>). Rhythm holds at every container width;
     vary it by nesting stacks, not by per-element margins.</p>
 
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container</figcaption>
         <div class="stack">
@@ -68,15 +106,16 @@
           <div class="demo-box">third</div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.cluster</code></h2>
     <p>Horizontal grouping that wraps: tag lists, button rows, nav items. Knobs:
     <code>--wel-cluster-gap</code>, <code>--wel-cluster-align</code>,
     <code>--wel-cluster-justify</code>.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container — wraps</figcaption>
         <div class="cluster">
@@ -117,16 +156,17 @@
           </div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.sidebar-layout</code></h2>
     <p>Sidebar + content; wraps to stacked when the content's share would drop below
     its minimum — no breakpoint. Knobs: <code>--wel-sidebar-width</code>,
     <code>--wel-sidebar-content-min</code>, <code>--wel-sidebar-gap</code>;
     <code>data-side="end"</code> puts the sidebar after the content.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container — stacked</figcaption>
         <div class="sidebar-layout" style="--wel-sidebar-width: 10rem">
@@ -148,15 +188,16 @@
           <div class="demo-box">sidebar</div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.switcher</code></h2>
     <p>Row of equals that switches to a column below the threshold. Knobs:
     <code>--wel-switcher-threshold</code>, <code>--wel-switcher-gap</code>,
     <code>data-limit</code> caps items per row.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container — column</figcaption>
         <div class="switcher" style="--wel-switcher-threshold: 24rem">
@@ -182,14 +223,15 @@
           <div class="demo-box">four</div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.grid</code></h2>
     <p>Auto-fit card grid: as many <code>--wel-grid-min</code>-wide columns as fit.
     Knobs: <code>--wel-grid-min</code>, <code>--wel-grid-gap</code>.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container — one column</figcaption>
         <div class="grid" style="--wel-grid-min: 10rem">
@@ -217,15 +259,16 @@
           <div class="demo-box">card</div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.grid</code> + subgrid: aligned cards</h2>
     <p>With <code>data-align="rows"</code> every card spans its row's tracks via
     <code>grid-template-rows: subgrid</code> — headers, bodies, and footers align
     across cards regardless of content length. No equal-height hacks, no truncation.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="wide">
         <figcaption>48rem container — three cards, ragged content, aligned rows</figcaption>
         <div class="grid" data-align="rows" style="--wel-grid-min: 12rem">
@@ -247,15 +290,16 @@
           </article>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.center</code></h2>
     <p>Measure-capped centred column; a <code>data-breakout</code> child escapes to the
     full container width via named grid lines. Knobs: <code>--wel-center-max</code>
     (defaults to <code>--wel-text-measure</code>), <code>--wel-center-gutter</code>.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container — gutters hold</figcaption>
         <div class="center">
@@ -276,15 +320,16 @@
           <p class="demo-box">capped again</p>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.cover</code></h2>
     <p>Full-height cover with a vertically centred <code>data-principal</code> element;
     other children keep to the edges. Knobs: <code>--wel-cover-min-height</code>
     (default <code>100dvb</code>), <code>--wel-cover-padding</code>.</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container, 12rem cover</figcaption>
         <div class="cover" style="--wel-cover-min-height: 12rem">
@@ -307,14 +352,15 @@
           <div class="demo-box" data-principal>hero headline</div>
         </div>
       </figure>
-    </div>
-  </section>
+  </div>
 
-  <section>
+  <section class="stack">
     <h2><code>.frame</code></h2>
     <p>Aspect-ratio media frame with <code>object-fit</code> cropping. Knob:
     <code>--wel-frame-ratio</code> (default <code>16 / 9</code>).</p>
-    <div class="demo-row">
+    </section>
+
+  <div class="demo-row" data-breakout>
       <figure class="demo-well" data-w="narrow">
         <figcaption>16rem container, 16:9</figcaption>
         <div class="frame demo-box"></div>
@@ -327,15 +373,11 @@
         <figcaption>48rem container, 21:9</figcaption>
         <div class="frame demo-box" style="--wel-frame-ratio: 21 / 9"></div>
       </figure>
-    </div>
-  </section>
+  </div>
 </main>
-
-<hr>
-
-<footer>
-  <p><a href="kitchen-sink.html">Kitchen sink (base styles)</a> ·
-  All docs/06 primitives demoed above.</p>
+<footer class="center" style="--wel-center-max: 52rem">
+  <p><small>Built with Welkin itself — this page loads <code>dist/welkin.css</code>
+  and nothing else. MIT.</small></p>
 </footer>
 
 </body>
