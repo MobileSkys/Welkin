@@ -56,7 +56,7 @@ cannot leak into descendants).
 
 | Attribute | Values | Effect |
 |-----------|--------|--------|
-| — | — | No variant axes. Behaviour is tuned via tokens (below). |
+| `data-vt-image` | boolean | Image morph treatment (T-109): set it on a `--wel-vt`-named image **on both sides** of the transition. The snapshots cover-fit the morphing group box (no stretch between differing aspect ratios) and swap opaquely instead of the default cross-fade (a double-exposure flash on photographs). Also applies to an author's own same-document `startViewTransition` (e.g. a lightbox) while the module is linked. |
 
 Composability rules: composes with every component; the tabs/toast
 same-document transitions keep their own named groups (their rules are more
@@ -97,6 +97,7 @@ carve-out: it is never bundled, and the degradation is additive by nature.
 |---------|------------------|-------------|------------------------------------------|
 | `@view-transition { navigation: auto }` | **None — no gate exists for an at-rule, and none is needed**: engines without it ignore the unknown rule wholesale | Same-origin navigations cross-fade; `--wel-vt`-named pairs morph | Instant navigation, fully functional (docs/03 row: cross-document view transitions) |
 | `:active-view-transition` | None (unknown pseudo-class: the rule drops in engines without it, which are exactly the engines that never have an active transition) | Instant scrolling while a transition runs, so fragment navigations capture at the fragment | Rule inert |
+| `view-transition-class` (Level 2, `data-vt-image`) | None (unknown property is ignored; `::view-transition-old(*.wel-image)` is an unknown selector and its rule drops) | Tagged image pairs morph cover-fit and opaque | Default morph — stretch + cross-fade, fully functional |
 
 ### JS enhancement
 
@@ -169,8 +170,10 @@ one page** — the browser skips the entire transition.
 
 ## Open questions
 
-- Should the showcase's per-page `view-transition-class` conventions (T-90)
-  graduate into the module once Level 2 classes are Baseline?
+- ~~Should the showcase's per-page `view-transition-class` conventions (T-90)
+  graduate into the module once Level 2 classes are Baseline?~~ Graduated at
+  T-109: `data-vt-image` maps to `view-transition-class: wel-image`
+  internally (additive — see Behaviour tiers).
 - Harness note for future automated tests (T-94): Playwright's default
   Chromium switches disable `PaintHolding` (cross-document transitions are
   skipped wholesale, `pagereveal` never fires) and back/forward cache
