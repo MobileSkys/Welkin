@@ -158,15 +158,40 @@
     --wel-color-danger-tint:  color-mix(in oklch, var(--wel-color-danger) 12%, var(--wel-color-surface));
   }
 
+  /* ---- Image dimming (T-102): photos glare on dark surfaces. Filter
+     values cannot ride light-dark(), so the resolved scheme is
+     reconstructed the pin-compatible way: OS preference here, then the
+     pin rules below re-declare per [data-theme] subtree root exactly like
+     the palette (T-84) — they sit after this block so source order lets a
+     pin beat the OS preference on the same element. The light value is
+     the IDENTITY filter, never `none`: `none` inside a longer filter list
+     invalidates the whole declaration, and consumers compose this token
+     (.dim, .duotone combo — utilities.css). Nothing applies the token by
+     itself; the .dim utility (or the user's own img rule) opts media in. */
+  :root {
+    /* the dark-scheme amount, themable in one place */
+    --wel-img-dim-amount: brightness(0.85) contrast(1.05);
+    --wel-img-dim: brightness(1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --wel-img-dim: var(--wel-img-dim-amount);
+    }
+  }
+
   /* Scheme pins — after the token block on purpose (see the wiring note):
      same specificity as its [data-theme] arm, so source order is what makes
-     the pin win over `color-scheme: light dark`. */
+     the pin win over `color-scheme: light dark` (and the dim token's OS
+     arm above). */
   [data-theme="light"] {
     color-scheme: light;
+    --wel-img-dim: brightness(1);
   }
 
   [data-theme="dark"] {
     color-scheme: dark;
+    --wel-img-dim: var(--wel-img-dim-amount);
   }
 
   /* Forced colors: the user demanded the system palette — a scoped scheme
@@ -177,6 +202,12 @@
   @media (forced-colors: active) {
     [data-theme] {
       color-scheme: light dark;
+    }
+
+    /* Dimming off too — never alter the user's demanded rendering. */
+    :root,
+    [data-theme] {
+      --wel-img-dim: brightness(1);
     }
   }
 }
