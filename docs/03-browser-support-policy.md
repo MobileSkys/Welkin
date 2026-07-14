@@ -49,7 +49,9 @@ absent. Component specs that use an Enhanced feature must reference the contract
 | CSS anchor positioning | Popovers/menus/tooltips tethered to their trigger with flip/slide | Popover centres via default popover positioning or fixed placement below trigger; fully functional, less elegant placement |
 | `@starting-style` + `transition-behavior: allow-discrete` | Entry/exit transitions for dialogs, popovers, toasts | Elements appear/disappear instantly; no animation |
 | `interpolate-size` / `::details-content` | Smooth accordion open/close animation | Accordion opens/closes instantly |
-| Scroll-driven animations (`animation-timeline`) | Scroll progress bars, reveal-on-scroll effects | Effects simply absent; content static and fully readable |
+| Scroll-driven animations (`animation-timeline`) | Scroll progress bars, reveal-on-scroll effects (`.reveal` image utility) | Effects simply absent; content static and fully readable. The `.reveal` hidden start state exists **only inside** the `@supports` gate, so no engine ever holds content at `opacity: 0` |
+| `mask-image` / `mask-composite` | `.edge-fade` image bleeds and vignettes | Unfaded image — additive by nature, ships ungated |
+| Relative colour syntax (`oklch(from …)`) | Derived interaction shades (typed tokens) and `.duotone` endpoints | Typed tokens fall back to their `@property` initial values (static light palette, ADR-0007); the untyped duotone endpoints invalidate at computed-value time, so overlays go transparent and the image renders desaturated-only — readable |
 | View transitions (same-document) | Cross-state morph animations (tabs indicator, toast stack) | Instant state change. Cross-engine since Firefox shipped View Transitions Level 1 |
 | Cross-document view transitions (`@view-transition`) | **Opt-in module** `components/view-transitions.css` (never bundled): same-origin MPA navigations cross-fade and `--wel-vt`-named elements morph — full effect in Chrome 126+ / Safari 18.2+ | Firefox (View Transitions Level 1 only, same-document) ignores the unknown at-rule: instant navigation, fully functional. Additive by nature — no `@supports` gate exists for an at-rule, and none is needed |
 | `field-sizing: content` | Auto-growing textareas/inputs | Fixed-size textarea with manual resize handle |
@@ -65,8 +67,11 @@ absent. Component specs that use an Enhanced feature must reference the contract
 > opt-in; (2) its absence degrades additively with no possible `@supports` gate
 > (an unknown at-rule/pseudo-class is ignored wholesale); (3) its spec documents
 > the engines honestly. Cross-document view transitions (T-89) is the first and
-> only occupant. Opt-in modules still follow the ADR-0012 review cadence — the
-> row above graduates into the normal Enhanced tier when Firefox ships Level 2.
+> only occupant; its `data-vt-image` morph treatment (T-109) rides inside it on
+> Level 2 `view-transition-class` with the same additive posture (unknown
+> selector/property drop wholesale). Opt-in modules still follow the ADR-0012
+> review cadence — the row above graduates into the normal Enhanced tier when
+> Firefox ships Level 2.
 
 > **Baseline-status audit note.** The tier assignments above reflect the state of
 > Baseline at the time of writing; several rows (anchor positioning, `interpolate-size`,

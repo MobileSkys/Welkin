@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" role="img" aria-label="Stylised desert dunes under a warm sky">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbe7c2"/>
+      <stop offset="1" stop-color="#f3b177"/>
+    </linearGradient>
+    <linearGradient id="duneA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e09a58"/>
+      <stop offset="1" stop-color="#b06a34"/>
+    </linearGradient>
+    <linearGradient id="duneB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c77e40"/>
+      <stop offset="1" stop-color="#7c4a22"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#sky)"/>
+  <circle cx="110" cy="70" r="30" fill="#fff6df"/>
+  <path d="M0,170 C90,120 170,190 260,150 C320,125 370,150 400,140 L400,250 L0,250 Z" fill="url(#duneA)"/>
+  <path d="M0,215 C120,180 220,235 400,190 L400,250 L0,250 Z" fill="url(#duneB)"/>
+  <path d="M258,150 C300,133 350,148 400,140 L400,152 C350,158 306,146 262,158 Z" fill="#8a5426" opacity="0.5"/>
+</svg>

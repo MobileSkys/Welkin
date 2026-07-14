@@ -18,6 +18,26 @@ say so there.
 
 ### Added
 
+- **Image FX spec + doctrine touchpoints (T-119)**: new
+  `docs/components/image-fx.md` documents the wave-1 utilities — shared
+  never-a-broken-image doctrine, per-utility fallback contracts, the token
+  table, and composition rules (which class goes on the wrapper vs the
+  media, the shared-`filter` combo rule, the D-12 overlay-stacking trap).
+  Doc 03 gains mask and relative-colour-syntax contract rows and extends
+  the scroll-driven/opt-in-module rows; doc 09's reduced-motion matrix
+  names the gated utilities; doc 05 records the pin-faithful pattern for
+  non-colour scheme-coupled tokens (first occupant `--wel-img-dim`).
+
+- **Image FX page** (docs site, T-120): `examples/image-fx.html` demos every
+  wave-1 image utility live with copyable markup — `.dim` (inside a
+  dark-pinned panel so it shows in either OS scheme), `.duotone`
+  (default/retinted/custom endpoints), `.edge-fade` (all-edges, hero
+  bleed, vignette), `.reveal` (scroll to see), and a `data-vt-image`
+  same-document gallery morph whose few lines of wiring are the page's
+  only script (inline, so file:// keeps working). Artwork is local SVG
+  (`examples/img/`). Site + example navbars gain an "Image FX" item and
+  the a11y smoke covers the page in both schemes and forced colors.
+
 - **`.dim` dark-mode image dimming (T-102)**: photos glare on dark
   surfaces — `.dim` on media applies `--wel-img-dim`, which resolves to
   the identity filter in light scheme and `--wel-img-dim-amount`
