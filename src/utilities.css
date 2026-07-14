@@ -136,4 +136,35 @@
   .edge-fade[data-edges="radial"] {
     mask-image: radial-gradient(farthest-side, black calc(100% - var(--wel-edge-fade)), transparent);
   }
+
+  /* Scroll-driven reveal (T-108) — fade/scale-in driven by the element's
+     own viewport entry (animation-timeline: view()), zero JS. The hidden
+     start state exists ONLY inside this gate: engines without scroll-
+     driven animations (and reduced-motion users, per the docs/09 matrix —
+     scroll-driven effects gate off entirely) simply see the element,
+     never a stuck opacity-0 (image-FX doctrine, D-11). Timeline-driven,
+     so no duration for the --wel-motion multiplier to ride — the media
+     gate is the reduced-motion mechanism here (carousel precedent).
+     Tune with --wel-reveal-scale (start scale) and --wel-reveal-distance
+     (start block-axis offset; positive rises into place). */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        --wel-reveal-scale: 0.96;
+        --wel-reveal-distance: 0px;
+
+        animation: wel-reveal var(--wel-motion-ease-out) both;
+        animation-timeline: view();
+        animation-range: entry;
+      }
+    }
+  }
+}
+
+@keyframes wel-reveal {
+  from {
+    opacity: 0;
+    translate: 0 var(--wel-reveal-distance, 0px);
+    scale: var(--wel-reveal-scale, 0.96);
+  }
 }

@@ -18,6 +18,16 @@ say so there.
 
 ### Added
 
+- **`.reveal` scroll-driven utility (T-108)**: fade/scale-in as the element
+  enters the viewport, via `animation-timeline: view()` with
+  `animation-range: entry` — zero JS. Tune with `--wel-reveal-scale`
+  (start scale, default 0.96) and `--wel-reveal-distance` (start
+  block-axis offset, default 0). The hidden start state exists only
+  inside the `@supports (animation-timeline: view())` +
+  `prefers-reduced-motion: no-preference` gate, so no-support engines
+  (e.g. Firefox stable) and reduced-motion users always see the element —
+  never a stuck opacity-0. Third of the image-FX wave (T-118).
+
 - **`.edge-fade` mask utility (T-106)**: gradient `mask-image` so media
   melts into the backdrop (hero bleeds). Default fades all four edges
   (two-layer `mask-composite: intersect`); a `data-edges` axis narrows it
