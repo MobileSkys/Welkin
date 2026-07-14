@@ -11,7 +11,11 @@ const exampleUrl = (name) =>
 const page_url = exampleUrl('kitchen-sink.html');
 const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html',
   'showcase-solstice.html', 'showcase-nimbus.html', 'showcase-aster.html', 'showcase-fern.html',
-  'showcase-cadence.html'];
+  'showcase-cadence.html',
+  // Waypoint is a directory-shaped showcase (T-90). These run from file://,
+  // where cross-doc view transitions can never fire (opaque origins) — the
+  // VT/reduced-motion behaviour itself is probed over http (D-9, T-94).
+  'waypoint/index.html', 'waypoint/atlas.html', 'waypoint/dolomites.html', 'waypoint/about.html'];
 
 let failures = 0;
 const fail = (msg) => { failures++; console.error(`FAIL ${msg}`); };

@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Waypoint — About</title>
+<!-- Waypoint, page 4 of 4 (T-90). The hero shares --wel-vt: hero with Home and
+     the Atlas. The field-note form is the second jQuery demo: submit spawns a
+     Welkin toast through the wel-toast-region API — old-school JS driving a
+     modern custom element, zero friction (script at the end of <body>). -->
+<link rel="stylesheet" href="../../dist/welkin.css">
+<link rel="stylesheet" href="../../dist/components/view-transitions.css">
+<!-- async, NOT defer: deferred scripts hold DOMContentLoaded back, and the
+     inbound cross-document view transition is skipped when first paint wins
+     that race (probed: defer + slow fetch = no transition, ever). async only
+     delays the load event — which is exactly what the wiring below waits for. -->
+<script src="jquery.min.js" async></script>
+<style>
+  /* Page shell (recipes.md): the `page` container the navbar queries. */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Level 1 — the theme (doc 10): map-paper cream, night-atlas navy,
+     compass-orange accent; crisp cartographic corners. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45));
+    --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+    --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.75rem;
+  }
+
+  /* Level 2 — named sub-brand (doc 10): alpine sections cool to glacier teal. */
+  [data-theme="alpine"] {
+    --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+  }
+
+  /* Level 3 — component-token surgery (doc 10): stamp-square tags, sitewide. */
+  .tag { --wel-tag-radius: 0; }
+
+  /* The escape hatch (doc 04): user CSS in @layer overrides outranks every
+     Welkin layer (applies on the Atlas page's cards). */
+  @layer overrides {
+    .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="index.html" style="--wel-vt: brand">Waypoint</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="atlas.html">Atlas</a></li>
+        <li><a href="dolomites.html">Journal</a></li>
+        <li><a href="about.html" aria-current="page">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-7); padding-block: var(--wel-space-6)">
+    <div class="center" style="--wel-center-max: 70rem">
+    <div class="stack" style="--wel-stack-gap: var(--wel-space-7)">
+
+      <!-- Same --wel-vt: hero as the other pages' panoramas. -->
+      <section class="cover" aria-labelledby="about-title"
+               style="--wel-vt: hero; --wel-cover-min-height: 22dvb; --wel-cover-padding: var(--wel-space-6);
+                      border-radius: var(--wel-radius-surface); overflow: clip; position: relative;
+                      background: linear-gradient(to top, var(--wel-color-surface-sunken), var(--wel-color-accent-tint, var(--wel-color-surface-sunken)) 85%)">
+        <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice"
+             style="position: absolute; inset: auto 0 0 0; inline-size: 100%; block-size: 70%; color: var(--wel-color-accent); opacity: 0.45">
+          <path fill="currentColor" d="M0 40q20-14 40-8t34 2q26-6 46 4v2z"/>
+        </svg>
+        <div class="stack" data-principal style="position: relative; --wel-stack-gap: var(--wel-space-2)">
+          <h1 id="about-title">About Waypoint</h1>
+          <p style="max-inline-size: var(--wel-text-measure)">One writer, one rucksack, no sponsors to please.</p>
+        </div>
+      </section>
+
+      <div class="sidebar-layout" data-side="end" style="--wel-sidebar-width: 22rem; --wel-sidebar-gap: var(--wel-space-7)">
+
+        <div class="prose">
+          <p>Waypoint started as e-mails home from a night train somewhere
+          between Zagreb and the rest of the itinerary. The e-mails got long,
+          the list of recipients got longer, and eventually it seemed kinder
+          to give the whole thing a URL.</p>
+          <p>The rules of the house: overland where the map allows it, sleep
+          where the route says rather than where the reviews say, and never
+          pretend a place was empty when it was full of other people also
+          holding cameras. Travel writing that forgets the bus queue is
+          fiction.</p>
+          <p>The site itself is part of the journal's spirit — plain HTML
+          pages you could read from a memory stick, styled by one stylesheet
+          and a handful of design tokens. Even the page-to-page animation is
+          just CSS, and switches itself off if your device asks for reduced
+          motion.</p>
+        </div>
+
+        <section class="stack" aria-labelledby="note-title">
+          <h2 id="note-title">Send a field note</h2>
+          <p style="color: var(--wel-color-ink-muted)">Corrections, route beta, or an argument about polenta.</p>
+
+          <!-- In flow on purpose (toast spec): JS-off, the region is simply
+               empty and the form is a normal form; JS-on, jQuery pushes a
+               toast through the region's API on submit. -->
+          <wel-toast-region aria-label="Notifications"></wel-toast-region>
+
+          <form id="field-note" class="stack">
+            <div class="field">
+              <label for="fn-name">Name</label>
+              <input id="fn-name" name="name" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="fn-route">Which route is it about?</label>
+              <select class="select" id="fn-route" name="route">
+                <option value="" selected>Anywhere on the map</option>
+                <option>Crossing the Dolomites</option>
+                <option>The quiet road to Merzouga</option>
+                <option>Ferry weather, Lofoten</option>
+                <option>Night trains to Trieste</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fn-note">Your note</label>
+              <textarea id="fn-note" name="note" rows="5" required
+                        placeholder="The bus now leaves from the other side of the square…"></textarea>
+              <p class="field-hint" id="fn-hint">Plain text; links get read with suspicion.</p>
+            </div>
+            <div class="cluster" style="--wel-cluster-justify: flex-end">
+              <button class="button" data-variant="primary" type="submit">Send it along</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+
+    </div>
+    </div>
+  </main>
+
+  <footer class="center" style="--wel-center-max: 70rem; padding-block: var(--wel-space-6)">
+    <div class="stack">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Waypoint. Words and wrong turns by E. Marsh.</small>
+      <a href="../../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h2>View this page's theme</h2></summary>
+        <p>Identical to every Waypoint page — four pages, one token block.</p>
+        <pre tabindex="0"><code>:root, [data-theme] {
+  --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45)); /* compass orange */
+  --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+  --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+  --wel-radius-control: 0.25rem;
+  --wel-radius-surface: 0.75rem;
+}
+
+[data-theme="alpine"] {
+  --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+}
+
+.tag { --wel-tag-radius: 0; }
+
+/* The escape hatch (doc 04): user CSS beats every Welkin layer */
+@layer overrides {
+  .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+}</code></pre>
+      </details>
+    </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- wel-toast-region module inlined verbatim from js/ — <script type="module"
+     src> is CORS-blocked under file:// (the v1.0.0 gotcha), and this page must
+     work double-clicked from disk. -->
+<script type="module">
+/* wel-toast-region — queued live-region toast manager
+   (docs/components/toast.md, T-49; delivery per ADR-0011). The API is
+   the DOM: appending a <wel-toast> child raises a toast; push() is a
+   convenience that builds exactly that child. Adoption (observer, so
+   fragment swaps and server flashes are first-class) sets the
+   politeness role per tone — alert for warning/danger, else status —
+   BEFORE the toast turns visible so appearing announces it, and adds
+   the dismiss button. FIFO queue past `max`; timers (duration attr,
+   default 6000, 0 = persistent, danger forced persistent — WCAG
+   2.2.1) pause on hover and focus-within. Exit waits the
+   [data-closing] CSS fade, then the stack reflows via a view
+   transition, skipped under reduced motion. Focus is never stolen. */
+
+let seq = 0;
+
+class WelToastRegion extends HTMLElement {
+  connectedCallback() {
+    if (this._on) return;
+    this._on = true;
+    this.setAttribute('role', 'region'); // aria-label is the host's job
+    for (const t of this.querySelectorAll('wel-toast')) this._adopt(t);
+    new MutationObserver((ms) => {
+      for (const m of ms) {
+        for (const t of m.addedNodes) if (t.tagName === 'WEL-TOAST') this._adopt(t);
+        for (const t of m.removedNodes) {
+          if (t.tagName === 'WEL-TOAST' && !('closing' in t.dataset)) {
+            clearTimeout(t._id);
+            this._emit('wel-toast-dismiss', { toast: t, reason: 'api' });
+            this._flow();
+          }
+        }
+      }
+    }).observe(this, { childList: true });
+
+    this.addEventListener('pointerenter', () => { this._h = 1; this._pause(); });
+    this.addEventListener('focusin', () => { this._f = 1; this._pause(); });
+    this.addEventListener('pointerleave', () => { this._h = 0; this._resume(); });
+    this.addEventListener('focusout', (e) => {
+      if (!this.contains(e.relatedTarget)) { this._f = 0; this._resume(); }
+    });
+  }
+
+  /** Convenience mirror of `append(<wel-toast>)` (ADR-0011). */
+  push(message, o = {}) {
+    const t = document.createElement('wel-toast');
+    if (o.tone) t.dataset.tone = o.tone;
+    if (o.duration != null) t.setAttribute('duration', o.duration);
+    t.textContent = message;
+    this.append(t);
+    return t;
+  }
+
+  _adopt(t) {
+    if (t._ok) return;
+    t._ok = 1;
+    const tone = t.dataset.tone;
+    t.setAttribute('role', tone === 'warning' || tone === 'danger' ? 'alert' : 'status');
+    if (t.getAttribute('dismissible') !== 'false') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'button';
+      b.dataset.variant = 'ghost';
+      b.dataset.size = 'sm';
+      b.setAttribute('aria-label', this.getAttribute('dismiss-label') || 'Dismiss');
+      b.textContent = '✕';
+      b.addEventListener('click', () => this._dismiss(t, 'dismiss'));
+      t.append(b);
+    }
+    t.hidden = true; // queued; _flow unhides in FIFO order
+    t.style.viewTransitionName = `wel-t${++seq}`;
+    t.style.viewTransitionClass = 'wel-toast';
+    this._flow();
+  }
+
+  _flow() {
+    let n = +this.getAttribute('max') || 3;
+    for (const t of this.children) {
+      if (t.tagName !== 'WEL-TOAST' || 'closing' in t.dataset) continue;
+      if (!t.hidden) n--;
+      else if (n > 0) {
+        n--;
+        t.hidden = false; // turning visible announces the live region
+        t._rem = t.dataset.tone === 'danger' ? 0 // errors never evaporate
+          : +(t.getAttribute('duration') ?? this.getAttribute('duration') ?? 6000);
+        if (t._rem && !this._h && !this._f) this._run(t);
+        this._emit('wel-toast-show', { toast: t });
+      }
+    }
+  }
+
+  _run(t) {
+    t._at = Date.now();
+    t._id = setTimeout(() => this._dismiss(t, 'timeout'), t._rem);
+  }
+
+  _pause() {
+    for (const t of this.children) {
+      if (t._id) { clearTimeout(t._id); t._id = 0; t._rem -= Date.now() - t._at; }
+    }
+  }
+
+  _resume() {
+    if (this._h || this._f) return;
+    for (const t of this.children) {
+      if (!t.hidden && !('closing' in t.dataset) && t._rem > 0 && !t._id) this._run(t);
+    }
+  }
+
+  _dismiss(t, reason) {
+    if ('closing' in t.dataset) return;
+    clearTimeout(t._id);
+    const hadFocus = t.contains(document.activeElement);
+    t.dataset.closing = ''; // CSS fades; wait its duration, then remove
+    setTimeout(() => {
+      const go = () => { t.remove(); this._flow(); };
+      if (document.startViewTransition
+          && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // ready rejects (AbortError) when a rapid follow-up dismissal
+        // skips this transition — expected, swallow it
+        document.startViewTransition(go).ready.catch(() => {});
+      } else go();
+      this._emit('wel-toast-dismiss', { toast: t, reason });
+      if (hadFocus) {
+        this.querySelector('wel-toast:not([hidden], [data-closing]) button')?.focus();
+      }
+    }, (parseFloat(getComputedStyle(t).transitionDuration) || 0) * 1000);
+  }
+
+  _emit(name, detail) {
+    this.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }));
+  }
+}
+
+customElements.define('wel-toast-region', WelToastRegion);
+</script>
+
+<!-- jQuery interop (T-90), part two: old-school JS driving a Welkin custom
+     element's API. The submit handler only takes over when the region has
+     upgraded; otherwise the form submits like it's 2004. Vendored beside the
+     page so file:// works offline. -->
+<script type="module">
+  // 'load' and not jQuery.ready: jquery.min.js is async (see <head>), and
+  // the load event is the earliest moment it is guaranteed to have run.
+  addEventListener('load', () => jQuery(function ($) {
+    $('#field-note').on('submit', function (e) {
+      var region = $('wel-toast-region')[0];
+      if (!region || !region.push) return; // no enhancement: normal submit
+      e.preventDefault();
+      var name = $.trim($('#fn-name').val());
+      region.push('Thanks' + (name ? ', ' + name : '') + ' — field note logged. Reply travels by the next ferry.', { tone: 'success' });
+      this.reset();
+    });
+  }));
+</script>
+</body>
+</html>

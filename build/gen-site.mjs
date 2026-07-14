@@ -20,7 +20,7 @@
 // Known limitation: docs links into the repo source tree (../src/…,
 // ../build/…) pass through untranslated — they resolve in the repo, not
 // on the site. Rewrite to a code-host URL once the repo has a remote.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, cpSync, rmSync, existsSync, statSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
@@ -37,8 +37,12 @@ mkdirSync(join(out, 'examples'), { recursive: true });
 
 // The site links the real build output — regenerate first (npm run build).
 cpSync(join(root, 'dist'), join(out, 'dist'), { recursive: true });
-for (const f of readdirSync(join(root, 'examples')).filter((f) => f.endsWith('.html'))) {
-  cpSync(join(root, 'examples', f), join(out, 'examples', f));
+// Top-level pages, plus directory-shaped showcases (waypoint is multi-page
+// with a vendored jquery.min.js — copy the whole folder, T-90).
+for (const f of readdirSync(join(root, 'examples'))) {
+  if (f.endsWith('.html') || statSync(join(root, 'examples', f)).isDirectory()) {
+    cpSync(join(root, 'examples', f), join(out, 'examples', f), { recursive: true });
+  }
 }
 
 // Where the page being rendered lands in site/ ('', 'docs', 'components') —
@@ -308,11 +312,12 @@ const SHOWCASE = [
   ['showcase-aster', 'Aster &amp; Vale', 'Literary journal — warm paper, system serif, print-like. Prose essay, pull quotes, story carousel.'],
   ['showcase-fern', 'Fern &amp; Forage', 'Plant-shop storefront — fern green, rounded, pill buttons (a Level-3 knob). Product grid, filters, tabs, cart dialog.'],
   ['showcase-cadence', 'Studio Cadence', 'Motion studio — animation in a few honest lines: motion tokens, @starting-style entrances, view-transition grid morphs, one reduced-motion switch.'],
+  ['waypoint/index', 'Waypoint', 'Multi-page travel journal — map-paper cream, compass orange. The opt-in view-transitions module morphs the hero and entry art BETWEEN pages; vendored jQuery filters and toasts. Firefox and file:// fall back to instant navigation.'],
 ];
 
 const indexBody = `
 ${a11y(marked.parse(readme))}
-<h2 id="showcase">Showcase — one stylesheet, four sites</h2>
+<h2 id="showcase">Showcase — one stylesheet, six sites</h2>
 <p>Every page below loads the same <code>dist/welkin.css</code>. The entire
 visual difference between them is a handful of design tokens on
 <code>:root</code> (<a href="docs/10-theming-and-customisation.html">doc 10</a>,

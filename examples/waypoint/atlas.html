@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Waypoint — The Atlas</title>
+<!-- Waypoint, page 2 of 4 (T-90). The hero band shares --wel-vt: hero with the
+     home and About pages, so it morphs on navigation. The destination grid is
+     jQuery territory: the live filter mutates the DOM the old-school way and
+     Welkin's layout just keeps up (see the script at the end of <body>). -->
+<link rel="stylesheet" href="../../dist/welkin.css">
+<link rel="stylesheet" href="../../dist/components/view-transitions.css">
+<!-- async, NOT defer: deferred scripts hold DOMContentLoaded back, and the
+     inbound cross-document view transition is skipped when first paint wins
+     that race (probed: defer + slow fetch = no transition, ever). async only
+     delays the load event — which is exactly what the wiring below waits for. -->
+<script src="jquery.min.js" async></script>
+<style>
+  /* Page shell (recipes.md): the `page` container the navbar queries. */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Level 1 — the theme (doc 10): map-paper cream, night-atlas navy,
+     compass-orange accent; crisp cartographic corners. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45));
+    --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+    --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.75rem;
+  }
+
+  /* Level 2 — named sub-brand (doc 10): alpine sections cool to glacier teal. */
+  [data-theme="alpine"] {
+    --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+  }
+
+  /* Level 3 — component-token surgery (doc 10): stamp-square tags, sitewide. */
+  .tag { --wel-tag-radius: 0; }
+
+  /* The escape hatch (doc 04): user CSS in @layer overrides outranks every
+     Welkin layer — the atlas cards trade the card component's solid border
+     for a dashed route line. Watch it apply to every card below. */
+  @layer overrides {
+    .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="index.html" style="--wel-vt: brand">Waypoint</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="atlas.html" aria-current="page">Atlas</a></li>
+        <li><a href="dolomites.html">Journal</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-7); padding-block: var(--wel-space-6)">
+    <div class="center" style="--wel-center-max: 70rem">
+    <div class="stack" style="--wel-stack-gap: var(--wel-space-7)">
+
+      <!-- Same --wel-vt: hero as the home panorama — on navigation the tall
+           cover morphs into this slim band. -->
+      <section class="cover" aria-labelledby="atlas-title"
+               style="--wel-vt: hero; --wel-cover-min-height: 22dvb; --wel-cover-padding: var(--wel-space-6);
+                      border-radius: var(--wel-radius-surface); overflow: clip; position: relative;
+                      background: linear-gradient(to top, var(--wel-color-surface-sunken), var(--wel-color-accent-tint, var(--wel-color-surface-sunken)) 85%)">
+        <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice"
+             style="position: absolute; inset: auto 0 0 0; inline-size: 100%; block-size: 70%; color: var(--wel-color-accent); opacity: 0.45">
+          <path fill="currentColor" d="M0 40l14-14 8 8 16-20 12 16 10-8 18 18 14-12 16 12 12-6v6z"/>
+        </svg>
+        <div class="stack" data-principal style="position: relative; --wel-stack-gap: var(--wel-space-2)">
+          <h1 id="atlas-title">The Atlas</h1>
+          <p style="max-inline-size: var(--wel-text-measure)">Every route on the site, by region.
+          Filter as you type — the list below is plain markup and a few lines of jQuery.</p>
+        </div>
+      </section>
+
+      <section class="stack" aria-labelledby="routes-title">
+        <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: flex-end">
+          <h2 id="routes-title">Routes</h2>
+          <div class="field" style="min-inline-size: 16rem">
+            <label for="q">Filter routes</label>
+            <input id="q" type="search" placeholder="Try “alps” or “by sea”"
+                   aria-describedby="q-count">
+            <p id="q-count" aria-live="polite" style="color: var(--wel-color-ink-muted)"><small>6 of 6 routes shown</small></p>
+          </div>
+        </div>
+
+        <div class="grid atlas-grid" style="--wel-grid-min: 16rem" data-align="rows">
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3><a class="card-link" href="dolomites.html">Crossing the Dolomites</a></h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Alta Via 1 · 120 km</small></p>
+            </header>
+            <div class="card-body">
+              <p>Rifugio to rifugio beneath the pale towers of South Tyrol.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Alps</span><span class="tag">On foot</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge" data-tone="success">Journal entry ready</span></footer>
+          </article>
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3>The quiet road to Merzouga</h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Drâa Valley · 4 days</small></p>
+            </header>
+            <div class="card-body">
+              <p>Kasbahs, date palms, and the last tarmac before the ergs.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Desert</span><span class="tag">Overland</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge">Entry coming</span></footer>
+          </article>
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3>Ferry weather, Lofoten</h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Nordland · 9 crossings</small></p>
+            </header>
+            <div class="card-body">
+              <p>Island-hopping north of the circle, cod permitting.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Arctic</span><span class="tag">By sea</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge">Entry coming</span></footer>
+          </article>
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3>Night trains to Trieste</h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Central Europe · 3 sleepers</small></p>
+            </header>
+            <div class="card-body">
+              <p>Couchettes, border stamps at 3 a.m., coffee in the buffet car.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Alps</span><span class="tag">By rail</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge">Entry coming</span></footer>
+          </article>
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3>Monsoon tea country</h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Western Ghats · 2 weeks</small></p>
+            </header>
+            <div class="card-body">
+              <p>Bus roofs, tea terraces, and rain you can set a watch by.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Tropics</span><span class="tag">Overland</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge">Entry coming</span></footer>
+          </article>
+
+          <article class="card" data-variant="outlined">
+            <header class="card-header">
+              <h3>The Carretera, southbound</h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Patagonia · 1,240 km</small></p>
+            </header>
+            <div class="card-body">
+              <p>Gravel, glaciers, and hitching with the bread van.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Andes</span><span class="tag">Overland</span>
+              </div>
+            </div>
+            <footer class="card-footer"><span class="badge">Entry coming</span></footer>
+          </article>
+
+        </div>
+
+        <p id="q-empty" style="display: none">
+          <span class="alert" data-tone="warning" role="status" style="display: block">No routes match that filter — try a region like “alps” or a mode like “by sea”.</span>
+        </p>
+      </section>
+
+    </div>
+    </div>
+  </main>
+
+  <footer class="center" style="--wel-center-max: 70rem; padding-block: var(--wel-space-6)">
+    <div class="stack">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Waypoint. Words and wrong turns by E. Marsh.</small>
+      <a href="../../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h2>View this page's theme</h2></summary>
+        <p>Identical to every Waypoint page — and the dashed borders above are
+        the <code>@layer overrides</code> escape hatch doing its job (doc 04).</p>
+        <pre tabindex="0"><code>:root, [data-theme] {
+  --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45)); /* compass orange */
+  --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+  --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+  --wel-radius-control: 0.25rem;
+  --wel-radius-surface: 0.75rem;
+}
+
+[data-theme="alpine"] {
+  --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+}
+
+.tag { --wel-tag-radius: 0; }
+
+/* The escape hatch (doc 04): user CSS beats every Welkin layer */
+@layer overrides {
+  .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+}</code></pre>
+      </details>
+    </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- jQuery interop (T-90): Welkin ships no framework and fights none — this
+     is the JS most long-lived sites already have. Vendored beside the page so
+     file:// works offline (script src from a CDN would too, but not on a
+     train). Classic DOM mutation: .toggle() writes inline display, .text()
+     rewrites the live count — Welkin's grid and tokens don't care who moves
+     the DOM. With JS off, the full list simply stays put. -->
+<script type="module">
+  // 'load' and not jQuery.ready: jquery.min.js is async (see <head>), and
+  // the load event is the earliest moment it is guaranteed to have run.
+  addEventListener('load', () => jQuery(function ($) {
+    var $cards = $('.atlas-grid .card');
+    var total = $cards.length;
+    $('#q').on('input', function () {
+      var q = $(this).val().trim().toLowerCase();
+      var shown = 0;
+      $cards.each(function () {
+        var hit = !q || $(this).text().toLowerCase().indexOf(q) !== -1;
+        $(this).toggle(hit);
+        if (hit) shown++;
+      });
+      $('#q-count small').text(shown + ' of ' + total + ' routes shown');
+      $('#q-empty').toggle(shown === 0);
+    });
+  }));
+</script>
+</body>
+</html>

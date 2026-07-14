@@ -154,6 +154,15 @@ cross-document transitions can never run from disk):
   `:root { view-transition-name: root }` and with it the default page fade;
   the module restores it explicitly. Authors may rename the page group by
   setting `--wel-vt` on `:root`.
+- **Destination-page scripts (the reliability gotcha):** Chrome activates the
+  inbound transition only if the new page's `DOMContentLoaded` beats its first
+  paint. **Deferred** scripts hold DCL back, so a slow `defer` fetch means the
+  transition silently never fires (probed: `defer` + 600 ms latency → 0/6;
+  flaky even on localhost). `async` scripts only delay the `load` event and
+  are reliable (8/8 even at 4.5 s latency), as are parser-blocking `<head>`
+  scripts. Rule: on pages that opt in, load heavy scripts `async` (gate wiring
+  on the `load` event) — never `defer`. Navigations started while a transition
+  is still running skip the new one (spec behaviour).
 
 Forbidden nestings: none, but **one `--wel-vt` name must not appear twice on
 one page** — the browser skips the entire transition.

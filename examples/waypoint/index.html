@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Waypoint — Field notes from the long way round</title>
+<!-- Showcase 6: Waypoint, a MULTI-PAGE travel journal (T-90). Same welkin.css
+     as every showcase; new here is the à-la-carte view-transitions module,
+     which makes same-origin navigations morph — the brand wordmark, the hero
+     panorama, and the featured entry's artwork travel between pages. Opt-in
+     and additive (docs/03): Chrome/Safari over http morph; Firefox — and
+     file://, where every page is its own origin — get instant navigations,
+     nothing else changes. jQuery is vendored page-side to prove Welkin plays
+     nice with whatever JS you bring; it never ships in Welkin's dist. -->
+<link rel="stylesheet" href="../../dist/welkin.css">
+<link rel="stylesheet" href="../../dist/components/view-transitions.css">
+<style>
+  /* Page shell (recipes.md): the `page` container the navbar queries. */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Level 1 — the theme (doc 10): map-paper cream, night-atlas navy,
+     compass-orange accent; crisp cartographic corners. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45));
+    --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+    --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.75rem;
+  }
+
+  /* Level 2 — named sub-brand (doc 10): alpine sections cool to glacier teal. */
+  [data-theme="alpine"] {
+    --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+  }
+
+  /* Level 3 — component-token surgery (doc 10): stamp-square tags, sitewide.
+     Sets the tag's published radius knob; never selects into its internals. */
+  .tag { --wel-tag-radius: 0; }
+
+  /* The escape hatch (doc 04): user CSS in @layer overrides outranks every
+     Welkin layer — no !important, no specificity war. Atlas cards trade the
+     card component's solid border for a dashed route line. */
+  @layer overrides {
+    .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="index.html" style="--wel-vt: brand">Waypoint</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="atlas.html">Atlas</a></li>
+        <li><a href="dolomites.html">Journal</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-8); padding-block: var(--wel-space-6)">
+    <div class="center" style="--wel-center-max: 70rem">
+    <div class="stack" style="--wel-stack-gap: var(--wel-space-8)">
+
+      <!-- Hero panorama. --wel-vt: hero — the same name sits on the Atlas and
+           About heroes, so this panel MORPHS between its three shapes as you
+           navigate (T-89 module). -->
+      <section class="cover" aria-labelledby="hero-title"
+               style="--wel-vt: hero; --wel-cover-min-height: 55dvb; --wel-cover-padding: var(--wel-space-7);
+                      border-radius: var(--wel-radius-surface); overflow: clip; position: relative;
+                      background: linear-gradient(to top, var(--wel-color-surface-sunken), var(--wel-color-accent-tint, var(--wel-color-surface-sunken)) 85%)">
+        <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice"
+             style="position: absolute; inset: auto 0 0 0; inline-size: 100%; block-size: 60%; color: var(--wel-color-accent); opacity: 0.55">
+          <path fill="currentColor" opacity="0.35" d="M0 40 18 16l9 10 13-18 14 20 11-12 17 22 12-14 14 16 12-8v8z"/>
+          <path fill="currentColor" d="M0 40l14-14 8 8 16-20 12 16 10-8 18 18 14-12 16 12 12-6v6z"/>
+        </svg>
+        <div class="stack" data-principal style="position: relative; max-inline-size: 34rem">
+          <p class="badge" style="align-self: start">EST. 2019 · 47 COUNTRIES</p>
+          <h1 id="hero-title" style="text-wrap: balance">Field notes from the long way round</h1>
+          <p style="font-size: var(--wel-text-size-1)">Waypoint is a journal of slow overland travel —
+          border crossings, mountain passes, and the meals in between. New dispatches most Sundays.</p>
+          <div class="cluster">
+            <a class="button" data-variant="primary" href="atlas.html">Open the atlas</a>
+            <a class="button" href="dolomites.html">Latest entry</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Latest dispatches. The featured card's artwork shares
+           --wel-vt: entry-dolomites with the entry page's hero — click through
+           and the picture grows into place. -->
+      <section class="stack" aria-labelledby="dispatches-title">
+        <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: baseline">
+          <h2 id="dispatches-title">Latest dispatches</h2>
+          <a href="atlas.html">All destinations →</a>
+        </div>
+        <div class="grid" style="--wel-grid-min: 16rem" data-align="rows">
+
+          <article class="card">
+            <figure class="card-media">
+              <a href="dolomites.html" aria-label="Read: Crossing the Dolomites">
+                <div class="frame" role="img" aria-label="Stylised jagged limestone peaks at dawn"
+                     style="--wel-vt: entry-dolomites; --wel-frame-ratio: 16 / 9;
+                            background: linear-gradient(165deg, oklch(85% 0.06 200), oklch(55% 0.1 250))">
+                  <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice" style="inline-size: 100%; block-size: 100%; color: oklch(35% 0.06 250)">
+                    <path fill="currentColor" d="M0 40 16 8l7 12 9-16 11 22 9-10 15 24 13-18 11 12 15-10 14 14v2z"/>
+                  </svg>
+                </div>
+              </a>
+            </figure>
+            <header class="card-header">
+              <h3><a class="card-link" href="dolomites.html">Crossing the Dolomites</a></h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Entry 112 · South Tyrol, Italy</small></p>
+            </header>
+            <div class="card-body">
+              <p>Four days on the Alta Via 1, where the limestone goes pink at
+              sunset and every rifugio argues about polenta.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Alps</span>
+                <span class="tag">On foot</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <figure class="card-media">
+              <div class="frame" role="img" aria-label="Stylised desert dunes under a wide sky"
+                   style="--wel-frame-ratio: 16 / 9; background: linear-gradient(170deg, oklch(88% 0.05 70), oklch(62% 0.11 55))">
+                <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice" style="inline-size: 100%; block-size: 100%; color: oklch(48% 0.09 50)">
+                  <path fill="currentColor" d="M0 40q20-14 40-8t34 2q26-6 46 4v2z"/>
+                </svg>
+              </div>
+            </figure>
+            <header class="card-header">
+              <h3><a class="card-link" href="atlas.html">The quiet road to Merzouga</a></h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Entry 111 · Drâa Valley, Morocco</small></p>
+            </header>
+            <div class="card-body">
+              <p>Two buses, one shared taxi, and a night where the Milky Way
+              did all the talking.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Desert</span>
+                <span class="tag">Overland</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <figure class="card-media">
+              <div class="frame" role="img" aria-label="Stylised harbour water with reflected lights"
+                   style="--wel-frame-ratio: 16 / 9; background: linear-gradient(180deg, oklch(80% 0.04 240), oklch(45% 0.08 255))">
+                <svg aria-hidden="true" viewBox="0 0 120 40" preserveAspectRatio="xMidYMax slice" style="inline-size: 100%; block-size: 100%; color: oklch(70% 0.1 80)">
+                  <g fill="currentColor"><rect x="18" y="26" width="2" height="12" rx="1"/><rect x="44" y="22" width="2" height="16" rx="1"/><rect x="73" y="28" width="2" height="10" rx="1"/><rect x="98" y="24" width="2" height="14" rx="1"/></g>
+                </svg>
+              </div>
+            </figure>
+            <header class="card-header">
+              <h3><a class="card-link" href="atlas.html">Ferry weather, Lofoten</a></h3>
+              <p><small style="color: var(--wel-color-ink-muted)">Entry 110 · Nordland, Norway</small></p>
+            </header>
+            <div class="card-body">
+              <p>On islands where the cod decides the timetable, patience is
+              a travel skill like any other.</p>
+              <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+                <span class="tag">Arctic</span>
+                <span class="tag">By sea</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Level-2 sub-brand band: one data-theme attribute re-accents the
+           subtree to glacier teal (doc 10). -->
+      <section class="stack" data-theme="alpine" aria-labelledby="now-title">
+        <aside class="alert" data-tone="info">
+          <svg class="alert-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><path d="M8 2v2M8 12v2M2 8h2M12 8h2"/></svg>
+          <p class="alert-title" id="now-title">Now crossing: the Alps</p>
+          <p>The next four entries follow the chain from Slovenia to Savoy.
+          This band — and the whole Dolomites entry — re-accents itself with a
+          single <code>data-theme="alpine"</code> attribute (theming Level 2).</p>
+        </aside>
+      </section>
+
+    </div>
+    </div>
+  </main>
+
+  <footer class="center" style="--wel-center-max: 70rem; padding-block: var(--wel-space-6)">
+    <div class="stack">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Waypoint. Words and wrong turns by E. Marsh.</small>
+      <a href="../../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h2>View this page's theme</h2></summary>
+        <p>Every showcase page loads the same welkin.css — only these tokens
+        differ. The last rule is the user escape hatch: <code>@layer overrides</code>
+        beats every Welkin layer without <code>!important</code> (doc 04).</p>
+        <pre tabindex="0"><code>:root, [data-theme] {
+  --wel-color-accent: light-dark(oklch(55% 0.16 35), oklch(72% 0.14 45)); /* compass orange */
+  --wel-color-surface: light-dark(oklch(97% 0.015 85), oklch(20% 0.02 250));
+  --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(24% 0.02 250));
+  --wel-radius-control: 0.25rem;
+  --wel-radius-surface: 0.75rem;
+}
+
+/* Level 2 — named sub-brand (doc 10) */
+[data-theme="alpine"] {
+  --wel-color-accent: light-dark(oklch(52% 0.1 200), oklch(75% 0.09 200));
+}
+
+/* Level 3 — component-token surgery (doc 10) */
+.tag { --wel-tag-radius: 0; }
+
+/* The escape hatch (doc 04): user CSS beats every Welkin layer */
+@layer overrides {
+  .atlas-grid .card { border: 2px dashed var(--wel-color-accent); }
+}</code></pre>
+      </details>
+      <details>
+        <summary><h2>About the page morphs</h2></summary>
+        <p>This site links <code>dist/components/view-transitions.css</code> — the
+        opt-in cross-document view-transitions module (T-89). The wordmark, the
+        hero panorama, and the featured entry's artwork carry
+        <code>--wel-vt</code> names, so they morph between pages in Chrome and
+        Safari over http. Firefox falls back to instant navigation, and so does
+        <code>file://</code> (each file is its own origin — serve the folder to
+        see the morphs). Under <code>prefers-reduced-motion</code> the module
+        switches itself off entirely.</p>
+      </details>
+    </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
