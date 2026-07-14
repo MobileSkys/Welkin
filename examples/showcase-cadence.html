@@ -84,8 +84,9 @@
   <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
 
     <!-- Demo 2: entrances — nothing here but the .rise class above. -->
-    <section class="cover center" style="--wel-cover-min-height: 62dvb">
-      <div class="stack" data-principal>
+    <section class="cover" style="--wel-cover-min-height: 62dvb">
+      <div class="center" data-principal style="--wel-center-max: 46rem">
+      <div class="stack">
         <p class="rise"><span class="badge" data-tone="info">Motion studio</span></p>
         <h1 class="rise" style="--rise-order: 1; font-size: var(--wel-text-size-5)">Things should move like they mean it</h1>
         <p class="rise" style="--rise-order: 2; color: var(--wel-color-ink-muted)">We choreograph brands,
@@ -98,9 +99,11 @@
           <a class="button" data-variant="ghost" data-size="lg" href="#work">See the work</a>
         </div>
       </div>
+      </div>
     </section>
 
-    <section class="center stack" style="--wel-center-max: 46rem">
+    <section class="center" style="--wel-center-max: 46rem">
+      <div class="stack">
       <div class="accordion" data-variant="separated"><details>
         <summary>The lines behind this — staged entrance</summary>
         <p>Four declarations: a transition, a stagger, and where the element
@@ -116,10 +119,12 @@
 &lt;h1 class="rise"&gt;…&lt;/h1&gt;
 &lt;p class="rise" style="--rise-order: 1"&gt;…&lt;/p&gt;</code></pre>
       </details></div>
+      </div>
     </section>
 
     <!-- Demo 1: motion is themed like colour. -->
-    <section class="center stack" style="--wel-center-max: 46rem">
+    <section class="center" style="--wel-center-max: 46rem">
+      <div class="stack">
       <h2>Motion is a token, tuned like a colour</h2>
       <p>Hover any button on this page — it lifts, overshoots, and settles.
       The lift is one line; the <em>spring</em> and its timing are theme
@@ -138,10 +143,12 @@
    so the themed spring is what animates it */
 .button:hover { translate: 0 calc(-3px * var(--wel-motion)); }</code></pre>
       </details></div>
+      </div>
     </section>
 
     <!-- Demo 3: view-transition grid morph. -->
-    <section class="center stack" id="work" style="--wel-center-max: 70rem">
+    <section class="center" id="work" style="--wel-center-max: 70rem">
+      <div class="stack">
       <h2>Selected work</h2>
       <div class="cluster" role="group" aria-label="Filter work by discipline">
         <button class="button" type="button" data-size="sm" data-filter="all" aria-pressed="true">All</button>
@@ -272,10 +279,12 @@ const apply = () =&gt; { /* set [hidden] per card */ };
 button.addEventListener('click', () =&gt;
   document.startViewTransition ? document.startViewTransition(apply) : apply());</code></pre>
       </details></div>
+      </div>
     </section>
 
     <!-- Demo 4: the animations you didn't write. -->
-    <section class="center stack" id="method" style="--wel-center-max: 46rem">
+    <section class="center" id="method" style="--wel-center-max: 46rem">
+      <div class="stack">
       <h2>The animations you don't write</h2>
       <p>Dialog fade-and-scale, toast slide-in, tab-indicator morph — these ship
       with the components. Added CSS on this page for them: <strong>none</strong>.</p>
@@ -304,10 +313,12 @@ button.addEventListener('click', () =&gt;
         </section>
       </wel-tabs>
       <wel-toast-region aria-label="Notifications"></wel-toast-region>
+      </div>
     </section>
 
     <!-- Demo 5: the one switch. -->
-    <section class="center stack" id="motion-switch" style="--wel-center-max: 46rem">
+    <section class="center" id="motion-switch" style="--wel-center-max: 46rem">
+      <div class="stack">
       <h2>All of it rides one switch</h2>
       <p>Every duration on this page — entrances, springs, morphs, the
       components' own animations — multiplies <code>--wel-motion</code>. Drag it
@@ -320,11 +331,13 @@ button.addEventListener('click', () =&gt;
       <p><small>Set to 0, then reopen the dialog or re-filter the work grid —
       instant, not broken. Zero-duration transitions still fire their events, so
       nothing waits on an animation that never runs.</small></p>
+      </div>
     </section>
 
   </main>
 
-  <footer class="center stack" style="--wel-center-max: 46rem; padding-block: var(--wel-space-6)">
+  <footer class="center" style="--wel-center-max: 46rem; padding-block: var(--wel-space-6)">
+    <div class="stack">
     <div class="cluster" style="--wel-cluster-justify: space-between">
       <small>© 2026 Studio Cadence — a fictional studio for the Welkin showcase.</small>
       <a href="../index.html">Built with Welkin</a>
@@ -348,6 +361,7 @@ button.addEventListener('click', () =&gt;
     --wel-motion-duration-2: 250ms;                    /* a touch more theatrical */
   }</code></pre>
     </details></div>
+    </div>
   </footer>
 
 </div>

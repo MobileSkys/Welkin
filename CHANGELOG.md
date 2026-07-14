@@ -44,6 +44,19 @@ say so there.
   the new page under a running transition (history back/forward restoration is
   immune); with the rule, capture lands at the fragment.
 
+### Fixed
+
+- **Showcase layout: `.center`'s measure cap was silently dead on all five
+  original showcase pages (T-95).** They combined two layout primitives on one
+  element (`class="center stack"`, `class="cover center"`); every primitive
+  owns `display`, so the later-loaded one wins and the other vanishes — content
+  ran full-bleed with headings at the viewport edge. All 19 occurrences are now
+  the nested form (`.center > .stack`; heroes: `.cover > .center`), restoring
+  the intended capped, centred columns. Doctrine added to
+  [docs/06](docs/06-layout-system.md) ("compose by nesting — never two
+  primitives on one element") and a new lint (`build/check-primitive-combos.mjs`,
+  in `npm run lint`) keeps combos out of `examples/` for good.
+
 ## 1.0.1 — 2026-07-14
 
 ### Fixed

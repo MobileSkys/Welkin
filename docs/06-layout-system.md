@@ -57,6 +57,14 @@ siblings — component CSS never reimplements these patterns internally when a p
 serves. One physics constraint applies when composing: see the containment sizing rules
 below.
 
+**Compose by nesting — never two primitives on one element.** Every primitive owns
+`display`, so `class="center stack"` is a silent conflict: whichever stylesheet loads
+last wins and the other primitive vanishes wholesale — the classic symptom being
+`.center`'s measure cap dying under `.stack`'s flex, sending content full-bleed
+(board T-95: all five original showcases shipped that way). One element, one
+primitive; wrap to combine (`.center > .stack`). Lint-enforced over `examples/`
+by `build/check-primitive-combos.mjs`.
+
 ## Containment and intrinsic sizing: composition rules
 
 Because every primitive is a container, inline-size containment applies: **a primitive's
