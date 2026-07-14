@@ -307,6 +307,7 @@ const SHOWCASE = [
   ['showcase-nimbus', 'Nimbus', 'Analytics dashboard — indigo, compact and dense. Sidebar shell, KPI cards, sortable table, tabs, toasts.'],
   ['showcase-aster', 'Aster &amp; Vale', 'Literary journal — warm paper, system serif, print-like. Prose essay, pull quotes, story carousel.'],
   ['showcase-fern', 'Fern &amp; Forage', 'Plant-shop storefront — fern green, rounded, pill buttons (a Level-3 knob). Product grid, filters, tabs, cart dialog.'],
+  ['showcase-cadence', 'Studio Cadence', 'Motion studio — animation in a few honest lines: motion tokens, @starting-style entrances, view-transition grid morphs, one reduced-motion switch.'],
 ];
 
 const indexBody = `

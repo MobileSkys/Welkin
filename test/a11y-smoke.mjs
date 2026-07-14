@@ -10,7 +10,8 @@ const exampleUrl = (name) =>
   pathToFileURL(fileURLToPath(new URL(`../examples/${name}`, import.meta.url))).href;
 const page_url = exampleUrl('kitchen-sink.html');
 const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html',
-  'showcase-solstice.html', 'showcase-nimbus.html', 'showcase-aster.html', 'showcase-fern.html'];
+  'showcase-solstice.html', 'showcase-nimbus.html', 'showcase-aster.html', 'showcase-fern.html',
+  'showcase-cadence.html'];
 
 let failures = 0;
 const fail = (msg) => { failures++; console.error(`FAIL ${msg}`); };
@@ -18,11 +19,19 @@ const ok = (msg) => console.log(`  ok   ${msg}`);
 
 const browser = await chromium.launch();
 
+// Audit the SETTLED page: entrance transitions (@starting-style) put
+// elements at partial opacity for a few hundred ms, and axe rightly
+// refuses to certify a half-faded heading — wait out running animations.
+const settled = (page) =>
+  page.waitForFunction(() => document.getAnimations().length === 0, null, { timeout: 5000 })
+    .catch(() => {}); // looping animations (spinners) shouldn't wedge the audit
+
 async function axePass(label, contextOptions = {}) {
   const context = await browser.newContext(contextOptions);
   for (const name of PAGES) {
     const page = await context.newPage();
     await page.goto(exampleUrl(name));
+    await settled(page);
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
       .analyze();
@@ -110,6 +119,7 @@ await axePass('dark scheme', { colorScheme: 'dark' });
   for (const name of PAGES) {
     const p = await context.newPage();
     await p.goto(exampleUrl(name));
+    await settled(p);
     const results = await new AxeBuilder({ page: p })
       .withTags(['wcag2a', 'wcag2aa', 'wcag22aa'])
       .analyze();

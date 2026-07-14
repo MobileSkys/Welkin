@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Cadence — motion, in a few honest lines · Welkin showcase</title>
+<meta name="description" content="A fictional motion-design studio whose every animation is a handful of lines on Welkin's motion tokens.">
+<link rel="stylesheet" href="../dist/welkin.css">
+<style>
+  /* Studio Cadence theme — Level 1, and the point of this page: MOTION is
+     part of the token surface. Two motion tokens change the character of
+     every hover, dialog, toast, and tab morph on the page. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(52% 0.15 128), oklch(72% 0.16 128)); /* chartreuse */
+    --wel-color-surface: light-dark(oklch(97% 0.005 120), oklch(18% 0.008 120));
+    --wel-color-surface-raised: light-dark(oklch(99.5% 0.003 120), oklch(22% 0.008 120));
+    --wel-text-font-display: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.5rem;
+    --wel-motion-ease: var(--wel-motion-ease-spring);  /* every transition springs */
+    --wel-motion-duration-2: 250ms;                    /* a touch more theatrical */
+  }
+
+  /* Page shell (authored, per recipes.md) — the `page` named container the
+     navbar collapse queries; footer pinned. */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Demo 2 — entrances in four lines: transition + @starting-style. The
+     durations multiply --wel-motion, so reduced-motion (or the switch at
+     the bottom of the page) makes them instant — no media query here. */
+  .rise {
+    transition:
+      opacity calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease),
+      translate calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease);
+    transition-delay: calc(var(--rise-order, 0) * 90ms * var(--wel-motion));
+    @starting-style { opacity: 0; translate: 0 1.25rem; }
+  }
+
+  /* Demo 3 — the work grid morphs when filtered: each card owns a
+     view-transition-name; the group animation rides the same multiplier. */
+  .work-card { view-transition-name: var(--vt); view-transition-class: folio; }
+  /* [hidden] alone loses here: the card's own display (author origin) beats
+     the UA's [hidden] rule regardless of layers — restate it for the filter. */
+  .work-card[hidden] { display: none; }
+  ::view-transition-group(.folio) {
+    animation-duration: calc(var(--wel-motion-duration-3) * var(--wel-motion));
+    animation-timing-function: var(--wel-motion-ease);
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="#">Studio Cadence</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#method">Method</a></li>
+        <li><a href="#motion-switch">The switch</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="button" type="button" data-variant="primary" data-size="sm"
+                data-dialog-open="contact">Start a project</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
+
+    <!-- Demo 2: entrances — nothing here but the .rise class above. -->
+    <section class="cover center" style="--wel-cover-min-height: 62dvb">
+      <div class="stack" data-principal>
+        <p class="rise"><span class="badge" data-tone="info">Motion studio</span></p>
+        <h1 class="rise" style="--rise-order: 1; font-size: var(--wel-text-size-5)">Things should move like they mean it</h1>
+        <p class="rise" style="--rise-order: 2; color: var(--wel-color-ink-muted)">We choreograph brands,
+        products, and titles. This site is the reel: every animation on it is a
+        few lines of plain CSS on Welkin's motion tokens — expand any
+        "the lines behind this" panel to see them.</p>
+        <div class="cluster rise" style="--rise-order: 3">
+          <button class="button" type="button" data-variant="primary" data-size="lg"
+                  data-dialog-open="contact">Start a project</button>
+          <a class="button" data-variant="ghost" data-size="lg" href="#work">See the work</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="center stack" style="--wel-center-max: 46rem">
+      <div class="accordion" data-variant="separated"><details>
+        <summary>The lines behind this — staged entrance</summary>
+        <p>Four declarations: a transition, a stagger, and where the element
+        <em>starts</em>. Durations multiply <code>--wel-motion</code>, so the
+        reduced-motion preference (or the switch below) makes them instant.</p>
+        <pre tabindex="0"><code>.rise {
+  transition:
+    opacity calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease),
+    translate calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease);
+  transition-delay: calc(var(--rise-order, 0) * 90ms * var(--wel-motion));
+  @starting-style { opacity: 0; translate: 0 1.25rem; }
+}
+&lt;h1 class="rise"&gt;…&lt;/h1&gt;
+&lt;p class="rise" style="--rise-order: 1"&gt;…&lt;/p&gt;</code></pre>
+      </details></div>
+    </section>
+
+    <!-- Demo 1: motion is themed like colour. -->
+    <section class="center stack" style="--wel-center-max: 46rem">
+      <h2>Motion is a token, tuned like a colour</h2>
+      <p>Hover any button on this page — everything springs, because the theme
+      swapped one easing token. Welkin components never hard-code a duration;
+      they all say <code>calc(token × --wel-motion)</code>, so two lines retune
+      the whole site's character:</p>
+      <div class="accordion" data-variant="separated"><details>
+        <summary>The lines behind this — the page's motion theme</summary>
+        <pre tabindex="0"><code>:root, [data-theme] {
+  --wel-motion-ease: var(--wel-motion-ease-spring);  /* hovers, dialogs, toasts, tabs */
+  --wel-motion-duration-2: 250ms;
+}</code></pre>
+      </details></div>
+    </section>
+
+    <!-- Demo 3: view-transition grid morph. -->
+    <section class="center stack" id="work" style="--wel-center-max: 70rem">
+      <h2>Selected work</h2>
+      <div class="cluster" role="group" aria-label="Filter work by discipline">
+        <button class="button" type="button" data-size="sm" data-filter="all" aria-pressed="true">All</button>
+        <button class="button" type="button" data-size="sm" data-filter="brand" aria-pressed="false">Brand</button>
+        <button class="button" type="button" data-size="sm" data-filter="product" aria-pressed="false">Product</button>
+        <button class="button" type="button" data-size="sm" data-filter="titles" aria-pressed="false">Titles</button>
+      </div>
+      <div class="grid" id="work-grid" style="--wel-grid-min: 15rem">
+        <article class="card work-card" data-cat="titles" style="--vt: work-1">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Meridian titles"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(135deg, var(--wel-color-accent-tint), var(--wel-color-surface-sunken))"></div>
+          </figure>
+          <header class="card-header"><h3>Meridian titles</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Titles</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Title sequence — 4 weeks</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="brand" style="--vt: work-2">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Fern & Forage"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(120deg, var(--wel-color-success-tint), var(--wel-color-surface-sunken))"></div>
+          </figure>
+          <header class="card-header"><h3>Fern & Forage</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Brand</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Brand motion system</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="product" style="--vt: work-3">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Nimbus onboarding"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(150deg, var(--wel-color-info-tint), var(--wel-color-surface-sunken))"></div>
+          </figure>
+          <header class="card-header"><h3>Nimbus onboarding</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Product</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Product tour — 12 scenes</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="product" style="--vt: work-4">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Solstice 2.0 launch"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(165deg, var(--wel-color-accent-tint), var(--wel-color-warning-tint))"></div>
+          </figure>
+          <header class="card-header"><h3>Solstice 2.0 launch</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Product</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Launch film + UI motion</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="titles" style="--vt: work-5">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Aster & Vale idents"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(110deg, var(--wel-color-danger-tint), var(--wel-color-surface-sunken))"></div>
+          </figure>
+          <header class="card-header"><h3>Aster & Vale idents</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Titles</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Issue idents — quarterly</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="brand" style="--vt: work-6">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Cobalt rebrand"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(140deg, var(--wel-color-info-tint), var(--wel-color-accent-tint))"></div>
+          </figure>
+          <header class="card-header"><h3>Cobalt rebrand</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Brand</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Wordmark choreography</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="product" style="--vt: work-7">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Ledger empty states"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(125deg, var(--wel-color-warning-tint), var(--wel-color-surface-sunken))"></div>
+          </figure>
+          <header class="card-header"><h3>Ledger empty states</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Product</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Micro-interactions — 18 states</span>
+            </div>
+          </div>
+        </article>
+        <article class="card work-card" data-cat="titles" style="--vt: work-8">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Poster frame for Field Notes stings"
+                 style="--wel-frame-ratio: 16 / 10; background: linear-gradient(155deg, var(--wel-color-success-tint), var(--wel-color-accent-tint))"></div>
+          </figure>
+          <header class="card-header"><h3>Field Notes stings</h3></header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Titles</span>
+              <span style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1)">Podcast stings — audio-reactive</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="accordion" data-variant="separated"><details>
+        <summary>The lines behind this — cards that morph when you filter</summary>
+        <p>Each card owns a <code>view-transition-name</code>; the filter runs
+        inside <code>document.startViewTransition</code> when the browser has
+        it, and as an instant swap when it doesn't (same function either way).
+        The morph's duration rides the same <code>--wel-motion</code> multiplier
+        as everything else.</p>
+        <pre tabindex="0"><code>.work-card { view-transition-name: var(--vt); view-transition-class: folio; }
+::view-transition-group(.folio) {
+  animation-duration: calc(var(--wel-motion-duration-3) * var(--wel-motion));
+  animation-timing-function: var(--wel-motion-ease);
+}
+
+const apply = () =&gt; { /* set [hidden] per card */ };
+button.addEventListener('click', () =&gt;
+  document.startViewTransition ? document.startViewTransition(apply) : apply());</code></pre>
+      </details></div>
+    </section>
+
+    <!-- Demo 4: the animations you didn't write. -->
+    <section class="center stack" id="method" style="--wel-center-max: 46rem">
+      <h2>The animations you don't write</h2>
+      <p>Dialog fade-and-scale, toast slide-in, tab-indicator morph — these ship
+      with the components. Added CSS on this page for them: <strong>none</strong>.</p>
+      <div class="cluster">
+        <button class="button" type="button" data-dialog-open="contact">Open the dialog</button>
+        <button class="button" type="button" data-variant="secondary" id="push-toast">Push a toast</button>
+      </div>
+      <wel-tabs aria-label="How we work">
+        <h3>Discover</h3>
+        <section>
+          <p>Two weeks of watching how the thing actually gets used. Motion that
+          isn't anchored in a real pause, a real wait, or a real success is
+          decoration — we cut it before it's drawn.</p>
+        </section>
+        <h3>Design</h3>
+        <section>
+          <p>Storyboards first, easing curves second, tooling last. Every scene
+          gets a one-line intent ("reassure", "orient", "celebrate") that
+          survives into the handoff file.</p>
+        </section>
+        <h3>Deliver</h3>
+        <section>
+          <p>Specs as tokens: durations, easings, and choreography shipped as
+          custom properties your engineers drop into the codebase — the same way
+          this page does it.</p>
+        </section>
+      </wel-tabs>
+      <wel-toast-region aria-label="Notifications"></wel-toast-region>
+    </section>
+
+    <!-- Demo 5: the one switch. -->
+    <section class="center stack" id="motion-switch" style="--wel-center-max: 46rem">
+      <h2>All of it rides one switch</h2>
+      <p>Every duration on this page — entrances, springs, morphs, the
+      components' own animations — multiplies <code>--wel-motion</code>. Drag it
+      to zero and the page goes still; the OS-level reduced-motion preference
+      does exactly this automatically, with no media queries written here.</p>
+      <div class="field" style="max-inline-size: 22rem">
+        <label for="motion-mult">Motion multiplier <code>--wel-motion</code>: <output id="motion-out" for="motion-mult">1</output></label>
+        <input type="range" id="motion-mult" min="0" max="2" step="0.25" value="1">
+      </div>
+      <p><small>Set to 0, then reopen the dialog or re-filter the work grid —
+      instant, not broken. Zero-duration transitions still fire their events, so
+      nothing waits on an animation that never runs.</small></p>
+    </section>
+
+  </main>
+
+  <footer class="center stack" style="--wel-center-max: 46rem; padding-block: var(--wel-space-6)">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Studio Cadence — a fictional studio for the Welkin showcase.</small>
+      <a href="../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion" data-variant="separated"><details>
+      <summary><h2 style="font-size: var(--wel-text-size-1)">View this page's theme</h2></summary>
+      <p>Every showcase page loads the same welkin.css — only these tokens differ.
+      Note the two motion tokens: on this page, motion IS the brand.</p>
+      <pre tabindex="0"><code>/* Studio Cadence theme — Level 1, and the point of this page: MOTION is
+     part of the token surface. Two motion tokens change the character of
+     every hover, dialog, toast, and tab morph on the page. */
+  :root, [data-theme] {
+    --wel-color-accent: light-dark(oklch(52% 0.15 128), oklch(72% 0.16 128)); /* chartreuse */
+    --wel-color-surface: light-dark(oklch(97% 0.005 120), oklch(18% 0.008 120));
+    --wel-color-surface-raised: light-dark(oklch(99.5% 0.003 120), oklch(22% 0.008 120));
+    --wel-text-font-display: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --wel-radius-control: 0.25rem;
+    --wel-radius-surface: 0.5rem;
+    --wel-motion-ease: var(--wel-motion-ease-spring);  /* every transition springs */
+    --wel-motion-duration-2: 250ms;                    /* a touch more theatrical */
+  }</code></pre>
+    </details></div>
+  </footer>
+
+</div>
+
+<!-- Contact dialog: a closed <dialog> renders no box; opening via wel-dialog.js.
+     Its fade/scale entrance ships with the component (demo 4). -->
+<dialog class="dialog" id="contact" data-size="sm" aria-labelledby="contact-title">
+  <header>
+    <h2 id="contact-title">Start a project</h2>
+    <form method="dialog">
+      <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+    </form>
+  </header>
+  <form method="dialog" class="stack">
+    <div class="field">
+      <label for="c-name">Name</label>
+      <input id="c-name" name="name" autocomplete="name" required>
+    </div>
+    <div class="field">
+      <label for="c-email">Email</label>
+      <input id="c-email" name="email" type="email" autocomplete="email" required>
+    </div>
+    <div class="field">
+      <label for="c-brief">What should move?</label>
+      <textarea id="c-brief" name="brief" rows="3"></textarea>
+    </div>
+    <footer class="cluster" style="--wel-cluster-justify: flex-end">
+      <button class="button" value="cancel" formnovalidate>Cancel</button>
+      <button class="button" data-variant="primary" value="send">Send brief</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- Demo wiring (filter + toast + multiplier) — the same 'page script'
+     allowance every showcase uses for its demo buttons. -->
+<script type="module">
+  // Demo 3: filter inside a view transition where available.
+  const grid = document.getElementById('work-grid');
+  const buttons = document.querySelectorAll('[data-filter]');
+  buttons.forEach((btn) => btn.addEventListener('click', () => {
+    const f = btn.dataset.filter;
+    const apply = () => {
+      for (const card of grid.children) card.hidden = f !== 'all' && card.dataset.cat !== f;
+    };
+    document.startViewTransition ? document.startViewTransition(apply) : apply();
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+  }));
+
+  // Demo 4: toast push.
+  let n = 0;
+  document.getElementById('push-toast').addEventListener('click', () =>
+    document.querySelector('wel-toast-region').push(`Render ${++n} queued — we'll email the cut.`, { tone: 'success' }));
+
+  // Demo 5: the one switch. --wel-motion is a typed <number> token; writing
+  // it inline on :root retunes every duration on the page live.
+  const mult = document.getElementById('motion-mult');
+  const out = document.getElementById('motion-out');
+  mult.addEventListener('input', () => {
+    document.documentElement.style.setProperty('--wel-motion', mult.value);
+    out.textContent = mult.value;
+  });
+</script>
+
+<!-- JS modules inlined verbatim (ES-module src is CORS-blocked under file://). -->
+<script type="module">
+/* wel-dialog — declarative opening for `.dialog` via [data-dialog-open]
+   (docs/components/dialog.md, T-65; delivery per ADR-0011). <dialog> is
+   Core: showModal() brings top layer, focus trap, inert background, Esc,
+   and focus return; closing is declarative (form method="dialog").
+   Opening is the one gap — Invoker Commands (command/commandfor) will
+   close it, but are pre-Baseline (ADR-0012), so this module is deleted
+   when they graduate. It is the spec's documented inline 3-liner plus
+   late-added-DOM handling: one delegated listener at the root, so
+   invokers inserted after load work with no re-scan and no observer.
+   data-dialog-modal="false" on the invoker opens non-modally (show()). */
+
+const BOUND = Symbol();
+
+/** Bind the delegated opener on root, once. */
+export default function upgrade(root = document) {
+  if (root[BOUND]) return;
+  root[BOUND] = true;
+
+  root.addEventListener('click', (e) => {
+    const invoker = e.target.closest?.('[data-dialog-open]');
+    if (!invoker) return;
+    const dialog = document.getElementById(invoker.dataset.dialogOpen || '');
+    // Skip anything already open: showModal() on an open dialog throws,
+    // and a server-rendered in-flow panel (`open` attribute) must not be
+    // re-modal-ised out from under the user.
+    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+    if (invoker.dataset.dialogModal === 'false') dialog.show();
+    else dialog.showModal();
+  });
+}
+
+upgrade();
+</script>
+<script type="module">
+/* wel-tabs — APG tabs custom element (docs/components/tabs.md, T-47;
+   delivery per ADR-0011). The authored light DOM is heading+section
+   pairs — a complete document fragment that IS the no-JS baseline.
+   Upgrade generates everything hand-authoring gets wrong: the
+   role=tablist strip, role=tab/aria-selected/aria-controls on the
+   headings, role=tabpanel/aria-labelledby/tabindex on the sections,
+   roving tabindex, arrow-key navigation with wrap, Home/End.
+   activation=auto (default) selects on arrow focus per APG — our
+   panels render instantly; manual moves focus only, Enter/Space
+   selects. selected-index is reflected on change and settable at any
+   time; wel-tab-change bubbles after each change (not cancelable —
+   the attribute is the source of truth). Enhanced: the indicator
+   morphs between tabs via a view transition, named only on the
+   changing group for only the transition's duration (--wel-tabs-vt),
+   so parallel tab groups never collide; skipped under reduced motion
+   (the CSS group duration also rides --wel-motion). */
+
+let seq = 0;
+
+class WelTabs extends HTMLElement {
+  static observedAttributes = ['selected-index'];
+
+  connectedCallback() {
+    if (this._tabs) return;
+    const tabs = [];
+    const panels = [];
+    for (const h of [...this.children]) {
+      if (/^H[2-4]$/.test(h.tagName) && h.nextElementSibling?.matches('section')) {
+        tabs.push(h);
+        panels.push(h.nextElementSibling);
+      }
+    }
+    if (!tabs.length) return;
+    this._tabs = tabs;
+    this._panels = panels;
+
+    const n = ++seq;
+    const list = document.createElement('div');
+    list.setAttribute('role', 'tablist');
+    const label = this.getAttribute('aria-label');
+    if (label) list.setAttribute('aria-label', label);
+
+    tabs.forEach((tab, i) => {
+      const panel = panels[i];
+      tab.id ||= `wel-tab-${n}-${i}`;
+      panel.id ||= `wel-panel-${n}-${i}`;
+      tab.setAttribute('role', 'tab'); // a tab is not a heading post-upgrade
+      tab.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.tabIndex = 0; // reachable even when its first content isn't focusable
+      list.append(tab);
+      tab.addEventListener('click', () => this._select(i));
+      tab.addEventListener('keydown', (e) => this._key(e, i));
+    });
+    this.prepend(list);
+    this._apply(this._clamp(this.getAttribute('selected-index'))); // no event on setup
+  }
+
+  _clamp(v) {
+    return Math.max(0, Math.min(+v || 0, this._tabs.length - 1));
+  }
+
+  _key(e, i) {
+    const n = this._tabs.length;
+    const j = { ArrowRight: (i + 1) % n, ArrowLeft: (i + n - 1) % n, Home: 0, End: n - 1 }[e.key];
+    if (j !== undefined) {
+      e.preventDefault();
+      this._tabs[j].focus();
+      if (this.getAttribute('activation') !== 'manual') this._select(j);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._select(i); // no-op redundancy in auto mode
+    }
+  }
+
+  _apply(j) {
+    this._i = j;
+    this._tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', i === j);
+      tab.tabIndex = i === j ? 0 : -1;
+      this._panels[i].hidden = i !== j;
+    });
+    this.setAttribute('selected-index', j);
+  }
+
+  _select(j) {
+    j = this._clamp(j);
+    const prev = this._i;
+    if (j === prev) return;
+    const commit = () => {
+      this._apply(j);
+      this.dispatchEvent(new CustomEvent('wel-tab-change', {
+        bubbles: true,
+        detail: { index: j, previousIndex: prev, tab: this._tabs[j], panel: this._panels[j] },
+      }));
+    };
+    if (document.startViewTransition
+        && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.style.setProperty('--wel-tabs-vt', 'wel-tab-indicator');
+      const clean = () => this.style.removeProperty('--wel-tabs-vt');
+      // then(clean, clean), not finally: a rapid re-selection skips the
+      // transition and finally() would re-throw that as an unhandled
+      // rejection; ready rejects on skip too. Commit runs either way.
+      const vt = document.startViewTransition(commit);
+      vt.ready.catch(() => {});
+      vt.finished.then(clean, clean);
+    } else commit();
+  }
+
+  attributeChangedCallback(_, old, val) {
+    if (!this._tabs || val === old) return;
+    const j = this._clamp(val);
+    // Re-reflect an out-of-range value so the attribute stays truthful.
+    if (j === this._i) { if (String(j) !== val) this.setAttribute('selected-index', j); }
+    else this._select(j);
+  }
+
+  get selectedIndex() { return this._i; } // convenience mirror, never the only path
+  set selectedIndex(j) { this._select(j); }
+}
+
+customElements.define('wel-tabs', WelTabs);
+</script>
+<script type="module">
+/* wel-toast-region — queued live-region toast manager
+   (docs/components/toast.md, T-49; delivery per ADR-0011). The API is
+   the DOM: appending a <wel-toast> child raises a toast; push() is a
+   convenience that builds exactly that child. Adoption (observer, so
+   fragment swaps and server flashes are first-class) sets the
+   politeness role per tone — alert for warning/danger, else status —
+   BEFORE the toast turns visible so appearing announces it, and adds
+   the dismiss button. FIFO queue past `max`; timers (duration attr,
+   default 6000, 0 = persistent, danger forced persistent — WCAG
+   2.2.1) pause on hover and focus-within. Exit waits the
+   [data-closing] CSS fade, then the stack reflows via a view
+   transition, skipped under reduced motion. Focus is never stolen. */
+
+let seq = 0;
+
+class WelToastRegion extends HTMLElement {
+  connectedCallback() {
+    if (this._on) return;
+    this._on = true;
+    this.setAttribute('role', 'region'); // aria-label is the host's job
+    for (const t of this.querySelectorAll('wel-toast')) this._adopt(t);
+    new MutationObserver((ms) => {
+      for (const m of ms) {
+        for (const t of m.addedNodes) if (t.tagName === 'WEL-TOAST') this._adopt(t);
+        for (const t of m.removedNodes) {
+          if (t.tagName === 'WEL-TOAST' && !('closing' in t.dataset)) {
+            clearTimeout(t._id);
+            this._emit('wel-toast-dismiss', { toast: t, reason: 'api' });
+            this._flow();
+          }
+        }
+      }
+    }).observe(this, { childList: true });
+
+    this.addEventListener('pointerenter', () => { this._h = 1; this._pause(); });
+    this.addEventListener('focusin', () => { this._f = 1; this._pause(); });
+    this.addEventListener('pointerleave', () => { this._h = 0; this._resume(); });
+    this.addEventListener('focusout', (e) => {
+      if (!this.contains(e.relatedTarget)) { this._f = 0; this._resume(); }
+    });
+  }
+
+  /** Convenience mirror of `append(<wel-toast>)` (ADR-0011). */
+  push(message, o = {}) {
+    const t = document.createElement('wel-toast');
+    if (o.tone) t.dataset.tone = o.tone;
+    if (o.duration != null) t.setAttribute('duration', o.duration);
+    t.textContent = message;
+    this.append(t);
+    return t;
+  }
+
+  _adopt(t) {
+    if (t._ok) return;
+    t._ok = 1;
+    const tone = t.dataset.tone;
+    t.setAttribute('role', tone === 'warning' || tone === 'danger' ? 'alert' : 'status');
+    if (t.getAttribute('dismissible') !== 'false') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'button';
+      b.dataset.variant = 'ghost';
+      b.dataset.size = 'sm';
+      b.setAttribute('aria-label', this.getAttribute('dismiss-label') || 'Dismiss');
+      b.textContent = '✕';
+      b.addEventListener('click', () => this._dismiss(t, 'dismiss'));
+      t.append(b);
+    }
+    t.hidden = true; // queued; _flow unhides in FIFO order
+    t.style.viewTransitionName = `wel-t${++seq}`;
+    t.style.viewTransitionClass = 'wel-toast';
+    this._flow();
+  }
+
+  _flow() {
+    let n = +this.getAttribute('max') || 3;
+    for (const t of this.children) {
+      if (t.tagName !== 'WEL-TOAST' || 'closing' in t.dataset) continue;
+      if (!t.hidden) n--;
+      else if (n > 0) {
+        n--;
+        t.hidden = false; // turning visible announces the live region
+        t._rem = t.dataset.tone === 'danger' ? 0 // errors never evaporate
+          : +(t.getAttribute('duration') ?? this.getAttribute('duration') ?? 6000);
+        if (t._rem && !this._h && !this._f) this._run(t);
+        this._emit('wel-toast-show', { toast: t });
+      }
+    }
+  }
+
+  _run(t) {
+    t._at = Date.now();
+    t._id = setTimeout(() => this._dismiss(t, 'timeout'), t._rem);
+  }
+
+  _pause() {
+    for (const t of this.children) {
+      if (t._id) { clearTimeout(t._id); t._id = 0; t._rem -= Date.now() - t._at; }
+    }
+  }
+
+  _resume() {
+    if (this._h || this._f) return;
+    for (const t of this.children) {
+      if (!t.hidden && !('closing' in t.dataset) && t._rem > 0 && !t._id) this._run(t);
+    }
+  }
+
+  _dismiss(t, reason) {
+    if ('closing' in t.dataset) return;
+    clearTimeout(t._id);
+    const hadFocus = t.contains(document.activeElement);
+    t.dataset.closing = ''; // CSS fades; wait its duration, then remove
+    setTimeout(() => {
+      const go = () => { t.remove(); this._flow(); };
+      if (document.startViewTransition
+          && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // ready rejects (AbortError) when a rapid follow-up dismissal
+        // skips this transition — expected, swallow it
+        document.startViewTransition(go).ready.catch(() => {});
+      } else go();
+      this._emit('wel-toast-dismiss', { toast: t, reason });
+      if (hadFocus) {
+        this.querySelector('wel-toast:not([hidden], [data-closing]) button')?.focus();
+      }
+    }, (parseFloat(getComputedStyle(t).transitionDuration) || 0) * 1000);
+  }
+
+  _emit(name, detail) {
+    this.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }));
+  }
+}
+
+customElements.define('wel-toast-region', WelToastRegion);
+</script>
+</body>
+</html>
