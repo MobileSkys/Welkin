@@ -18,6 +18,16 @@ say so there.
 
 ### Added
 
+- **VT image morph — `data-vt-image` (T-109)**: the view-transitions module
+  gains an image treatment. Tag a `--wel-vt`-named image on both sides and
+  its snapshots cover-fit the morphing group (no stretch between aspect
+  ratios) and swap opaquely instead of the default cross-fade
+  (double-exposure flash on photos). Implemented with Level 2
+  `view-transition-class` — graduating the spec's open question — so
+  engines without it simply keep the default morph. Also applies to author
+  same-document `startViewTransition` calls (lightboxes) while the module
+  is linked. Fourth of the image-FX wave (T-118).
+
 - **`.reveal` scroll-driven utility (T-108)**: fade/scale-in as the element
   enters the viewport, via `animation-timeline: view()` with
   `animation-range: entry` — zero JS. Tune with `--wel-reveal-scale`

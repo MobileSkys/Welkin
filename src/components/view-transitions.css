@@ -59,5 +59,32 @@
       animation-duration: calc(var(--wel-motion-duration-3) * var(--wel-motion));
       animation-timing-function: var(--wel-motion-ease);
     }
+
+    /* Image morph treatment (T-109): tag a --wel-vt-named image with
+       data-vt-image on BOTH sides and its snapshots cover-fit the
+       morphing group box instead of stretching between the two aspect
+       ratios, and the pair swaps opaquely instead of the default
+       cross-fade (a double-exposure flash on photographs). Works for the
+       module's cross-document morphs and equally for an author's own
+       same-document startViewTransition (a lightbox) — these pseudo
+       rules are inert until some transition runs. view-transition-class
+       is Level 2 (the spec's open question, graduated here): engines
+       without it drop these two rules and keep the default morph —
+       additive, no gate needed. */
+    [data-vt-image] {
+      view-transition-class: wel-image;
+    }
+
+    ::view-transition-old(*.wel-image),
+    ::view-transition-new(*.wel-image) {
+      block-size: 100%;
+      inline-size: 100%;
+      overflow: clip;
+      object-fit: cover;
+      mix-blend-mode: normal;
+      /* no fade — the group's geometry morph is the whole effect; the
+         new snapshot simply covers the old */
+      animation: none;
+    }
   }
 }
