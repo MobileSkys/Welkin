@@ -101,8 +101,10 @@ class WelTabs extends HTMLElement {
       const clean = () => this.style.removeProperty('--wel-tabs-vt');
       // then(clean, clean), not finally: a rapid re-selection skips the
       // transition and finally() would re-throw that as an unhandled
-      // rejection. The commit callback runs either way.
-      document.startViewTransition(commit).finished.then(clean, clean);
+      // rejection; ready rejects on skip too. Commit runs either way.
+      const vt = document.startViewTransition(commit);
+      vt.ready.catch(() => {});
+      vt.finished.then(clean, clean);
     } else commit();
   }
 

@@ -1,0 +1,118 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* wel-toast / wel-toast-region — transient notifications
+   (docs/components/toast.md, T-49). Pre-upgrade the region is an
+   in-flow stack and every toast reads as a static tone-styled alert —
+   that IS the no-JS baseline, so the overlay positioning is gated on
+   :defined (CSS applies without JS; an unconditioned fixed overlay
+   would break the fallback). Tone is never colour alone: the strong
+   inline-start border pairs with the authored icon/text. Entry
+   slide/fade rides @starting-style; exit is the [data-closing] fade
+   wel-toast-region.js waits for; the stack reflow morph is a view
+   transition (per-toast names set by the module; the duration rule
+   below targets their shared view-transition-class). */
+@layer components {
+  wel-toast-region {
+    --wel-toast-gap: var(--wel-space-2);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--wel-toast-gap);
+  }
+
+  /* Upgraded: viewport-anchored page chrome (06 scaffolding exception). */
+  wel-toast-region:defined {
+    position: fixed;
+    inset-block-end: var(--wel-space-gutter);
+    inset-inline-end: var(--wel-space-gutter);
+    z-index: 10;
+    max-inline-size: calc(100dvw - 2 * var(--wel-space-gutter));
+    align-items: flex-end;
+  }
+
+  wel-toast {
+    --wel-toast-bg: var(--wel-color-surface-raised);
+    --wel-toast-ink: var(--wel-color-ink);
+    --wel-toast-border: var(--wel-color-border);
+    --wel-toast-accent: var(--wel-color-ink-muted);
+    --wel-toast-radius: var(--wel-radius-surface);
+    --wel-toast-shadow: var(--wel-shadow-3);
+    --wel-toast-max-inline-size: 24rem;
+
+    display: flex;
+    align-items: center;
+    gap: var(--wel-space-2);
+    inline-size: min(100%, var(--wel-toast-max-inline-size));
+    padding-block: var(--wel-space-2);
+    padding-inline: var(--wel-space-3);
+    background-color: var(--wel-toast-bg);
+    color: var(--wel-toast-ink);
+    border: var(--wel-border-width) solid var(--wel-toast-border);
+    border-inline-start: var(--wel-border-width-strong) solid var(--wel-toast-accent);
+    border-radius: var(--wel-toast-radius);
+    box-shadow: var(--wel-toast-shadow);
+  }
+
+  /* Generated dismiss button hugs the inline end. */
+  wel-toast > :where(button:last-child) {
+    margin-inline-start: auto;
+  }
+
+  /* Enhanced: slide/fade entry when a toast becomes visible, fade exit
+     while the module waits. Durations ride --wel-motion (0 under PRM,
+     and the module then removes immediately). */
+  @supports (transition-behavior: allow-discrete) {
+    wel-toast-region:defined wel-toast {
+      transition:
+        opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+        translate calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease);
+    }
+
+    @starting-style {
+      wel-toast-region:defined wel-toast {
+        opacity: 0;
+        translate: 0 0.5rem;
+      }
+    }
+
+    wel-toast-region:defined wel-toast[data-closing] {
+      opacity: 0;
+    }
+  }
+
+  /* The stack-reflow morph groups (module-driven view transition). */
+  ::view-transition-group(.wel-toast) {
+    animation-duration: calc(var(--wel-motion-duration-2) * var(--wel-motion));
+  }
+}
+
+@layer variants {
+  wel-toast[data-tone="info"]    { --wel-toast-bg: var(--wel-color-info-tint);    --wel-toast-accent: var(--wel-color-info); }
+  wel-toast[data-tone="success"] { --wel-toast-bg: var(--wel-color-success-tint); --wel-toast-accent: var(--wel-color-success); }
+  wel-toast[data-tone="warning"] { --wel-toast-bg: var(--wel-color-warning-tint); --wel-toast-accent: var(--wel-color-warning); }
+  wel-toast[data-tone="danger"]  { --wel-toast-bg: var(--wel-color-danger-tint);  --wel-toast-accent: var(--wel-color-danger); }
+
+  /* Placement is an upgraded-only axis (pre-upgrade the region is in flow). */
+  wel-toast-region:defined[data-placement="start"] {
+    inset-inline-end: auto;
+    inset-inline-start: var(--wel-space-gutter);
+    align-items: flex-start;
+  }
+
+  /* inset-inline + auto margins centre without physical translate (RTL-safe). */
+  wel-toast-region:defined[data-placement="center"] {
+    inset-inline: 0;
+    inline-size: fit-content;
+    margin-inline: auto;
+    align-items: center;
+  }
+}
+
+@layer states {
+  /* Shadow disappears in forced colors; the border is the edge. */
+  @media (forced-colors: active) {
+    wel-toast {
+      border-color: CanvasText;
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | JS-enhanced |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -116,8 +116,15 @@ document flow.
 
 | Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
 |---------|------------------|-------------|------------------------------------------|
-| `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Toasts slide/fade in on entry and fade out on dismissal (including transitioning `display`) | Toasts appear/disappear instantly ([03 contract](../03-browser-support-policy.md)) |
-| View transitions | `@supports (view-transition-name: --x)` | Remaining stack reflows smoothly when a toast leaves | Stack reflows instantly ([03](../03-browser-support-policy.md)) |
+| `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Toasts slide/fade in on entry and fade out on dismissal | Toasts appear/disappear instantly ([03 contract](../03-browser-support-policy.md)) |
+| View transitions | runtime `document.startViewTransition` detect (module-driven, as in [tabs.md](tabs.md)) | Remaining stack reflows smoothly when a toast leaves | Stack reflows instantly ([03](../03-browser-support-policy.md)) |
+
+*Implementation note (T-49):* exit works by setting `data-closing` (the CSS fades),
+waiting that computed transition duration, then removing inside a view transition —
+each toast carries a generated unique `view-transition-name` plus a shared
+`view-transition-class` so one CSS rule can put the reflow duration on `--wel-motion`.
+Under reduced motion the fade duration is 0 and the view transition is skipped in the
+module, so dismissal is instant end to end.
 
 ### JS enhancement
 
