@@ -29,6 +29,17 @@ const coreFiles = [
 const componentFiles = cssIn(join(src, 'components'));
 const fullFiles = [...coreFiles, ...componentFiles, join(src, 'utilities.css')];
 
+// The canonical layer pre-declaration is THE ordering contract (doc 04,
+// ADR-0003: any subset of dist files concatenates correctly in any order).
+// Lightning drops "unused" names from it — which silently re-introduces
+// first-use ordering (e.g. combobox declares states with no variants;
+// loaded before button, variants would outrank states). So: unminified
+// artifacts are the raw source concat (source = shipped, comments and the
+// full layer line intact; Lightning still runs as validator), and minified
+// artifacts get the canonical line re-prepended.
+const LAYER_LINE = readFileSync(join(src, 'layers.css'), 'utf8')
+  .split('\n').find((l) => l.startsWith('@layer'));
+
 function compile(code, filename, minify) {
   const { code: out, warnings } = transform({
     filename,
@@ -38,12 +49,13 @@ function compile(code, filename, minify) {
     errorRecovery: false,
   });
   for (const w of warnings) console.warn(`  warn ${filename}: ${w.message}`);
-  return out.toString();
+  return minify ? `${LAYER_LINE}\n${out.toString()}` : out.toString();
 }
 
 function emit(name, files) {
   const code = files.map((f) => readFileSync(f, 'utf8')).join('\n');
-  writeFileSync(join(dist, `${name}.css`), compile(code, `${name}.css`, false));
+  compile(code, `${name}.css`, false); // validate against targets
+  writeFileSync(join(dist, `${name}.css`), code);
   writeFileSync(join(dist, `${name}.min.css`), compile(code, `${name}.min.css`, true));
   console.log(`  dist/${name}.css + .min.css (${files.length} source files)`);
 }
@@ -56,10 +68,27 @@ emit('welkin-core', coreFiles);
 for (const f of componentFiles) {
   const name = basename(f, '.css');
   const code = readFileSync(f, 'utf8');
-  writeFileSync(join(dist, 'components', `${name}.css`), compile(code, `components/${name}.css`, false));
+  compile(code, `components/${name}.css`, false); // validate
+  writeFileSync(join(dist, 'components', `${name}.css`), code);
   writeFileSync(join(dist, 'components', `${name}.min.css`), compile(code, `components/${name}.min.css`, true));
 }
 if (componentFiles.length) console.log(`  dist/components/ (${componentFiles.length} components)`);
+
+// Never ship the ordering bug again: every dist stylesheet must open with
+// the full canonical layer declaration.
+for (const f of [
+  join(dist, 'welkin.css'), join(dist, 'welkin.min.css'),
+  join(dist, 'welkin-core.css'), join(dist, 'welkin-core.min.css'),
+  ...readdirSync(join(dist, 'components')).map((f) => join(dist, 'components', f)),
+]) {
+  const txt = readFileSync(f, 'utf8');
+  // the declaration must appear before any rule block opens
+  const head = txt.slice(0, txt.indexOf('{'));
+  if (!head.includes(LAYER_LINE)) {
+    console.error(`dist artifact missing canonical layer line: ${f}`);
+    process.exit(1);
+  }
+}
 
 // JS-enhanced components ship as plain ESM, copied verbatim (ADR-0011).
 const jsDir = join(root, 'js');

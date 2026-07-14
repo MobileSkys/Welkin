@@ -4,9 +4,10 @@
 compile target: cascade layers, design tokens, `light-dark()` colour schemes,
 container queries — plain, readable CSS with **zero required build step**.
 
-> **Status: preview (0.2.x).** Tokens, reset, base, the layout primitives, and the
-> full component set (pure-CSS, platform-primitive, and JS-enhanced) are in.
-> Token names may still change before 1.0; the docs site and v1 audit remain.
+> **Status: stable (1.0).** Tokens, reset, base, layout primitives, the full
+> component set (pure-CSS, platform-primitive, and JS-enhanced), the CakePHP plugin,
+> and the spec-generated docs site. Semver applies — see the
+> [changelog](CHANGELOG.md) for what the API surface is.
 
 ## Install
 
@@ -27,15 +28,15 @@ Or link a stylesheet directly — every dist file is valid standalone CSS:
 ### CDN — no install at all
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/welkin.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/welkin.min.css">
 <!-- or -->
-<link rel="stylesheet" href="https://unpkg.com/welkincss@0.2/dist/welkin.min.css">
+<link rel="stylesheet" href="https://unpkg.com/welkincss@1/dist/welkin.min.css">
 ```
 
 JS-enhanced components are plain ES modules, one per component, loaded the same way:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/js/wel-tabs.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/welkincss@1/dist/js/wel-tabs.js"></script>
 ```
 
 ### À la carte
@@ -44,9 +45,9 @@ Cascade layers fix rule order up front, so **any subset of files works in any
 order** (ADR-0003): link core plus exactly the components you use.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/welkin-core.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/components/button.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@0.2/dist/components/card.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/welkin-core.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/components/button.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/welkincss@1/dist/components/card.min.css">
 ```
 
 Bundles:
@@ -60,7 +61,7 @@ Bundles:
 
 All budgets are CI-enforced.
 
-## What you get in the preview
+## What you get
 
 - **Design tokens** (`--wel-*`): a three-tier system (primitive → semantic →
   component) in `oklch()`, typed with `@property`. Colour, fluid type and space
