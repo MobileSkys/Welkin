@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Solstice — team scheduling that runs itself · Welkin showcase</title>
+  <meta name="description" content="A fictional SaaS landing page restyled purely via Welkin design tokens.">
+  <link rel="stylesheet" href="../dist/welkin.css">
+  <style>
+    /* Page shell (authored, per recipes.md) — establishes the `page` named
+       container the navbar collapse queries, and pins the footer. */
+    .shell {
+      container-name: page; container-type: inline-size;
+      display: grid; grid-template-rows: auto 1fr auto;
+      min-block-size: 100dvb;
+    }
+
+    /* Solstice theme — Level 1: token declarations only. */
+    :root {
+      --wel-color-accent: light-dark(oklch(54% 0.17 300), oklch(72% 0.15 300)); /* violet */
+      --wel-text-font-display: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+      --wel-radius-control: 0.75rem;
+      --wel-radius-surface: 1.25rem;
+      --wel-space-anchor-min: 0.3rem;
+      --wel-text-anchor-min: 1.05rem;
+    }
+
+    /* Page CSS the shell owns: breathing room around the footer. */
+    .shell > footer { padding-block: var(--wel-space-6); }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="#">Solstice</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="button" type="button" data-variant="primary" data-size="sm"
+                data-dialog-open="signup">Get started</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
+
+    <!-- Hero -->
+    <section class="cover center" style="--wel-cover-min-height: 70dvb">
+      <div class="stack" data-principal>
+        <p><span class="badge" data-tone="info">New — Solstice 2.0</span></p>
+        <h1 style="font-size: var(--wel-text-size-5)">Team scheduling that runs itself</h1>
+        <p style="color: var(--wel-color-ink-muted)">Solstice reads your team's
+        calendars, finds the real overlap across every time zone, and books the
+        right meeting at the right moment — then automates everything around it.</p>
+        <div class="cluster">
+          <button class="button" type="button" data-variant="primary" data-size="lg"
+                  data-dialog-open="signup">Get started</button>
+          <a class="button" data-variant="ghost" data-size="lg" href="#features">See how it works</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="center stack" id="features" style="--wel-center-max: 70rem">
+      <h2>Everything between "we should meet" and "meeting booked"</h2>
+      <div class="grid" data-align="rows">
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>
+            </svg>
+            <h3>Smart scheduling</h3>
+          </header>
+          <div class="card-body"><p>Propose a meeting and Solstice finds the slot
+          that costs the team the least focus — not just the first gap that fits.</p></div>
+        </article>
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <path d="M13 2 4 14h6l-1 8 9-12h-6z"/>
+            </svg>
+            <h3>No-code automations</h3>
+          </header>
+          <div class="card-body"><p>"When stand-up ends, post the notes." Chain
+          triggers and actions in plain language — no scripts, no cron syntax.</p></div>
+        </article>
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <path d="M12 3 5 6v5c0 5 3.5 8 7 10 3.5-2 7-5 7-10V6z"/>
+            </svg>
+            <h3>Focus guard</h3>
+          </header>
+          <div class="card-body"><p>Deep-work blocks are defended automatically.
+          Meetings route around them, and repeat offenders get a gentle nudge.</p></div>
+        </article>
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <path d="M20 12a8 8 0 0 1-14 5m-2 4v-5h5M4 12a8 8 0 0 1 14-5m2-4v5h-5"/>
+            </svg>
+            <h3>Two-way calendar sync</h3>
+          </header>
+          <div class="card-body"><p>Google Workspace and Outlook stay the source
+          of truth. Changes flow both directions in seconds, never overwriting.</p></div>
+        </article>
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <path d="M5 20v-6M11 20V8M17 20V10M3 20h18"/>
+            </svg>
+            <h3>Meeting-load insights</h3>
+          </header>
+          <div class="card-body"><p>See who's drowning in meetings before they
+          tell you. Weekly digests show load per person, team, and project.</p></div>
+        </article>
+
+        <article class="card">
+          <header class="card-header">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" style="color: var(--wel-color-accent)">
+              <path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 0 1-10 0zM12 16v5"/>
+            </svg>
+            <h3>Plays well with your stack</h3>
+          </header>
+          <div class="card-body"><p>Slack, Teams, Linear, Notion and a plain
+          webhook for everything else. Automations reach wherever work happens.</p></div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CTA band — painted with the accent's derived tint, so it retints with
+         the theme's one accent token in both schemes. -->
+    <section style="background: var(--wel-color-accent-tint)">
+      <div class="center cover" style="--wel-cover-min-height: 30dvb">
+        <div class="cluster" data-principal style="--wel-cluster-justify: space-between">
+          <h2>Reclaim your team's week</h2>
+          <button class="button" type="button" data-variant="primary" data-size="lg"
+                  data-dialog-open="signup">Start free</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="center stack" id="pricing" style="--wel-center-max: 70rem">
+      <h2>Pricing that scales with the team, not the meetings</h2>
+      <div class="grid" data-align="rows" style="--wel-grid-min: 15rem">
+
+        <article class="card" data-variant="outlined">
+          <header class="card-header"><h3>Free</h3></header>
+          <div class="card-body">
+            <p style="font-size: var(--wel-text-size-3)">$0<small style="color: var(--wel-color-ink-muted)"> forever</small></p>
+            <ul>
+              <li>Up to 5 people</li>
+              <li>Smart scheduling</li>
+              <li>Two-way calendar sync</li>
+              <li>3 automations</li>
+            </ul>
+          </div>
+          <footer class="card-footer">
+            <button class="button" type="button" data-dialog-open="signup">Start free</button>
+          </footer>
+        </article>
+
+        <article class="card">
+          <header class="card-header"><h3>Pro <span class="badge" data-tone="info">Most popular</span></h3></header>
+          <div class="card-body">
+            <p style="font-size: var(--wel-text-size-3)">$9<small style="color: var(--wel-color-ink-muted)"> per person / month</small></p>
+            <ul>
+              <li>Everything in Free</li>
+              <li>Unlimited automations</li>
+              <li>Focus guard</li>
+              <li>Meeting-load insights</li>
+              <li>Slack &amp; Teams actions</li>
+            </ul>
+          </div>
+          <footer class="card-footer">
+            <button class="button" type="button" data-variant="primary" data-dialog-open="signup">Start Pro trial</button>
+          </footer>
+        </article>
+
+        <article class="card" data-variant="outlined">
+          <header class="card-header"><h3>Team</h3></header>
+          <div class="card-body">
+            <p style="font-size: var(--wel-text-size-3)">$16<small style="color: var(--wel-color-ink-muted)"> per person / month</small></p>
+            <ul>
+              <li>Everything in Pro</li>
+              <li>SAML single sign-on</li>
+              <li>Audit log &amp; data export</li>
+              <li>Priority support</li>
+              <li>99.9% uptime SLA</li>
+            </ul>
+          </div>
+          <footer class="card-footer">
+            <button class="button" type="button" data-variant="secondary" data-dialog-open="signup">Talk to us</button>
+          </footer>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- FAQ — independent items: no shared name attribute -->
+    <section class="center stack" id="faq">
+      <h2>Frequently asked questions</h2>
+      <div class="accordion">
+        <details>
+          <summary><h3>Does Solstice replace my calendar?</h3></summary>
+          <p>No — Google Workspace or Outlook stays your source of truth.
+          Solstice syncs both ways and only writes events you've approved.</p>
+        </details>
+        <details>
+          <summary><h3>How does scheduling work across time zones?</h3></summary>
+          <p>Every teammate sets working hours once. Solstice scores candidate
+          slots by how much shared, in-hours, out-of-focus time they consume and
+          proposes the cheapest one — so nobody takes the 6 a.m. call twice in a row.</p>
+        </details>
+        <details>
+          <summary><h3>What happens when my team outgrows the free plan?</h3></summary>
+          <p>Nothing breaks. Existing automations keep running; you just can't
+          add a sixth member or a fourth automation until you upgrade.</p>
+        </details>
+        <details>
+          <summary><h3>Is my calendar data private?</h3></summary>
+          <p>Event contents are encrypted at rest, insights are aggregated per
+          team, and we never sell or share data. Deleting your workspace deletes
+          everything within 30 days.</p>
+        </details>
+        <details>
+          <summary><h3>Can I cancel any time?</h3></summary>
+          <p>Yes. Downgrades take effect at the end of the billing period, and
+          you can export your automations and history first.</p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="center stack">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Solstice Labs — a fictional company.</small>
+      <nav class="cluster" aria-label="Footer">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="../index.html">Built with Welkin</a>
+      </nav>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h3>View this page's theme</h3></summary>
+        <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
+        <pre tabindex="0"><code>:root {
+  --wel-color-accent: light-dark(oklch(54% 0.17 300), oklch(72% 0.15 300)); /* violet */
+  --wel-text-font-display: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+  --wel-radius-control: 0.75rem;
+  --wel-radius-surface: 1.25rem;
+  --wel-space-anchor-min: 0.3rem;
+  --wel-text-anchor-min: 1.05rem;
+}</code></pre>
+      </details>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Signup dialog — canonical <dialog> markup; opened via [data-dialog-open].
+     A closed <dialog> generates no box, so it can live outside the shell. -->
+<dialog class="dialog" id="signup" aria-labelledby="signup-title">
+  <header>
+    <h2 id="signup-title">Create your Solstice account</h2>
+    <form method="dialog">
+      <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+    </form>
+  </header>
+  <form method="dialog" class="stack">
+    <div class="field">
+      <label for="signup-name">Name</label>
+      <input id="signup-name" name="name" autocomplete="name" required
+             aria-describedby="signup-name-error">
+      <p class="error" id="signup-name-error">Enter your name.</p>
+    </div>
+    <div class="field">
+      <label for="signup-email">Work email</label>
+      <input id="signup-email" name="email" type="email" autocomplete="email" required
+             aria-describedby="signup-email-hint signup-email-error">
+      <p class="hint" id="signup-email-hint">We never share it.</p>
+      <p class="error" id="signup-email-error">Enter a valid email address.</p>
+    </div>
+    <div class="field">
+      <label for="signup-plan">Plan</label>
+      <select class="select" id="signup-plan" name="plan" required>
+        <option value="">Choose…</option>
+        <option value="free">Free</option>
+        <option value="pro" selected>Pro</option>
+        <option value="team">Team</option>
+      </select>
+    </div>
+    <footer class="cluster" style="--wel-cluster-justify: flex-end">
+      <button class="button" value="cancel" formnovalidate>Cancel</button>
+      <button class="button" data-variant="primary" value="create">Create account</button>
+    </footer>
+  </form>
+</dialog>
+
+<!-- wel-dialog.js inlined verbatim (module src is CORS-blocked under file://). -->
+<script type="module">
+/* wel-dialog — declarative opening for `.dialog` via [data-dialog-open]
+   (docs/components/dialog.md, T-65; delivery per ADR-0011). <dialog> is
+   Core: showModal() brings top layer, focus trap, inert background, Esc,
+   and focus return; closing is declarative (form method="dialog").
+   Opening is the one gap — Invoker Commands (command/commandfor) will
+   close it, but are pre-Baseline (ADR-0012), so this module is deleted
+   when they graduate. It is the spec's documented inline 3-liner plus
+   late-added-DOM handling: one delegated listener at the root, so
+   invokers inserted after load work with no re-scan and no observer.
+   data-dialog-modal="false" on the invoker opens non-modally (show()). */
+
+const BOUND = Symbol();
+
+/** Bind the delegated opener on root, once. */
+export default function upgrade(root = document) {
+  if (root[BOUND]) return;
+  root[BOUND] = true;
+
+  root.addEventListener('click', (e) => {
+    const invoker = e.target.closest?.('[data-dialog-open]');
+    if (!invoker) return;
+    const dialog = document.getElementById(invoker.dataset.dialogOpen || '');
+    // Skip anything already open: showModal() on an open dialog throws,
+    // and a server-rendered in-flow panel (`open` attribute) must not be
+    // re-modal-ised out from under the user.
+    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+    if (invoker.dataset.dialogModal === 'false') dialog.show();
+    else dialog.showModal();
+  });
+}
+
+upgrade();
+</script>
+
+</body>
+</html>

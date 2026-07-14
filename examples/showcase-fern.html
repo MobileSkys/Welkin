@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fern &amp; Forage — Houseplants</title>
+<!-- Showcase: a complete fictional storefront restyled purely via design tokens.
+     Same welkin.css as every other page — the theme below is the only difference
+     (plus one sanctioned Level-3 component-token rule). Works from file:// with
+     JS on or off, in both colour schemes. -->
+<link rel="stylesheet" href="../dist/welkin.css">
+<style>
+  /* Page shell (authored per recipes.md — establishes the `page` container
+     the navbar collapse queries, and pins the footer on short pages). */
+  .shell {
+    container-name: page; container-type: inline-size;
+    display: grid; grid-template-rows: auto 1fr auto;
+    min-block-size: 100dvb;
+  }
+
+  /* Level 1 — the theme (theming.md, doc 10): token declarations only.
+     Earthy fern green, warm off-white paper, generous organic radii. */
+  :root {
+    --wel-color-accent: light-dark(oklch(52% 0.14 150), oklch(72% 0.13 150)); /* fern green */
+    --wel-color-surface: light-dark(oklch(98% 0.008 120), oklch(22% 0.015 140));
+    --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(26% 0.015 140));
+    --wel-radius-control: 0.5rem;
+    --wel-radius-surface: 1rem;
+  }
+
+  /* Level 2 — named sub-brand (doc 10): the featured band re-accents its
+     subtree with one scoped token; light-dark() re-resolves right here. */
+  [data-theme="verdant"] {
+    --wel-color-accent: light-dark(oklch(50% 0.11 190), oklch(74% 0.1 190));
+  }
+
+  /* Level 3 — component-token surgery (doc 10): pill buy-buttons, sitewide.
+     Sets the button's published radius knob; never selects into its internals. */
+  .button[data-variant="primary"] { --wel-button-radius: 999px; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="#">Fern &amp; Forage</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">
+        <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Menu
+      </button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="#" aria-current="page">Houseplants</a></li>
+        <li><a href="#">Seeds &amp; Bulbs</a></li>
+        <li><a href="#">Field Guides</a></li>
+        <li><a href="#">Journal</a></li>
+      </ul>
+      <div class="navbar-actions">
+        <button class="button" type="button" data-variant="primary" data-size="sm" data-dialog-open="cart">
+          Cart <span class="badge">3<span class="visually-hidden"> items</span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-8); padding-block-start: var(--wel-space-6)">
+
+    <div class="center stack" style="--wel-center-max: 70rem; --wel-stack-gap: var(--wel-space-6)">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Shop</a></li>
+          <li><a href="" aria-current="page">Houseplants</a></li>
+        </ol>
+      </nav>
+
+      <!-- In flow on purpose (toast spec): with JS off the flash below reads as
+           a static alert; with JS on the region upgrades and queues toasts. -->
+      <wel-toast-region aria-label="Notifications">
+        <wel-toast data-tone="success">Spring seed drop is live — 42 new varieties in Seeds &amp; Bulbs.</wel-toast>
+      </wel-toast-region>
+
+      <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: flex-end">
+        <div class="stack" style="--wel-stack-gap: var(--wel-space-1)">
+          <h1>Houseplants</h1>
+          <p style="color: var(--wel-color-ink-muted)">Showing 1–8 of 32 plants</p>
+        </div>
+        <div class="cluster" style="--wel-cluster-align: flex-end">
+          <div class="field">
+            <label for="plant-search">Search plants</label>
+            <wel-combobox>
+              <input id="plant-search" name="q" list="plant-list">
+              <datalist id="plant-list">
+                <option value="Boston fern"></option>
+                <option value="Calathea 'Rattlesnake'"></option>
+                <option value="Fiddle-leaf fig"></option>
+                <option value="Golden pothos"></option>
+                <option value="Maidenhair fern"></option>
+                <option value="Rubber plant"></option>
+                <option value="Snake plant"></option>
+                <option value="Staghorn fern"></option>
+                <option value="Swiss cheese plant"></option>
+                <option value="ZZ plant"></option>
+              </datalist>
+            </wel-combobox>
+          </div>
+          <label class="field">
+            <span>Sort by</span>
+            <select class="select" name="sort">
+              <option value="featured" selected>Featured</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Light level</span>
+            <select class="select" name="light">
+              <option value="" selected>Any light</option>
+              <option value="low">Low light</option>
+              <option value="medium">Medium</option>
+              <option value="bright">Bright indirect</option>
+              <option value="full">Full sun</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <h2 class="visually-hidden">Product listing</h2>
+
+      <!-- No data-align="rows" here: subgrid alignment spans exactly the
+           header/body/footer trio, and these cards carry a 4th part (media). -->
+      <div class="grid" style="--wel-grid-min: 15rem">
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised Swiss cheese plant leaf illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(135deg, var(--wel-color-accent-tint), var(--wel-color-success-tint))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-monstera"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Swiss cheese plant</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Monstera deliciosa</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Bright indirect</span>
+              <span class="tag">Statement</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£34</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Swiss cheese plant">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised fern frond illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(150deg, var(--wel-color-success-tint), var(--wel-color-surface-sunken))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-frond"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Boston fern</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Nephrolepis exaltata</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Low light</span>
+              <span class="tag">Pet safe</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£18</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Boston fern">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised snake plant blades illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(120deg, var(--wel-color-warning-tint), var(--wel-color-surface-sunken))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-blades"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Snake plant</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Dracaena trifasciata</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Low light</span>
+              <span class="tag">Drought proof</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£22</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Snake plant">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised trailing heart-leaf illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(135deg, var(--wel-color-accent-tint), var(--wel-color-surface-sunken))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-heart"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Golden pothos</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Epipremnum aureum</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Trailing</span>
+              <span class="tag">Easy care</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£16</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Golden pothos">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised maidenhair fern frond illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(160deg, var(--wel-color-success-tint), var(--wel-color-accent-tint))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-frond"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Maidenhair fern</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Adiantum raddianum</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Humidity lover</span>
+              <span class="tag">Pet safe</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£21</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Maidenhair fern">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised ZZ plant stem illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(200deg, var(--wel-color-surface-sunken), var(--wel-color-accent-tint))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-frond"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>ZZ plant</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Zamioculcas zamiifolia</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Low light</span>
+              <span class="tag">Drought proof</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£26</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="ZZ plant">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised calathea leaf-blades illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(135deg, var(--wel-color-accent-tint), var(--wel-color-warning-tint))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-blades"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Calathea 'Rattlesnake'</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Goeppertia insignis</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Pet safe</span>
+              <span class="tag">Humidity lover</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£24</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Calathea 'Rattlesnake'">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+        <article class="card">
+          <figure class="card-media">
+            <div class="frame" role="img" aria-label="Stylised rubber plant leaf illustration"
+                 style="--wel-frame-ratio: 4 / 3; background: linear-gradient(115deg, var(--wel-color-success-tint), var(--wel-color-surface-sunken))">
+              <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-heart"/></svg>
+            </div>
+          </figure>
+          <header class="card-header">
+            <h3>Rubber plant</h3>
+            <p><small style="color: var(--wel-color-ink-muted)"><i>Ficus elastica</i></small></p>
+          </header>
+          <div class="card-body">
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Bright indirect</span>
+              <span class="tag">Statement</span>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="cluster" style="--wel-cluster-justify: space-between; --wel-cluster-align: center">
+              <p><strong>£29</strong></p>
+              <button class="button" type="button" data-variant="primary" data-size="sm" data-add-to-cart="Rubber plant">Add to cart</button>
+            </div>
+          </footer>
+        </article>
+
+      </div>
+
+      <nav class="pagination" aria-label="Pagination">
+        <ol>
+          <li><a href="?page=1" aria-current="page">1</a></li>
+          <li><a href="?page=2">2</a></li>
+          <li><a href="?page=3">3</a></li>
+          <li><a href="?page=4">4</a></li>
+          <li><a href="?page=2" rel="next">Next ›</a></li>
+        </ol>
+      </nav>
+
+    </div>
+
+    <!-- Level 2 — named sub-brand (theming.md): a token block scoped to this
+         subtree swaps the accent to a deeper moss-teal without touching the
+         page theme; the band paints its own sunken background. -->
+    <section data-theme="verdant" style="background: var(--wel-color-surface-sunken); padding-block: var(--wel-space-8)">
+      <div class="center" style="--wel-center-max: 70rem">
+        <div class="sidebar-layout" style="--wel-sidebar-width: 22rem; --wel-sidebar-content-min: 55%">
+
+          <figure class="frame" role="img" aria-label="Stylised staghorn fern illustration"
+                  style="--wel-frame-ratio: 4 / 5; background: linear-gradient(160deg, var(--wel-color-accent-tint), var(--wel-color-surface-sunken))">
+            <svg aria-hidden="true" style="inline-size: 100%; block-size: 100%; color: var(--wel-color-accent)"><use href="#pl-stag"/></svg>
+          </figure>
+
+          <div class="stack" style="--wel-stack-gap: var(--wel-space-5)">
+            <div class="stack" style="--wel-stack-gap: var(--wel-space-2)">
+              <p style="color: var(--wel-color-accent); font-weight: 600; font-size: var(--wel-text-size--1); text-transform: uppercase; letter-spacing: 0.06em">Featured this month</p>
+              <h2>Staghorn fern</h2>
+              <p style="color: var(--wel-color-ink-muted)"><i>Platycerium bifurcatum</i> · mounted on a reclaimed oak board</p>
+            </div>
+            <div class="cluster" style="--wel-cluster-gap: var(--wel-space-2)">
+              <span class="tag">Bright indirect</span>
+              <span class="tag">Epiphyte</span>
+              <span class="tag">Statement</span>
+            </div>
+            <div class="cluster" style="--wel-cluster-align: center">
+              <p style="font-size: var(--wel-text-size-2); font-weight: 650">£38</p>
+              <button class="button" type="button" data-variant="primary" data-add-to-cart="Staghorn fern">Add to cart</button>
+            </div>
+
+            <wel-tabs aria-label="Staghorn fern details">
+              <h3>Description</h3>
+              <section class="stack">
+                <p>In the wild, staghorns don't grow in soil at all — they cling to
+                tree bark, catching leaf litter and rain in their shield fronds. Ours
+                arrive already established on a reclaimed oak board, ready to hang
+                from a single brass hook.</p>
+                <p>The antler fronds carry a silvery felt that protects them from
+                scorch. Don't wipe it off — it's not dust, it's the plant.</p>
+              </section>
+
+              <h3>Care guide</h3>
+              <section class="stack">
+                <ul>
+                  <li><strong>Light</strong> — bright and indirect; an east-facing wall is ideal.</li>
+                  <li><strong>Water</strong> — soak the board for 15 minutes weekly in summer, fortnightly in winter.</li>
+                  <li><strong>Humidity</strong> — happiest above 50%; a bathroom with a window is a fine home.</li>
+                  <li><strong>Feeding</strong> — half-strength liquid feed once a month through the growing season.</li>
+                </ul>
+              </section>
+
+              <h3>Reviews</h3>
+              <section class="stack">
+                <p>4.8 average from 26 reviews.</p>
+                <div class="table-scroller" tabindex="0" role="region" aria-labelledby="reviews-cap">
+                  <table class="table" data-variant="ruled" data-size="sm">
+                    <caption id="reviews-cap">Recent reviews</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Reviewer</th>
+                        <th scope="col">Rating</th>
+                        <th scope="col">Comment</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Marta K.</th>
+                        <td><span class="badge" data-tone="success">5<span class="visually-hidden"> out of 5</span><span aria-hidden="true"> ★</span></span></td>
+                        <td>Arrived mounted and thriving. The board alone is worth the price.</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Devon P.</th>
+                        <td><span class="badge" data-tone="success">4<span class="visually-hidden"> out of 5</span><span aria-hidden="true"> ★</span></span></td>
+                        <td>Slow to settle in a dry flat, but the weekly soak routine fixed it.</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Sofía R.</th>
+                        <td><span class="badge" data-tone="success">5<span class="visually-hidden"> out of 5</span><span aria-hidden="true"> ★</span></span></td>
+                        <td>Second one I've bought — first is now twice the size of the board.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </wel-tabs>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="center stack" style="--wel-center-max: 70rem; padding-block: var(--wel-space-6)">
+    <div class="cluster" style="--wel-cluster-justify: space-between">
+      <small>© 2026 Fern &amp; Forage, Hebden Bridge — houseplants, seeds &amp; field guides.</small>
+      <a href="../index.html">Built with Welkin</a>
+    </div>
+    <div class="accordion">
+      <details>
+        <summary><h2>View this page's theme</h2></summary>
+        <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
+        <pre tabindex="0"><code>:root {
+  --wel-color-accent: light-dark(oklch(52% 0.14 150), oklch(72% 0.13 150)); /* fern green */
+  --wel-color-surface: light-dark(oklch(98% 0.008 120), oklch(22% 0.015 140));
+  --wel-color-surface-raised: light-dark(oklch(100% 0 0), oklch(26% 0.015 140));
+  --wel-radius-control: 0.5rem;
+  --wel-radius-surface: 1rem;
+}
+
+/* Level 2 — named sub-brand (doc 10): the featured band re-accents its
+   subtree with one scoped token. */
+[data-theme="verdant"] {
+  --wel-color-accent: light-dark(oklch(50% 0.11 190), oklch(74% 0.1 190));
+}
+
+/* Level 3 — component-token surgery (doc 10): pill buy-buttons, sitewide.
+   Sets the button's published radius knob; never selects into its internals. */
+.button[data-variant="primary"] { --wel-button-radius: 999px; }</code></pre>
+      </details>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Cart dialog: a closed <dialog> renders no box, so it lives outside the shell.
+     Closing is declarative (form method="dialog"); opening via wel-dialog.js. -->
+<dialog class="dialog" id="cart" aria-labelledby="cart-title">
+  <header>
+    <h2 id="cart-title">Your cart</h2>
+    <form method="dialog">
+      <button class="button" data-variant="ghost" aria-label="Close">✕</button>
+    </form>
+  </header>
+  <div class="table-scroller" tabindex="0" role="region" aria-labelledby="cart-cap">
+    <table class="table" data-size="sm">
+      <caption id="cart-cap">Items in your cart</caption>
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Boston fern</th><td>1</td><td>£18.00</td></tr>
+        <tr><th scope="row">Golden pothos</th><td>2</td><td>£32.00</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><th scope="row" colspan="2">Total</th><td>£50.00</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <footer class="cluster" style="--wel-cluster-justify: flex-end">
+    <form method="dialog">
+      <button class="button" value="keep-browsing" autofocus>Keep browsing</button>
+      <button class="button" data-variant="primary" value="checkout">Checkout</button>
+    </form>
+  </footer>
+</dialog>
+
+<!-- Placeholder plant silhouettes (no remote images): simple inline-SVG symbols
+     referenced by <use> from the gradient-filled .frame placeholders above. -->
+<svg aria-hidden="true" style="display: none">
+  <defs>
+    <symbol id="pl-frond" viewBox="-10 -10 84 84">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+        <path d="M34 60 C30 44 30 26 38 6"/>
+        <path d="M33 52 L21 46"/><path d="M33 44 L22 36"/><path d="M34 36 L25 27"/>
+        <path d="M36 28 L29 19"/><path d="M38 19 L33 11"/>
+        <path d="M34 50 L45 45"/><path d="M34 42 L46 35"/><path d="M36 33 L47 25"/>
+        <path d="M38 25 L46 16"/>
+      </g>
+    </symbol>
+    <symbol id="pl-monstera" viewBox="-10 -10 84 84">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M32 6 C16 6 8 20 10 34 C12 48 22 58 32 58 C42 58 52 48 54 34 C56 20 48 6 32 6 Z"/>
+        <path d="M32 10 L32 54"/>
+        <path d="M14 26 L26 30"/><path d="M13 38 L25 41"/>
+        <path d="M50 26 L38 30"/><path d="M51 38 L39 41"/>
+      </g>
+    </symbol>
+    <symbol id="pl-blades" viewBox="-10 -10 84 84">
+      <g fill="currentColor">
+        <path d="M25 60 C21 42 22 22 29 6 C33 24 30 44 29 60 Z"/>
+        <path d="M37 60 C35 40 38 24 44 14 C47 30 42 48 41 60 Z"/>
+        <path d="M15 60 C13 48 14 32 19 22 C23 36 19 50 18 60 Z"/>
+      </g>
+    </symbol>
+    <symbol id="pl-heart" viewBox="-10 -10 84 84">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M32 14 C24 2 8 8 10 22 C12 36 24 46 32 56 C40 46 52 36 54 22 C56 8 40 2 32 14 Z"/>
+        <path d="M32 18 L32 50"/>
+        <path d="M32 56 C33 59 32 61 30 63"/>
+      </g>
+    </symbol>
+    <symbol id="pl-stag" viewBox="-10 -10 84 84">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+        <path d="M32 60 C32 48 32 38 32 28"/>
+        <path d="M32 36 C24 32 20 24 19 12"/>
+        <path d="M19 12 C17 9 16 7 15 4"/><path d="M19 12 C21 9 22 7 23 4"/>
+        <path d="M32 36 C40 32 44 24 45 12"/>
+        <path d="M45 12 C43 9 42 7 41 4"/><path d="M45 12 C47 9 48 7 49 4"/>
+        <path d="M32 28 C32 20 33 13 35 6"/>
+        <ellipse cx="32" cy="60" rx="9" ry="4"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- JS modules inlined verbatim from js/ — <script type="module" src> is
+     CORS-blocked under file://, so the page carries its own copies. Each
+     component keeps its no-JS baseline if scripting is disabled. -->
+<script type="module">
+/* wel-combobox — APG editable combobox with list autocomplete
+   (docs/components/combobox.md, T-48; delivery per ADR-0011). The
+   authored light DOM is a native <input list> + <datalist> — that pair
+   IS the no-JS baseline. Upgrade removes the `list` attribute (one
+   suggestion UI, not two) and mirrors the datalist into a stylable
+   listbox: substring filtering (filter="none" to disable), arrow-key
+   navigation via aria-activedescendant — DOM focus never leaves the
+   input — Enter to commit, Esc to close, focusout closes without
+   committing. The datalist stays the option source and is re-read on
+   every open, so options may be swapped at any time with no API.
+   Committing fires native input+change on the input; there are no
+   custom events — attribute state (aria-expanded, aria-selected) is
+   the styleable surface. */
+
+let seq = 0;
+
+class WelCombobox extends HTMLElement {
+  connectedCallback() {
+    if (this._input) return;
+    const input = this.querySelector('input[list]');
+    const data = input && document.getElementById(input.getAttribute('list'));
+    if (!data) return;
+    this._input = input;
+    this._data = data;
+
+    const n = ++seq;
+    input.removeAttribute('list');
+    input.setAttribute('role', 'combobox');
+    input.setAttribute('aria-autocomplete', 'list');
+    input.setAttribute('aria-expanded', 'false');
+    input.autocomplete = 'off';
+
+    const list = this._list = document.createElement('ul');
+    list.setAttribute('role', 'listbox');
+    list.id = `wel-cb-${n}`;
+    list.hidden = true;
+    const label = input.id
+      && document.querySelector(`label[for="${CSS.escape(input.id)}"]`);
+    if (label) {
+      label.id ||= `wel-cb-${n}-label`;
+      list.setAttribute('aria-labelledby', label.id);
+    }
+    input.setAttribute('aria-controls', list.id);
+    this.append(list);
+
+    input.addEventListener('input', () => { if (!this._mute) this._open(); });
+    input.addEventListener('click', () => { if (list.hidden) this._open(); });
+    input.addEventListener('keydown', (e) => this._key(e));
+    // pointerdown, not click: commit before focusout closes the list.
+    list.addEventListener('pointerdown', (e) => {
+      const o = e.target.closest('[role="option"]');
+      if (o) { e.preventDefault(); this._commit(o); }
+    });
+    this.addEventListener('focusout', (e) => {
+      if (!this.contains(e.relatedTarget)) this._close();
+    });
+  }
+
+  _open() {
+    const q = this.getAttribute('filter') === 'none'
+      ? '' : this._input.value.trim().toLowerCase();
+    const list = this._list;
+    list.textContent = '';
+    for (const opt of this._data.options) {
+      const v = opt.value;
+      if (q && !v.toLowerCase().includes(q)) continue;
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option');
+      li.id = `${list.id}-${list.children.length}`;
+      li.textContent = v;
+      list.append(li);
+    }
+    const some = list.children.length > 0;
+    list.hidden = !some;
+    this._input.setAttribute('aria-expanded', some);
+    this._active(-1);
+  }
+
+  _active(i) {
+    this._i = i;
+    const opts = this._list.children;
+    for (let k = 0; k < opts.length; k++) opts[k].setAttribute('aria-selected', k === i);
+    const o = opts[i];
+    if (o) {
+      this._input.setAttribute('aria-activedescendant', o.id);
+      o.scrollIntoView({ block: 'nearest' });
+    } else this._input.removeAttribute('aria-activedescendant');
+  }
+
+  _key(e) {
+    const open = !this._list.hidden;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { this._open(); if (e.altKey) return; }
+      const n = this._list.children.length;
+      if (n) this._active(((this._i ?? -1) + (e.key === 'ArrowDown' ? 1 : -1) + n) % n);
+    } else if (e.key === 'Enter') {
+      const o = open && this._list.children[this._i];
+      if (o) { e.preventDefault(); this._commit(o); }
+    } else if (e.key === 'Escape' && open) {
+      // handled here → don't also close a containing dialog/popover
+      e.preventDefault();
+      this._close();
+    }
+  }
+
+  _commit(o) {
+    const input = this._input;
+    input.value = o.textContent;
+    this._close();
+    input.focus();
+    this._mute = true;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    this._mute = false;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  _close() {
+    this._list.hidden = true;
+    this._input.setAttribute('aria-expanded', 'false');
+    this._active(-1);
+  }
+}
+
+customElements.define('wel-combobox', WelCombobox);
+</script>
+<script type="module">
+/* wel-tabs — APG tabs custom element (docs/components/tabs.md, T-47;
+   delivery per ADR-0011). The authored light DOM is heading+section
+   pairs — a complete document fragment that IS the no-JS baseline.
+   Upgrade generates everything hand-authoring gets wrong: the
+   role=tablist strip, role=tab/aria-selected/aria-controls on the
+   headings, role=tabpanel/aria-labelledby/tabindex on the sections,
+   roving tabindex, arrow-key navigation with wrap, Home/End.
+   activation=auto (default) selects on arrow focus per APG — our
+   panels render instantly; manual moves focus only, Enter/Space
+   selects. selected-index is reflected on change and settable at any
+   time; wel-tab-change bubbles after each change (not cancelable —
+   the attribute is the source of truth). Enhanced: the indicator
+   morphs between tabs via a view transition, named only on the
+   changing group for only the transition's duration (--wel-tabs-vt),
+   so parallel tab groups never collide; skipped under reduced motion
+   (the CSS group duration also rides --wel-motion). */
+
+let seq = 0;
+
+class WelTabs extends HTMLElement {
+  static observedAttributes = ['selected-index'];
+
+  connectedCallback() {
+    if (this._tabs) return;
+    const tabs = [];
+    const panels = [];
+    for (const h of [...this.children]) {
+      if (/^H[2-4]$/.test(h.tagName) && h.nextElementSibling?.matches('section')) {
+        tabs.push(h);
+        panels.push(h.nextElementSibling);
+      }
+    }
+    if (!tabs.length) return;
+    this._tabs = tabs;
+    this._panels = panels;
+
+    const n = ++seq;
+    const list = document.createElement('div');
+    list.setAttribute('role', 'tablist');
+    const label = this.getAttribute('aria-label');
+    if (label) list.setAttribute('aria-label', label);
+
+    tabs.forEach((tab, i) => {
+      const panel = panels[i];
+      tab.id ||= `wel-tab-${n}-${i}`;
+      panel.id ||= `wel-panel-${n}-${i}`;
+      tab.setAttribute('role', 'tab'); // a tab is not a heading post-upgrade
+      tab.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.tabIndex = 0; // reachable even when its first content isn't focusable
+      list.append(tab);
+      tab.addEventListener('click', () => this._select(i));
+      tab.addEventListener('keydown', (e) => this._key(e, i));
+    });
+    this.prepend(list);
+    this._apply(this._clamp(this.getAttribute('selected-index'))); // no event on setup
+  }
+
+  _clamp(v) {
+    return Math.max(0, Math.min(+v || 0, this._tabs.length - 1));
+  }
+
+  _key(e, i) {
+    const n = this._tabs.length;
+    const j = { ArrowRight: (i + 1) % n, ArrowLeft: (i + n - 1) % n, Home: 0, End: n - 1 }[e.key];
+    if (j !== undefined) {
+      e.preventDefault();
+      this._tabs[j].focus();
+      if (this.getAttribute('activation') !== 'manual') this._select(j);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._select(i); // no-op redundancy in auto mode
+    }
+  }
+
+  _apply(j) {
+    this._i = j;
+    this._tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', i === j);
+      tab.tabIndex = i === j ? 0 : -1;
+      this._panels[i].hidden = i !== j;
+    });
+    this.setAttribute('selected-index', j);
+  }
+
+  _select(j) {
+    j = this._clamp(j);
+    const prev = this._i;
+    if (j === prev) return;
+    const commit = () => {
+      this._apply(j);
+      this.dispatchEvent(new CustomEvent('wel-tab-change', {
+        bubbles: true,
+        detail: { index: j, previousIndex: prev, tab: this._tabs[j], panel: this._panels[j] },
+      }));
+    };
+    if (document.startViewTransition
+        && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.style.setProperty('--wel-tabs-vt', 'wel-tab-indicator');
+      const clean = () => this.style.removeProperty('--wel-tabs-vt');
+      // then(clean, clean), not finally: a rapid re-selection skips the
+      // transition and finally() would re-throw that as an unhandled
+      // rejection; ready rejects on skip too. Commit runs either way.
+      const vt = document.startViewTransition(commit);
+      vt.ready.catch(() => {});
+      vt.finished.then(clean, clean);
+    } else commit();
+  }
+
+  attributeChangedCallback(_, old, val) {
+    if (!this._tabs || val === old) return;
+    const j = this._clamp(val);
+    // Re-reflect an out-of-range value so the attribute stays truthful.
+    if (j === this._i) { if (String(j) !== val) this.setAttribute('selected-index', j); }
+    else this._select(j);
+  }
+
+  get selectedIndex() { return this._i; } // convenience mirror, never the only path
+  set selectedIndex(j) { this._select(j); }
+}
+
+customElements.define('wel-tabs', WelTabs);
+</script>
+<script type="module">
+/* wel-dialog — declarative opening for `.dialog` via [data-dialog-open]
+   (docs/components/dialog.md, T-65; delivery per ADR-0011). <dialog> is
+   Core: showModal() brings top layer, focus trap, inert background, Esc,
+   and focus return; closing is declarative (form method="dialog").
+   Opening is the one gap — Invoker Commands (command/commandfor) will
+   close it, but are pre-Baseline (ADR-0012), so this module is deleted
+   when they graduate. It is the spec's documented inline 3-liner plus
+   late-added-DOM handling: one delegated listener at the root, so
+   invokers inserted after load work with no re-scan and no observer.
+   data-dialog-modal="false" on the invoker opens non-modally (show()). */
+
+const BOUND = Symbol();
+
+/** Bind the delegated opener on root, once. */
+export default function upgrade(root = document) {
+  if (root[BOUND]) return;
+  root[BOUND] = true;
+
+  root.addEventListener('click', (e) => {
+    const invoker = e.target.closest?.('[data-dialog-open]');
+    if (!invoker) return;
+    const dialog = document.getElementById(invoker.dataset.dialogOpen || '');
+    // Skip anything already open: showModal() on an open dialog throws,
+    // and a server-rendered in-flow panel (`open` attribute) must not be
+    // re-modal-ised out from under the user.
+    if (!(dialog instanceof HTMLDialogElement) || dialog.open) return;
+    if (invoker.dataset.dialogModal === 'false') dialog.show();
+    else dialog.showModal();
+  });
+}
+
+upgrade();
+</script>
+<script type="module">
+/* wel-toast-region — queued live-region toast manager
+   (docs/components/toast.md, T-49; delivery per ADR-0011). The API is
+   the DOM: appending a <wel-toast> child raises a toast; push() is a
+   convenience that builds exactly that child. Adoption (observer, so
+   fragment swaps and server flashes are first-class) sets the
+   politeness role per tone — alert for warning/danger, else status —
+   BEFORE the toast turns visible so appearing announces it, and adds
+   the dismiss button. FIFO queue past `max`; timers (duration attr,
+   default 6000, 0 = persistent, danger forced persistent — WCAG
+   2.2.1) pause on hover and focus-within. Exit waits the
+   [data-closing] CSS fade, then the stack reflows via a view
+   transition, skipped under reduced motion. Focus is never stolen. */
+
+let seq = 0;
+
+class WelToastRegion extends HTMLElement {
+  connectedCallback() {
+    if (this._on) return;
+    this._on = true;
+    this.setAttribute('role', 'region'); // aria-label is the host's job
+    for (const t of this.querySelectorAll('wel-toast')) this._adopt(t);
+    new MutationObserver((ms) => {
+      for (const m of ms) {
+        for (const t of m.addedNodes) if (t.tagName === 'WEL-TOAST') this._adopt(t);
+        for (const t of m.removedNodes) {
+          if (t.tagName === 'WEL-TOAST' && !('closing' in t.dataset)) {
+            clearTimeout(t._id);
+            this._emit('wel-toast-dismiss', { toast: t, reason: 'api' });
+            this._flow();
+          }
+        }
+      }
+    }).observe(this, { childList: true });
+
+    this.addEventListener('pointerenter', () => { this._h = 1; this._pause(); });
+    this.addEventListener('focusin', () => { this._f = 1; this._pause(); });
+    this.addEventListener('pointerleave', () => { this._h = 0; this._resume(); });
+    this.addEventListener('focusout', (e) => {
+      if (!this.contains(e.relatedTarget)) { this._f = 0; this._resume(); }
+    });
+  }
+
+  /** Convenience mirror of `append(<wel-toast>)` (ADR-0011). */
+  push(message, o = {}) {
+    const t = document.createElement('wel-toast');
+    if (o.tone) t.dataset.tone = o.tone;
+    if (o.duration != null) t.setAttribute('duration', o.duration);
+    t.textContent = message;
+    this.append(t);
+    return t;
+  }
+
+  _adopt(t) {
+    if (t._ok) return;
+    t._ok = 1;
+    const tone = t.dataset.tone;
+    t.setAttribute('role', tone === 'warning' || tone === 'danger' ? 'alert' : 'status');
+    if (t.getAttribute('dismissible') !== 'false') {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'button';
+      b.dataset.variant = 'ghost';
+      b.dataset.size = 'sm';
+      b.setAttribute('aria-label', this.getAttribute('dismiss-label') || 'Dismiss');
+      b.textContent = '✕';
+      b.addEventListener('click', () => this._dismiss(t, 'dismiss'));
+      t.append(b);
+    }
+    t.hidden = true; // queued; _flow unhides in FIFO order
+    t.style.viewTransitionName = `wel-t${++seq}`;
+    t.style.viewTransitionClass = 'wel-toast';
+    this._flow();
+  }
+
+  _flow() {
+    let n = +this.getAttribute('max') || 3;
+    for (const t of this.children) {
+      if (t.tagName !== 'WEL-TOAST' || 'closing' in t.dataset) continue;
+      if (!t.hidden) n--;
+      else if (n > 0) {
+        n--;
+        t.hidden = false; // turning visible announces the live region
+        t._rem = t.dataset.tone === 'danger' ? 0 // errors never evaporate
+          : +(t.getAttribute('duration') ?? this.getAttribute('duration') ?? 6000);
+        if (t._rem && !this._h && !this._f) this._run(t);
+        this._emit('wel-toast-show', { toast: t });
+      }
+    }
+  }
+
+  _run(t) {
+    t._at = Date.now();
+    t._id = setTimeout(() => this._dismiss(t, 'timeout'), t._rem);
+  }
+
+  _pause() {
+    for (const t of this.children) {
+      if (t._id) { clearTimeout(t._id); t._id = 0; t._rem -= Date.now() - t._at; }
+    }
+  }
+
+  _resume() {
+    if (this._h || this._f) return;
+    for (const t of this.children) {
+      if (!t.hidden && !('closing' in t.dataset) && t._rem > 0 && !t._id) this._run(t);
+    }
+  }
+
+  _dismiss(t, reason) {
+    if ('closing' in t.dataset) return;
+    clearTimeout(t._id);
+    const hadFocus = t.contains(document.activeElement);
+    t.dataset.closing = ''; // CSS fades; wait its duration, then remove
+    setTimeout(() => {
+      const go = () => { t.remove(); this._flow(); };
+      if (document.startViewTransition
+          && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        // ready rejects (AbortError) when a rapid follow-up dismissal
+        // skips this transition — expected, swallow it
+        document.startViewTransition(go).ready.catch(() => {});
+      } else go();
+      this._emit('wel-toast-dismiss', { toast: t, reason });
+      if (hadFocus) {
+        this.querySelector('wel-toast:not([hidden], [data-closing]) button')?.focus();
+      }
+    }, (parseFloat(getComputedStyle(t).transitionDuration) || 0) * 1000);
+  }
+
+  _emit(name, detail) {
+    this.dispatchEvent(new CustomEvent(name, { bubbles: true, detail }));
+  }
+}
+
+customElements.define('wel-toast-region', WelToastRegion);
+</script>
+
+<!-- Demo-only wiring: the add-to-cart buttons exercise the toast region's
+     push() convenience (the component API is the DOM). With JS off they are
+     inert plain buttons — the page itself stays fully usable. -->
+<script type="module">
+  const region = document.querySelector('wel-toast-region');
+  document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-add-to-cart]');
+    if (button) region.push(`${button.dataset.addToCart} added to your cart.`, { tone: 'success' });
+  });
+</script>
+
+</body>
+</html>

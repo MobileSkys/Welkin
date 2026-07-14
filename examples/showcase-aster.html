@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Cartography of Hedgerows — Aster &amp; Vale</title>
+  <meta name="description" content="Aster & Vale, a literary journal — a Welkin showcase theme built entirely from design tokens.">
+  <link rel="stylesheet" href="../dist/welkin.css">
+  <style>
+    /* Page shell — establishes the `page` named container the navbar queries,
+       and pins the footer on short pages. */
+    .shell {
+      container-name: page; container-type: inline-size;
+      display: grid; grid-template-rows: auto 1fr auto;
+      min-block-size: 100dvb;
+    }
+
+    /* Aster & Vale — a complete Welkin theme. Token declarations only. */
+    :root {
+      --wel-color-accent: light-dark(oklch(50% 0.15 25), oklch(74% 0.12 25)); /* oxblood */
+      --wel-color-surface: light-dark(oklch(97% 0.012 85), oklch(23% 0.015 60)); /* warm paper / warm dark */
+      --wel-color-surface-raised: light-dark(oklch(99% 0.008 85), oklch(27% 0.015 60));
+      --wel-color-surface-sunken: light-dark(oklch(94% 0.015 85), oklch(20% 0.015 60));
+      --wel-text-font-body: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --wel-text-font-display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --wel-radius-control: 0.125rem;
+      --wel-radius-surface: 0.25rem;
+      --wel-text-anchor-min: 1.075rem;
+      --wel-text-ratio-max: 1.28;
+    }
+
+    /* Print-like caption treatment — the one thing tokens can't express. */
+    figcaption {
+      color: var(--wel-color-ink-muted);
+      font-style: italic;
+      font-size: var(--wel-text-size--1);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="navbar">
+    <nav aria-label="Primary">
+      <a class="navbar-brand" href="#">Aster &amp; Vale</a>
+      <button class="navbar-menu-button" popovertarget="nav-menu">Menu</button>
+      <ul class="navbar-menu" id="nav-menu" popover>
+        <li><a href="#">Issues</a></li>
+        <li><a href="#" aria-current="page">Essays</a></li>
+        <li><a href="#">Poetry</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="stack" style="--wel-stack-gap: var(--wel-space-8)">
+
+    <!-- Cover hero -->
+    <section class="cover center" style="--wel-cover-min-height: 60dvb">
+      <div class="stack" data-principal>
+        <p><span class="badge">Issue 14 — Midsummer</span></p>
+        <h1 style="font-size: var(--wel-text-size-5)">The Cartography of Hedgerows</h1>
+        <p style="color: var(--wel-color-ink-muted); font-size: var(--wel-text-size-1)">
+          Before the surveyors came with their chains and theodolites, the parish was
+          mapped in hawthorn and blackthorn. Marion Ashworth walks the oldest lines
+          on the land.
+        </p>
+        <p style="color: var(--wel-color-ink-muted)"><small>By Marion Ashworth · 14 minute read</small></p>
+      </div>
+    </section>
+
+    <!-- Article -->
+    <section class="center stack" style="--wel-stack-gap: var(--wel-space-6)">
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Issue 14</a></li>
+          <li><a href="" aria-current="page">Essays</a></li>
+        </ol>
+      </nav>
+
+      <article class="prose">
+        <p>The oldest map of the parish is not in the county archive. It grows along
+        the lane between the church and the disused mill: twelve feet of hawthorn,
+        field maple, hazel and dog-rose, stitched through with bramble and briony,
+        holding a line that was old before anyone thought to write it down. We are
+        used to thinking of maps as things made <em>of</em> the land. A hedgerow is
+        the reverse — a map made <em>in</em> the land, drawn in living wood, and
+        still legible to anyone willing to slow to its pace.</p>
+
+        <p>There is even a method for dating one. In the 1960s the ecologist Max
+        Hooper noticed that the number of woody species in a thirty-yard stretch of
+        hedge corresponds, roughly, to its age in centuries. One species, one
+        hundred years. A hedge of hawthorn alone is likely young — a creature of
+        the modern survey. But stand at a stretch that carries hawthorn, blackthorn,
+        hazel, holly, maple, spindle and wild service tree, and you are reading a
+        seven-hundred-year-old sentence, still being revised.</p>
+
+        <p>You can tell the age of a hedge by its manners, too. The enclosure acts
+        of the eighteenth and nineteenth centuries ruled their boundaries straight,
+        because they were drawn first on paper, in London, by men who had never
+        stood in the fields they were dividing. The older lines wander. They follow
+        a stream that has since sunk underground, skirt a boulder long ago carted
+        off, bulge around the ghost of a tree. Where the parliamentary hedge is a
+        statement, the assart hedge is a conversation — and the land always got
+        the last word.</p>
+      </article>
+
+      <figure data-breakout class="stack" style="--wel-stack-gap: var(--wel-space-2)">
+        <div class="frame" style="--wel-frame-ratio: 21 / 9">
+          <svg viewBox="0 0 2100 900" role="img" preserveAspectRatio="xMidYMid slice"
+               aria-label="Duotone illustration: hedgerows dividing rolling fields beneath a low midsummer sun">
+            <defs>
+              <linearGradient id="av-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" style="stop-color: var(--wel-color-surface-raised)"/>
+                <stop offset="1" style="stop-color: var(--wel-color-accent-tint)"/>
+              </linearGradient>
+            </defs>
+            <rect width="2100" height="900" fill="url(#av-sky)"/>
+            <circle cx="1560" cy="250" r="95"
+                    style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 55%)"/>
+            <path d="M0 470 C 300 405, 620 435, 940 475 S 1520 520, 2100 445 L 2100 900 L 0 900 Z"
+                  style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 62%)"/>
+            <path d="M0 480 C 300 415, 620 445, 940 485 S 1520 530, 2100 455"
+                  style="fill: none; stroke: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 38%); stroke-width: 14"/>
+            <path d="M0 610 C 360 545, 820 630, 1220 595 S 1820 560, 2100 615 L 2100 900 L 0 900 Z"
+                  style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 42%)"/>
+            <path d="M0 620 C 360 555, 820 640, 1220 605 S 1820 570, 2100 625"
+                  style="fill: none; stroke: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 20%); stroke-width: 18"/>
+            <ellipse cx="380" cy="590" rx="46" ry="30"
+                     style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 22%)"/>
+            <ellipse cx="1470" cy="580" rx="58" ry="36"
+                     style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 22%)"/>
+            <path d="M0 770 C 520 705, 1120 790, 1620 745 S 2020 720, 2100 755 L 2100 900 L 0 900 Z"
+                  style="fill: color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 18%)"/>
+            <path d="M0 782 C 520 717, 1120 802, 1620 757 S 2020 732, 2100 767"
+                  style="fill: none; stroke: var(--wel-color-accent); stroke-width: 24"/>
+            <ellipse cx="820" cy="768" rx="70" ry="44" style="fill: var(--wel-color-accent)"/>
+            <ellipse cx="1960" cy="748" rx="52" ry="34" style="fill: var(--wel-color-accent)"/>
+          </svg>
+        </div>
+        <figcaption>The lane hedge below Coombe Farm — hawthorn, maple, spindle: one species to the century.</figcaption>
+      </figure>
+
+      <div class="prose">
+        <h2>Reading the lines</h2>
+
+        <p>To read a hedgerow, start at its feet. A bank with a ditch on one side
+        records which field the hedge was planted to defend, and by whom; the
+        ditch always lies on the neighbour's side, because you dug your boundary
+        from your own soil. Look next for coppice stools — hazel cut and re-cut
+        until its base has swollen into a fist of old wood, some of them older
+        than the churches they can see. Then look up. A standard oak every chain
+        or so was the planter's pension: timber for the grandchildren, shade for
+        the stock, and a fixed point for every survey since.</p>
+
+        <blockquote>
+          <p>A hedge is not a wall that happened to grow. It is a negotiation,
+          renewed each winter, between what we plant and what escapes us.</p>
+        </blockquote>
+
+        <p>The map nearly went the way of most old maps. Between the end of the
+        war and the end of the century, England grubbed up roughly half its
+        hedgerows — paid by the yard to do it — because a machine the width of a
+        tennis court has no patience for a boundary drawn by a stream that no
+        longer exists. What was lost was not only line but traffic: a hedge is a
+        road for everything too small or too sensible to cross open ground, the
+        dormouse's holloway, the yellowhammer's parish boundary, ten thousand
+        miles of verge running from wood to wood.</p>
+      </div>
+
+      <aside class="alert" data-tone="info">
+        <svg class="alert-icon" aria-hidden="true" viewBox="0 0 16 16" width="16" height="16">
+          <path d="M2 3h12v3H2z M3 7h10v6H3z M6 9h4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <p class="alert-title">From the archive</p>
+        <p>In Issue 3, Edith Calloway walked the same boundaries the other way —
+        <a href="#">“Beating the Bounds”</a>, on the parish perambulations that
+        kept these lines in living memory before anyone kept them on paper.</p>
+      </aside>
+
+      <div class="prose">
+        <p>And yet the lines are being redrawn. Every winter now, in cold fields,
+        you can find people relearning the oldest of the boundary crafts: laying a
+        hedge, cutting each stem almost through and bending it down along the line,
+        so that the wound forces new growth from the base and the map thickens
+        instead of thinning. It is slow work, and it looks, at first, like
+        vandalism. But to lay a hedge is to write in the margin of a very old
+        book — and to trust that someone, a century on, will stand in the lane,
+        count seven species in thirty yards, and know that we were here, and that
+        we kept the line.</p>
+      </div>
+
+    </section>
+
+    <!-- More from Issue 14 -->
+    <section class="center stack" style="--wel-center-max: 70rem">
+      <h2>More from Issue 14</h2>
+
+      <section class="carousel" data-carousel-buttons aria-roledescription="carousel"
+               aria-label="More from Issue 14" style="--wel-carousel-slide-size: min(100%, 18rem)">
+        <div class="carousel-track" tabindex="0" role="group" aria-label="Slides">
+
+          <div role="group" aria-roledescription="slide" aria-label="1 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(135deg, var(--wel-color-accent-tint), color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 35%))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">Swimming the Meridian</a></h3></header>
+              <div class="card-body"><p>Nell Prior follows the Greenwich line north, one cold river at a time.</p></div>
+            </article>
+          </div>
+
+          <div role="group" aria-roledescription="slide" aria-label="2 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(200deg, color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 70%), var(--wel-color-accent))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">An Alphabet of Rain</a></h3></header>
+              <div class="card-body"><p>Twenty-six dialect words for weather, and the valleys that coined them.</p></div>
+            </article>
+          </div>
+
+          <div role="group" aria-roledescription="slide" aria-label="3 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(160deg, color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 50%), var(--wel-color-accent-tint))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">The Bee Roads</a></h3></header>
+              <div class="card-body"><p>A poem sequence by Ifor Danes, mapping the forage lines of a June garden.</p></div>
+            </article>
+          </div>
+
+          <div role="group" aria-roledescription="slide" aria-label="4 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(115deg, var(--wel-color-accent), color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 65%))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">Notes from a Chalk Stream</a></h3></header>
+              <div class="card-body"><p>Clear water, brown trout, and the strange bureaucracy of ranunculus.</p></div>
+            </article>
+          </div>
+
+          <div role="group" aria-roledescription="slide" aria-label="5 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(240deg, var(--wel-color-accent-tint), color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 28%))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">The Last Keeper of Orfordness</a></h3></header>
+              <div class="card-body"><p>Ruth Amory on shingle, secrecy, and a lighthouse the sea finally claimed.</p></div>
+            </article>
+          </div>
+
+          <div role="group" aria-roledescription="slide" aria-label="6 of 6">
+            <article class="card">
+              <figure class="card-media">
+                <div class="frame" style="background: linear-gradient(180deg, color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 58%), color-mix(in oklch, var(--wel-color-accent), var(--wel-color-surface) 12%))"></div>
+              </figure>
+              <header class="card-header"><h3><a class="card-link" href="#">On Gleaning</a></h3></header>
+              <div class="card-body"><p>What the harvest leaves behind, and who has the right to gather it.</p></div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="center stack">
+      <h2>The Sunday letter</h2>
+      <p style="color: var(--wel-color-ink-muted)">One essay from the archive, one
+      poem, and a note from the editors — posted every Sunday morning, read at
+      whatever pace the toast allows.</p>
+      <form class="stack">
+        <div class="field">
+          <label for="letter-email">Email address</label>
+          <input id="letter-email" name="email" type="email" required
+                 autocomplete="email" aria-describedby="letter-hint">
+          <p class="hint" id="letter-hint">Weekly, free, and we never share your address.</p>
+        </div>
+        <div class="cluster">
+          <button class="button" data-variant="primary">Subscribe</button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="center" style="border-block-start: 1px solid var(--wel-color-border); padding-block: var(--wel-space-7)">
+    <div class="stack">
+      <div class="cluster" style="--wel-cluster-justify: space-between">
+        <small>© 2026 Aster &amp; Vale</small>
+        <small>Set in your system’s serif — Iowan Old Style, Palatino, or Georgia, whichever your shelf holds.</small>
+      </div>
+
+      <div class="accordion">
+        <details>
+          <summary><h3>View this page’s theme</h3></summary>
+          <p>Every showcase page loads the same welkin.css — only these tokens differ.</p>
+          <pre tabindex="0"><code>:root {
+  --wel-color-accent: light-dark(oklch(50% 0.15 25), oklch(74% 0.12 25)); /* oxblood */
+  --wel-color-surface: light-dark(oklch(97% 0.012 85), oklch(23% 0.015 60)); /* warm paper / warm dark */
+  --wel-color-surface-raised: light-dark(oklch(99% 0.008 85), oklch(27% 0.015 60));
+  --wel-color-surface-sunken: light-dark(oklch(94% 0.015 85), oklch(20% 0.015 60));
+  --wel-text-font-body: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --wel-text-font-display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --wel-radius-control: 0.125rem;
+  --wel-radius-surface: 0.25rem;
+  --wel-text-anchor-min: 1.075rem;
+  --wel-text-ratio-max: 1.28;
+}</code></pre>
+        </details>
+      </div>
+
+      <p><small><a href="../index.html">Built with Welkin</a></small></p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- carousel-buttons.js inlined verbatim from js/carousel-buttons.js —
+     ES-module src is CORS-blocked under file://. -->
+<script type="module">
+/* carousel-buttons — visible prev/next controls for `.carousel` where the
+   Enhanced CSS (`::scroll-button()`) is unsupported
+   (docs/components/carousel.md, T-64; delivery per ADR-0011). The 2.5.7
+   single-pointer alternative to swiping for fallback browsers. Detect and
+   yield: where the engine supports ::scroll-button the module no-ops
+   entirely — the generated CSS buttons own the job once they pass intake
+   (until then such engines keep keyboard/scrollbar/swipe; the carousel
+   spec documents this interim honestly) — and the module is deleted when
+   the feature graduates. Opt-in: [data-carousel-buttons] on .carousel.
+   Labels default to Previous/Next slide; override with
+   data-carousel-prev-label / data-carousel-next-label. */
+
+const UPGRADED = Symbol();
+
+function upgradeCarousel(root) {
+  if (root[UPGRADED]) return;
+  const track = root.querySelector('.carousel-track');
+  if (!track) return;
+  root[UPGRADED] = true;
+
+  const make = (dir, glyph, label) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'button';
+    b.dataset.size = 'sm';
+    b.setAttribute('aria-label', label);
+    b.textContent = glyph;
+    b.addEventListener('click', () => {
+      // One snap stop: the distance between adjacent snap targets, or a
+      // viewport's worth when there is a single slide. RTL flips the
+      // physical scroll direction.
+      const [a, c] = track.children;
+      const step = a && c
+        ? Math.abs(c.offsetLeft - a.offsetLeft)
+        : track.clientWidth;
+      const rtl = getComputedStyle(track).direction === 'rtl';
+      track.scrollBy({ left: dir * (rtl ? -step : step), behavior: 'smooth' });
+    });
+    return b;
+  };
+
+  const prev = make(-1, '‹', root.dataset.carouselPrevLabel || 'Previous slide');
+  const next = make(1, '›', root.dataset.carouselNextLabel || 'Next slide');
+
+  const controls = document.createElement('div');
+  controls.className = 'cluster';
+  controls.append(prev, next);
+  root.append(controls);
+
+  // Mirror the UA behaviour of generated scroll buttons: disable at the
+  // ends. |scrollLeft| handles the negative RTL coordinate space.
+  const sync = () => {
+    const max = track.scrollWidth - track.clientWidth;
+    const pos = Math.abs(track.scrollLeft);
+    prev.disabled = pos <= 1;
+    next.disabled = pos >= max - 1;
+  };
+  sync();
+  track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+  // Resizing changes scrollWidth/clientWidth without a scroll event —
+  // the end states must follow (T-64 review). Observing the track covers
+  // window and container resizes alike.
+  new ResizeObserver(() => sync()).observe(track);
+
+  return root;
+}
+
+/** Upgrade every opted-in carousel under root, now and later. */
+export default function upgrade(root = document) {
+  if (CSS.supports('selector(::scroll-button(*))')) return; // yield to the platform
+
+  for (const c of root.querySelectorAll('.carousel[data-carousel-buttons]')) upgradeCarousel(c);
+
+  new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        if (node.matches?.('.carousel[data-carousel-buttons]')) upgradeCarousel(node);
+        for (const c of node.querySelectorAll?.('.carousel[data-carousel-buttons]') ?? []) upgradeCarousel(c);
+      }
+    }
+  }).observe(root === document ? document.documentElement : root, { childList: true, subtree: true });
+}
+
+upgrade();
+</script>
+</body>
+</html>

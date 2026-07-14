@@ -9,7 +9,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const exampleUrl = (name) =>
   pathToFileURL(fileURLToPath(new URL(`../examples/${name}`, import.meta.url))).href;
 const page_url = exampleUrl('kitchen-sink.html');
-const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html'];
+const PAGES = ['kitchen-sink.html', 'layout.html', 'components.html',
+  'showcase-solstice.html', 'showcase-nimbus.html', 'showcase-aster.html', 'showcase-fern.html'];
 
 let failures = 0;
 const fail = (msg) => { failures++; console.error(`FAIL ${msg}`); };

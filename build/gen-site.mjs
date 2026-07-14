@@ -133,6 +133,7 @@ function page({ title, crumb, body, depth, modules = [], extra = '', prose = tru
         <li><a href="${p}index.html#components">Components</a></li>
         <li><a href="${p}index.html#docs">Design docs</a></li>
         <li><a href="${p}examples/components.html">Demos</a></li>
+        <li><a href="${p}index.html#showcase">Showcase</a></li>
         <li><a href="${p}playground.html">Playground</a></li>
         <li><a href="https://www.npmjs.com/package/welkincss">npm</a></li>${toggle}
       </ul>
@@ -296,8 +297,32 @@ docPage('CHANGELOG.md', []); // linked from the README on the index page
 // Index: README intro + component/doc directories, all Welkin-styled.
 const readme = read('README.md');
 outDir = '';
+
+// Showcase (T-78): four complete mock sites, one welkin.css — each page's
+// entire visual identity is a Level-1 token block (the storefront adds the
+// Level-2/3 hooks). Authored in examples/ (the copy step above publishes
+// them); listed here so the index sells the versatility story.
+const SHOWCASE = [
+  ['showcase-solstice', 'Solstice', 'SaaS product landing — violet, airy, generous radii. Cover hero, aligned feature cards, pricing, FAQ accordion, signup dialog.'],
+  ['showcase-nimbus', 'Nimbus', 'Analytics dashboard — indigo, compact and dense. Sidebar shell, KPI cards, sortable table, tabs, toasts.'],
+  ['showcase-aster', 'Aster &amp; Vale', 'Literary journal — warm paper, system serif, print-like. Prose essay, pull quotes, story carousel.'],
+  ['showcase-fern', 'Fern &amp; Forage', 'Plant-shop storefront — fern green, rounded, pill buttons (a Level-3 knob). Product grid, filters, tabs, cart dialog.'],
+];
+
 const indexBody = `
 ${a11y(marked.parse(readme))}
+<h2 id="showcase">Showcase — one stylesheet, four sites</h2>
+<p>Every page below loads the same <code>dist/welkin.css</code>. The entire
+visual difference between them is a handful of design tokens on
+<code>:root</code> (<a href="docs/10-theming-and-customisation.html">doc 10</a>,
+Level 1) — each page's footer shows its full theme. That's the pitch:
+versatility without forking the CSS.</p>
+<div class="grid" style="--wel-grid-min: 16rem" data-align="rows">
+${SHOWCASE.map(([file, name, blurb]) => `  <article class="card">
+    <header class="card-header"><h3><a class="card-link" href="examples/${file}.html">${name}</a></h3></header>
+    <div class="card-body"><p>${blurb}</p></div>
+  </article>`).join('\n')}
+</div>
 <h2 id="components">Components</h2>
 <div class="grid" style="--wel-grid-min: 14rem">
 ${components.map((c) => `  <article class="card">
