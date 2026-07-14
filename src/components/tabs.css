@@ -1,0 +1,129 @@
+@layer reset, tokens, base, layout, components, variants, states, utilities, overrides;
+
+/* wel-tabs — APG tabs, JS-enhanced (docs/components/tabs.md, T-47).
+   Everything here keys to the roles/attributes wel-tabs.js GENERATES
+   (role=tab, aria-selected) — no Enhanced CSS is required for a fully
+   styled widget. Pre-upgrade/no-JS the authored heading+section stack
+   renders with deliberate rhythm via :not(:defined) and reserves no
+   tablist space, so upgrade costs one reflow. The selected indicator
+   is a real ::after box so the module's view transition has geometry
+   to morph; the group name arrives via --wel-tabs-vt only while a
+   change is in flight (see wel-tabs.js), and the morph duration rides
+   --wel-motion, so reduced motion zeroes it. */
+@layer components {
+  wel-tabs {
+    --wel-tab-ink: var(--wel-color-ink-muted);
+    --wel-tab-ink-selected: var(--wel-color-ink);
+    --wel-tab-indicator: var(--wel-color-accent);
+    --wel-tabs-border: var(--wel-color-border);
+    --wel-tab-padding-block: var(--wel-space-2);
+    --wel-tab-padding-inline: var(--wel-space-3);
+    --wel-tabs-gap: var(--wel-space-2);
+
+    display: block;
+  }
+
+  /* Pre-upgrade / no-JS: stacked, headed sections with .stack rhythm. */
+  wel-tabs:not(:defined) > * + * {
+    margin-block-start: var(--wel-space-4);
+  }
+
+  wel-tabs [role="tablist"] {
+    display: flex;
+    gap: var(--wel-tabs-gap);
+    border-block-end: var(--wel-border-width) solid var(--wel-tabs-border);
+    /* Overflowing tabs scroll rather than wrap — wrapped tab rows
+       misread as two tablists. Physical axis per ADR-0009 exception. */
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+
+  wel-tabs [role="tab"] {
+    position: relative;
+    /* The authored headings arrive with heading margins and type. */
+    margin: 0;
+    padding-block: var(--wel-tab-padding-block);
+    padding-inline: var(--wel-tab-padding-inline);
+    color: var(--wel-tab-ink);
+    font-size: var(--wel-text-size-0);
+    font-weight: 500;
+    line-height: var(--wel-text-leading-tight);
+    white-space: nowrap;
+    scroll-snap-align: start;
+    cursor: pointer;
+    transition: color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+  }
+
+  /* Underline indicator (default variant), sitting on the tablist rule. */
+  wel-tabs [role="tab"]::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 3px;
+  }
+
+  wel-tabs [role="tab"][aria-selected="true"] {
+    color: var(--wel-tab-ink-selected);
+  }
+
+  wel-tabs [role="tab"][aria-selected="true"]::after {
+    background-color: var(--wel-tab-indicator);
+    view-transition-name: var(--wel-tabs-vt, none);
+  }
+
+  wel-tabs [role="tabpanel"] {
+    padding-block-start: var(--wel-space-4);
+  }
+
+  /* The morphing indicator group; 0ms under reduced motion. */
+  ::view-transition-group(wel-tab-indicator) {
+    animation-duration: calc(var(--wel-motion-duration-2) * var(--wel-motion));
+  }
+}
+
+@layer variants {
+  /* Pills: the fill is the indicator, so the tab itself carries the
+     view-transition name and the underline box is dropped. */
+  wel-tabs[data-variant="pills"] [role="tablist"] {
+    border-block-end: 0;
+  }
+
+  wel-tabs[data-variant="pills"] [role="tab"] {
+    border-radius: var(--wel-radius-control);
+  }
+
+  wel-tabs[data-variant="pills"] [role="tab"]::after {
+    content: none;
+  }
+
+  wel-tabs[data-variant="pills"] [role="tab"][aria-selected="true"] {
+    background-color: var(--wel-tab-indicator);
+    color: var(--wel-color-accent-contrast);
+    view-transition-name: var(--wel-tabs-vt, none);
+  }
+}
+
+@layer states {
+  @media (hover: hover) {
+    wel-tabs [role="tab"]:not([aria-selected="true"]):hover {
+      color: var(--wel-tab-ink-selected);
+    }
+  }
+
+  /* Selection must survive without backgrounds (09): borders, not fills. */
+  @media (forced-colors: active) {
+    wel-tabs [role="tab"][aria-selected="true"] {
+      border-block-end: 3px solid Highlight;
+    }
+
+    wel-tabs[data-variant="pills"] [role="tab"][aria-selected="true"] {
+      border: var(--wel-border-width-strong) solid Highlight;
+      /* Explicit system pair: the UA already forces both, but axe reads
+         the authored accent-contrast ink through the forcing and fails
+         the pair it never renders. */
+      background-color: Canvas;
+      color: CanvasText;
+    }
+  }
+}

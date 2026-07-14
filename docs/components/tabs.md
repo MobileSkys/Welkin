@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft |
+| **Status** | Accepted |
 | **Tier** | JS-enhanced |
 | **Stability** | Experimental |
 | **Version target** | v1 |
@@ -116,7 +116,14 @@ reflow, not a cascade of shifts.
 
 | Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
 |---------|------------------|-------------|------------------------------------------|
-| View transitions | `@supports (view-transition-name: --x)` | Selected-tab indicator morphs between tabs on change | Indicator moves instantly ([03: view transitions → instant state change](../03-browser-support-policy.md)) |
+| View transitions | runtime `document.startViewTransition` detect (the module drives the transition, so a CSS gate would be dead code) | Selected-tab indicator morphs between tabs on change | Indicator moves instantly ([03: view transitions → instant state change](../03-browser-support-policy.md)) |
+
+*Implementation note (T-47):* `view-transition-name` must be unique document-wide, so
+the stylesheet names the indicator through `var(--wel-tabs-vt, none)` and the module
+sets that property on the one changing group only for the duration of the transition —
+parallel tab groups never collide. Skipped outright under `prefers-reduced-motion`
+(checked in the module), and the group's animation duration additionally rides
+`--wel-motion`.
 
 ### JS enhancement
 
