@@ -181,7 +181,8 @@
     position: sticky;
     inset-block-start: 0;
     z-index: 10;
-    box-shadow: var(--wel-shadow-1);
+    /* shadow-2: elevation-1 does not read on dark surfaces (T-101). */
+    box-shadow: var(--wel-shadow-2);
   }
 
   /* Enhanced: the sticky shadow appears only once the page has scrolled. */
@@ -213,7 +214,8 @@
 
   /* The :has() trick: parent styled by child state, no JS classes. */
   .navbar:where(:has(.navbar-menu:popover-open)) {
-    box-shadow: var(--wel-shadow-2);
+    /* One tier above the sticky rest shadow so the raise stays visible. */
+    box-shadow: var(--wel-shadow-3);
   }
 
   .navbar:where(:has(.navbar-menu:popover-open)) :where(.navbar-menu-button) {
@@ -227,6 +229,6 @@
   }
 
   to {
-    box-shadow: var(--wel-shadow-1);
+    box-shadow: var(--wel-shadow-2);
   }
 }

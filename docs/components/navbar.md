@@ -138,7 +138,7 @@ sticky elements, and both live in the host page, not the component:
 | Active | `:active` | `--wel-color-accent-active` ink | — |
 | Current page | `[aria-current="page"]` | Accent ink **and** underline/border bar (never colour alone) | `aria-current` |
 | Menu open (panel) | `.navbar-menu:popover-open` | Panel visible below the bar | Browser-synced `aria-expanded` on button |
-| Menu open (bar) | `.navbar:has(.navbar-menu:popover-open)` | The `:has()` trick: bar raises `--wel-shadow-2`, menu-button gets pressed treatment — parent styled by child state, no JS class juggling | — |
+| Menu open (bar) | `.navbar:has(.navbar-menu:popover-open)` | The `:has()` trick: bar raises `--wel-shadow-3` (one tier above the sticky rest shadow, so the raise reads even while stuck), menu-button gets pressed treatment — parent styled by child state, no JS class juggling | — |
 
 ## Tokens consumed
 
