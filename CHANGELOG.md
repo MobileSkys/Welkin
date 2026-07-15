@@ -9,6 +9,16 @@ say so there.
 
 ### Added
 
+- **`.ken-burns` image utility (T-111)**: wrapper class — the media slowly
+  zooms (`--wel-kenburns-zoom`, `1.15`) and pans (`--wel-kenburns-pan`,
+  `-2% 1%`) over `--wel-kenburns-duration` (`12s`, linear) while hovered or
+  holding keyboard focus, easing back on a short `duration-4` return. Both
+  durations ride the `--wel-motion` multiplier, and the whole effect is
+  wrapped in `@media (hover: hover)` + `prefers-reduced-motion:
+  no-preference` — touch users and reduced-motion users get a static image.
+  Writes the media `scale`/`translate` (same properties `.parallax`
+  animates), so the two must not share a wrapper.
+
 - **`.parallax` image utility (T-110)**: wrapper class — the media drifts
   along the block axis on its own `view()` timeline as the wrapper crosses
   the viewport (zero JS, `.reveal`'s scroll-timeline conventions). The

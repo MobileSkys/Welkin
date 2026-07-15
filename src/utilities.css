@@ -490,6 +490,48 @@
       }
     }
   }
+
+  /* Ken Burns (T-111) — wrapper class: the media slowly zooms and pans
+     while the card is hovered (or holds keyboard focus — :has(
+     :focus-visible), the card spec's pattern), then eases back quickly.
+     The drift is a seconds-scale linear transition-duration on the hover
+     state; the rest state keeps a short duration-4 return so letting go
+     never means a 12s crawl home. Both ride the --wel-motion multiplier.
+     The whole effect is motion-safe wrapped: a slow pan/zoom has no
+     non-vestibular reduced equivalent (an instant zoom would *crop*, not
+     calm), so under prefers-reduced-motion — and on non-hover devices —
+     the media simply never moves: plain image, never broken. Pan is a
+     translate percentage pair of the media's own box; the zoom's
+     (--wel-kenburns-zoom - 1) / 2 overflow per side is the headroom the
+     pan must stay inside (defaults: 7.5% headroom, 2%/1% pan). Writes
+     the media scale/translate — the same properties .parallax animates —
+     so the two never share a wrapper. */
+  @media (hover: hover) {
+    @media (prefers-reduced-motion: no-preference) {
+      .ken-burns {
+        --wel-kenburns-zoom: 1.15;
+        --wel-kenburns-pan: -2% 1%;
+        --wel-kenburns-duration: 12s;
+
+        overflow: clip;
+      }
+
+      .ken-burns :is(img, video) {
+        display: block;
+        inline-size: 100%;
+        transition:
+          scale calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease-out),
+          translate calc(var(--wel-motion-duration-4) * var(--wel-motion)) var(--wel-motion-ease-out);
+      }
+
+      .ken-burns:is(:hover, :has(:focus-visible)) :is(img, video) {
+        scale: var(--wel-kenburns-zoom);
+        translate: var(--wel-kenburns-pan);
+        transition-duration: calc(var(--wel-kenburns-duration) * var(--wel-motion));
+        transition-timing-function: linear;
+      }
+    }
+  }
 }
 
 @keyframes wel-reveal {
