@@ -601,6 +601,36 @@
       }
     }
   }
+
+  /* Textured reveal (T-117) — the image prints through an SVG data-URI
+     mask pattern: a staggered halftone dot grid (default) or fractal
+     grain. Two mask layers, default add-composited: the pattern reads
+     full-strength, and a uniform --wel-texture-base floor keeps the
+     rest of the image ghosted underneath so the treatment is a texture,
+     not an obliteration (0% = hard print). Halftone tile scales with
+     --wel-texture-size; grain tiles at its natural 300px (stitched
+     seamless). Same mask infrastructure as .edge-fade — and the same
+     contended mask-image, so never combine the two on one node: put
+     .edge-fade on a wrapper when both are wanted (a wrapper's mask
+     applies to everything inside). Engines without mask-image show the
+     plain unmasked image; forced colors keeps it (geometry, not
+     colour), matching .edge-fade. */
+  .textured {
+    --wel-texture-size: 0.5rem;
+    --wel-texture-base: 35%;
+
+    mask-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Ccircle cx='4' cy='4' r='2.2'/%3E%3Ccircle cx='0' cy='0' r='2.2'/%3E%3Ccircle cx='8' cy='0' r='2.2'/%3E%3Ccircle cx='0' cy='8' r='2.2'/%3E%3Ccircle cx='8' cy='8' r='2.2'/%3E%3C/svg%3E"),
+      linear-gradient(rgb(0 0 0 / var(--wel-texture-base)), rgb(0 0 0 / var(--wel-texture-base)));
+    mask-size: var(--wel-texture-size) var(--wel-texture-size), auto;
+  }
+
+  .textured[data-texture="grain"] {
+    mask-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='gamma' exponent='0.6'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E"),
+      linear-gradient(rgb(0 0 0 / var(--wel-texture-base)), rgb(0 0 0 / var(--wel-texture-base)));
+    mask-size: auto, auto;
+  }
 }
 
 @keyframes wel-reveal {
