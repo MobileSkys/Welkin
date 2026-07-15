@@ -9,6 +9,15 @@ say so there.
 
 ### Added
 
+- **`.view-crop` image utility (T-113)**: CSS art direction on the media
+  element — `object-view-box` crops into the source image with no extra
+  image files. Bare class is a `--wel-view-box` punch-in zoom
+  (`inset(15%)`); `data-crop="top|bottom|left|right"` keeps one half
+  (physical names by design — they point at where the subject sits in the
+  photo). Paired `object-fit: cover` keeps mismatched view/box ratios from
+  distorting. Engines without `object-view-box` drop the property at parse
+  time and show the full uncropped image.
+
 - **`.ken-burns` image utility (T-111)**: wrapper class — the media slowly
   zooms (`--wel-kenburns-zoom`, `1.15`) and pans (`--wel-kenburns-pan`,
   `-2% 1%`) over `--wel-kenburns-duration` (`12s`, linear) while hovered or
