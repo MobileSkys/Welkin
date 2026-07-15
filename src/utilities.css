@@ -254,6 +254,64 @@
       filter: var(--wel-img-dim) grayscale(0);
     }
   }
+
+  /* Ambient glow (T-115) — wrapper class (like .duotone): a halo behind the
+     media. Default is a two-layer accent-derived drop-shadow — it follows
+     the composite's silhouette, so an .organic-frame crop inside glows in
+     its clipped shape; retint the whole halo with one --wel-color-accent
+     override, or --wel-glow-color directly. The filter lives on the WRAPPER,
+     so the family's contended media filter (.dim/.color-reveal/.duotone) is
+     untouched. Engines without relative colour invalidate the shadow colour
+     and drop the halo — plain image, never broken. */
+  .glow {
+    --wel-glow-color: oklch(from var(--wel-color-accent) l c h / 55%);
+    --wel-glow-size: 1.5rem;
+
+    position: relative;
+    isolation: isolate; /* keeps the ambient pseudo's z-index: -1 inside */
+    filter:
+      drop-shadow(0 0 calc(var(--wel-glow-size) / 2) var(--wel-glow-color))
+      drop-shadow(0 0 var(--wel-glow-size) var(--wel-glow-color));
+  }
+
+  .glow :is(img, video) {
+    display: block;
+    inline-size: 100%;
+  }
+
+  /* Ambilight variant — the halo is the image's own colours: give the
+     wrapper the same source via a custom property
+     (<figure class="glow" data-glow="ambient" style="--wel-glow-image:
+     url(hero.jpg)">). The blurred cover-fit pseudo sits behind the media;
+     without --wel-glow-image it paints nothing and the element behaves
+     like a plain wrapper (never broken). */
+  .glow[data-glow="ambient"] {
+    filter: none;
+  }
+
+  .glow[data-glow="ambient"]::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--wel-glow-size) / 2);
+    z-index: -1;
+    background-image: var(--wel-glow-image, none);
+    background-size: cover;
+    background-position: center;
+    filter: blur(var(--wel-glow-size)) saturate(1.5);
+    pointer-events: none;
+  }
+
+  /* Forced colors: a decorative coloured halo has no forced-colors story —
+     drop it and show the plain media. */
+  @media (forced-colors: active) {
+    .glow {
+      filter: none;
+    }
+
+    .glow[data-glow="ambient"]::before {
+      display: none;
+    }
+  }
 }
 
 @keyframes wel-reveal {
