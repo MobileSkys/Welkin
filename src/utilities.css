@@ -218,6 +218,42 @@
       backdrop-filter: blur(var(--wel-frosted-blur)) saturate(var(--wel-frosted-saturate));
     }
   }
+
+  /* Grayscale-to-color hover reveal (T-105) — media rests desaturated and
+     saturates on hover, or on keyboard focus when wrapped in a link/button.
+     The whole effect lives inside @media (hover: hover): touch/stylus users
+     have no way to trigger the reveal, so they get the plain colour image
+     (never-a-broken-image doctrine) rather than one stuck grayscale.
+     The transition rides the --wel-motion multiplier like every duration in
+     the codebase — reduced-motion users get an instant swap, not a fade.
+     filter is the family's contended property (image-fx spec): the .dim
+     combo is stated explicitly below; .duotone media is already grayscale
+     by construction, so .color-reveal inside it is meaningless — forbidden
+     nesting, spec-documented in T-122. */
+  @media (hover: hover) {
+    .color-reveal {
+      --wel-color-reveal-rest: 1;
+
+      filter: grayscale(var(--wel-color-reveal-rest));
+      transition: filter calc(var(--wel-motion-duration-3) * var(--wel-motion)) var(--wel-motion-ease);
+    }
+
+    .color-reveal:is(:hover, :focus-visible),
+    :is(a, button, summary):is(:hover, :focus-visible) .color-reveal {
+      filter: grayscale(0);
+    }
+
+    /* .dim composes: same list shape in rest and hover states, so the
+       grayscale argument interpolates while the dim prefix holds. */
+    .color-reveal.dim {
+      filter: var(--wel-img-dim) grayscale(var(--wel-color-reveal-rest));
+    }
+
+    .color-reveal.dim:is(:hover, :focus-visible),
+    :is(a, button, summary):is(:hover, :focus-visible) .color-reveal.dim {
+      filter: var(--wel-img-dim) grayscale(0);
+    }
+  }
 }
 
 @keyframes wel-reveal {
