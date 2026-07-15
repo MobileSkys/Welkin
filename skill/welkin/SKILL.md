@@ -9,7 +9,9 @@ description: >
   "welkincss", --wel- tokens, or wel- custom elements. Covers install
   (npm/CDN/à-la-carte), layout primitives, the component catalogue,
   token-based theming, and image effect utilities (duotone, edge-fade,
-  scroll reveal, dark-mode dimming, view-transition morphs).
+  scroll reveal, dark-mode dimming, view-transition morphs, frosted
+  captions, hover colour reveal, organic/squircle frames, adaptive
+  crops, ambient glow).
 ---
 
 # Welkin — the CSS-first toolkit
@@ -129,6 +131,12 @@ by default (no feature → plain image; motion gates off under reduced motion):
 | `.edge-fade` (on media) | Gradient mask melt into the backdrop | `data-edges`, `--wel-edge-fade` |
 | `.reveal` (on media) | Scroll-driven fade/scale entry, no JS | `--wel-reveal-scale`, `--wel-reveal-distance` |
 | `data-vt-image` (VT module) | Thumb→detail morph: cover-fit, no cross-fade flash | pairs with `--wel-vt` |
+| `.frosted-caption` (wrapper) | Glass caption bar pinned to the media's bottom — THE text-on-imagery pattern | `--wel-frosted-bg`/`-blur`/`-saturate` |
+| `.color-reveal` (on media) | Grayscale until hover/focus; hover devices only | `--wel-color-reveal-rest` |
+| `.organic-frame` (on media) | blob / arch / scallop `shape()` crops, radius fallback | `data-shape` |
+| `.adaptive-crop` (on media) | Square in narrow layout containers, 21:9 band at ≥30rem | `--wel-crop-narrow`/`-wide` |
+| `.glow` (wrapper) | Accent halo; `data-glow="ambient"` = ambilight from the image itself | `--wel-glow-color`/`-size`/`-image` |
+| `.squircle` (on media) | Superellipse corners, round fallback built in | `--wel-squircle-radius` |
 
 Combination rules matter (wrapper vs media) — copy from the reference, don't
 guess.
@@ -176,7 +184,9 @@ Escape hatches when tokens genuinely aren't enough, in order:
 - [references/theming.md](references/theming.md) — token tiers, theming levels
   1–3, `light-dark()`, contrast-safe pairings, escape hatches.
 - [references/image-fx.md](references/image-fx.md) — image effect utilities
-  (.dim, .duotone, .edge-fade, .reveal, data-vt-image) + combination rules.
+  (.dim, .duotone, .edge-fade, .reveal, data-vt-image, .frosted-caption,
+  .color-reveal, .organic-frame, .adaptive-crop, .glow, .squircle) +
+  combination rules.
 - [references/gotchas.md](references/gotchas.md) — file:// CORS, layer facts,
   anti-patterns with fixes.
 - [references/recipes.md](references/recipes.md) — page scaffolds: app shell,

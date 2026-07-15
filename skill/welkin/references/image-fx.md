@@ -1,4 +1,4 @@
-# Image effects (utilities) — post-1.0.1
+# Image effects (utilities) — post-1.0.1 (waves 1–2)
 
 Token-driven image treatments from the utilities layer. Zero JS, all safe by
 default: engines without a feature show the plain image; motion effects gate
@@ -57,8 +57,8 @@ whatever is behind:
   The asymmetric `inline-*` values flip under `:dir(rtl)`.
 - `--wel-edge-fade` is the fade-band depth (default `--wel-space-8`).
 - No mask support → unfaded image; nothing to gate.
-- Don't set text over a faded region — the backdrop is unknown; use a frosted
-  caption instead (future wave).
+- Don't set text over a faded region — the backdrop is unknown; use
+  `.frosted-caption` instead.
 
 ## `.reveal` — scroll-driven entry
 
@@ -97,6 +97,111 @@ traps). Tag a `--wel-vt`-named image on both sides of a transition:
   transition.
 - Engines without `view-transition-class` keep the default morph — additive.
 
+## `.frosted-caption` — glass caption bar (THE text-on-imagery pattern)
+
+Wrapper class, canonically `<figure>` + `<figcaption>`:
+
+```html
+<figure class="frosted-caption">
+  <img src="harbour.jpg" alt="…">
+  <figcaption>Harbour at dusk</figcaption>
+</figure>
+```
+
+- Caption pins to the media's bottom edge: `backdrop-filter` glass over a 68%
+  surface scrim where supported, near-solid scrim otherwise — text always
+  readable. Goes fully opaque under `prefers-reduced-transparency`.
+- Knobs: `--wel-frosted-bg` (whole scrim colour), `--wel-frosted-blur`
+  (16px), `--wel-frosted-saturate` (1.8). Don't lower the bg opacity below
+  the default — the ink/surface contrast pairing depends on it.
+- `overflow: clip` on the wrapper: put `border-radius` on the **wrapper** and
+  media + bar crop together. Never put text directly over imagery elsewhere —
+  this utility is the sanctioned pattern.
+
+## `.color-reveal` — grayscale until hover
+
+On the media element; wrap in a link/button for keyboard parity:
+
+```html
+<a href="/work/harbour">
+  <img class="color-reveal" src="harbour.jpg" alt="Harbour case study">
+</a>
+```
+
+- Rests at `grayscale(var(--wel-color-reveal-rest))` (default 1; lower =
+  softer). Saturates on hover or `:focus-visible` (own, or a wrapping
+  a/button/summary).
+- Entire effect sits inside `@media (hover: hover)` — touch users get the
+  plain colour image. Don't re-add grayscale outside that gate.
+- Transition rides `--wel-motion` (instant under reduced motion).
+- Meaningless inside `.duotone` (already grayscale) — forbidden.
+
+## `.organic-frame` — blob / arch / scallop crops
+
+On the media element:
+
+```html
+<img class="organic-frame" src="portrait.jpg" alt="…">              <!-- blob -->
+<img class="organic-frame" data-shape="arch" src="door.jpg" alt="…">
+<img class="organic-frame" data-shape="scallop" src="stamp.jpg" alt="…">
+```
+
+- `clip-path: shape()` in pure percentages — tracks any box/aspect ratio.
+- No `shape()` support → border-radius approximations (blob/arch analogues,
+  plain rounded for scallop). Don't add your own `border-radius` on top —
+  the utility owns the corner geometry in both branches.
+- On the **media**, not a wrapper (clipping a wrapper crops captions/halos).
+
+## `.adaptive-crop` — container-driven art direction
+
+```html
+<img class="adaptive-crop" src="valley.jpg" alt="…">
+```
+
+- Square (`--wel-crop-narrow: 1`) in layout containers under 30rem; 21:9
+  band (`--wel-crop-wide`) at ≥30rem; `object-fit: cover` both ways.
+- Queries the nearest **layout primitive** (`container-name: layout`) — it
+  needs one as ancestor; without it the media keeps natural aspect (that's
+  the designed fallback, not a bug).
+- The 30rem switch is a literal (container queries can't read custom
+  properties); retune the *ratios* per place, not the breakpoint.
+
+## `.glow` — ambient halo
+
+Wrapper class:
+
+```html
+<figure class="glow">                 <!-- accent-derived drop-shadow halo -->
+  <img src="poster.jpg" alt="…">
+</figure>
+
+<figure class="glow" data-glow="ambient" style="--wel-glow-image: url(poster.jpg)">
+  <img src="poster.jpg" alt="…">      <!-- ambilight: halo = the image itself -->
+</figure>
+```
+
+- Default halo derives from the cascaded accent (`--wel-glow-color`, 55%
+  alpha); one accent override retints. `--wel-glow-size` = spread/blur.
+- Ambient variant NEEDS `--wel-glow-image` on the wrapper (same URL as the
+  img) — without it nothing paints. The pseudo sits behind the media.
+- The halo follows the composite silhouette — `.glow` around an
+  `.organic-frame`/`.squircle` media glows in the clipped shape (flagship
+  combo). Halos read best on dark surfaces.
+- Forced colors drops the halo. Filter lives on the wrapper, so it never
+  fights `.dim`/`.color-reveal` on the media.
+
+## `.squircle` — superellipse corners
+
+```html
+<img class="squircle" src="avatar.jpg" alt="…">
+```
+
+- `corner-shape: squircle` over `--wel-squircle-radius` (default 25%).
+  Fallback is automatic: no support → plain round corners at the same
+  radius. Never gate it yourself.
+- Don't combine with `.organic-frame` (two corner geometries, one wins
+  silently).
+
 ## Combining effects — which class goes where
 
 | Combination | How |
@@ -104,7 +209,14 @@ traps). Tag a `--wel-vt`-named image on both sides of a transition:
 | `.duotone` + `.dim` | `.dim` on the **media element** inside the wrapper (explicit combo rule dims the base before remapping) |
 | `.duotone` + `.edge-fade` or `.reveal` | On the **wrapper** — on the inner img they'd fade the photo out from under the overlays |
 | `.dim` + `.edge-fade` | Freely combined on the media (different properties) |
+| `.color-reveal` + `.dim` | Both on the media — explicit combo rule keeps the dim prefix while grayscale transitions |
+| `.frosted-caption` + `.duotone` | Same wrapper — caption paints above the overlays by design |
+| `.glow` + `.organic-frame`/`.squircle` | `.glow` wrapper, crop on the media — halo follows the clipped shape |
+| crops (`.organic-frame`/`.squircle`/`.adaptive-crop`) + media filters (`.dim`/`.color-reveal`) | Freely combined on the media (crop vs filter) |
 | `.duotone` in `.duotone` | Never — remapping a remap is mud |
+| `.color-reveal` in `.duotone` | Never — no colour to reveal |
+| `.organic-frame` + `.squircle` | Never — two corner geometries, one wins silently |
+| `.glow` halo + `.edge-fade` on the same media | Avoid — the shadow re-outlines the edge the mask melts |
 
 `.duotone` output is scheme-stable (accent-derived endpoints), so it doesn't
 need `.dim`.
