@@ -18,6 +18,15 @@ say so there.
 
 ### Added
 
+- **Image FX: `.glow` (T-115, wave 2)**: ambient halo behind media. Default is
+  a two-layer accent-derived drop-shadow on the wrapper (`--wel-glow-color`,
+  `--wel-glow-size`) — it follows the composite silhouette, so an
+  `.organic-frame` crop glows in its clipped shape, and one accent override
+  retints it. `data-glow="ambient"` swaps to the ambilight look: a blurred
+  cover-fit pseudo painting the image's own colours, fed zero-JS via
+  `--wel-glow-image: url(…)` on the wrapper. Wrapper-level filter keeps the
+  family's contended media `filter` untouched; forced colors drops the halo.
+
 - **Image FX: `.adaptive-crop` (T-112, wave 2)**: one class, container-driven
   art direction — square tight crop (`--wel-crop-narrow`, default `1`) in
   layout containers under 30rem, cinematic full-bleed band (`--wel-crop-wide`,
