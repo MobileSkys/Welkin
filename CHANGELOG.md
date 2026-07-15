@@ -9,6 +9,15 @@ say so there.
 
 ### Added
 
+- **`.textured` image utility (T-117)**: the image prints through an SVG
+  data-URI mask — staggered halftone dots (default, tile scales with
+  `--wel-texture-size`) or `data-texture="grain"` fractal noise (seamless
+  300px tile). A second add-composited mask layer keeps the whole image
+  ghosted at `--wel-texture-base` (`35%`) under the pattern, so the
+  treatment is a texture, not an obliteration (`0%` = hard print). Same
+  contended `mask-image` as `.edge-fade` — never combine the two on one
+  node (wrap for that). No mask support → plain unmasked image.
+
 - **`.tilt` image utility (T-114)**: subtle 3D hover tilt on the media
   element (or a whole card) — a fixed `perspective(900px)` +
   `rotateX(4deg) rotateY(-4deg) scale(1.02)` resting pose on hover or
