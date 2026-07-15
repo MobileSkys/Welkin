@@ -5,6 +5,20 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
+## Unreleased
+
+### Added
+
+- **`.parallax` image utility (T-110)**: wrapper class — the media drifts
+  along the block axis on its own `view()` timeline as the wrapper crosses
+  the viewport (zero JS, `.reveal`'s scroll-timeline conventions). The
+  wrapper clips and the media is scaled up for headroom
+  (`--wel-parallax-scale`, default `1.2`) so the drift
+  (`--wel-parallax-depth`, default `8%`) never exposes a gap. All motion
+  sits inside the `@supports (animation-timeline: view())` +
+  `prefers-reduced-motion: no-preference` gate — no-support engines and
+  reduced-motion users get a plain static image.
+
 ## 1.1.0 — 2026-07-15
 
 Image FX: eleven zero-JS, token-driven image treatments across two waves,

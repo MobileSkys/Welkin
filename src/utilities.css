@@ -452,6 +452,44 @@
     border-radius: var(--wel-squircle-radius);
     corner-shape: squircle;
   }
+
+  /* Parallax depth (T-110) — wrapper class (like .duotone): the media
+     drifts along the block axis as the wrapper crosses the viewport,
+     driven by the media's own view() timeline — zero JS, the .reveal
+     scroll-timeline conventions. The wrapper clips; the media is scaled
+     up for headroom so the drift never exposes a gap. Keep
+     --wel-parallax-scale >= 1 + 2 * --wel-parallax-depth (as a fraction:
+     the default 1.2 covers the default 8% drift with margin).
+     Everything kinetic lives inside the gate: engines without
+     scroll-driven animations — and reduced-motion users, per the docs/09
+     matrix (timeline-driven, no duration for the --wel-motion multiplier
+     to zero) — get an unscaled, motionless image; the ungated
+     overflow: clip is then a no-op. Never a broken image. */
+  .parallax {
+    position: relative;
+    overflow: clip;
+  }
+
+  .parallax :is(img, video) {
+    display: block;
+    inline-size: 100%;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .parallax {
+        --wel-parallax-depth: 8%;
+        --wel-parallax-scale: 1.2;
+      }
+
+      .parallax :is(img, video) {
+        scale: var(--wel-parallax-scale);
+        animation: wel-parallax linear both;
+        animation-timeline: view();
+        animation-range: cover;
+      }
+    }
+  }
 }
 
 @keyframes wel-reveal {
@@ -459,5 +497,16 @@
     opacity: 0;
     translate: 0 var(--wel-reveal-distance, 0px);
     scale: var(--wel-reveal-scale, 0.96);
+  }
+}
+
+/* linear: progress is scroll-linked, easing belongs to the scroll itself */
+@keyframes wel-parallax {
+  from {
+    translate: 0 var(--wel-parallax-depth, 8%);
+  }
+
+  to {
+    translate: 0 calc(-1 * var(--wel-parallax-depth, 8%));
   }
 }
