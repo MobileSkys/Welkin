@@ -15,8 +15,10 @@ dual-scheme page. Wave 1: dark-mode dimming, duotone brand tinting, edge-fade
 bleeds, scroll-driven entry, and (via the view-transitions module)
 thumb-to-detail morphs. Wave 2: frosted caption bars, grayscale-to-colour
 hover reveals, organic `shape()` frames, container-driven adaptive crops,
-ambient glow halos, and squircle corners. All zero-JS. Live demos with
-copyable markup: `examples/image-fx.html`.
+ambient glow halos, and squircle corners. Wave 3: scroll-linked parallax
+drift, Ken Burns hover pan/zoom, `object-view-box` art-direction crops,
+3D hover tilt, and halftone/grain textured prints. All zero-JS. Live demos
+with copyable markup: `examples/image-fx.html`.
 
 Shared doctrine, binding for every current and future effect in the family:
 
@@ -46,6 +48,13 @@ Shared doctrine, binding for every current and future effect in the family:
 .adaptive-crop           on the media element itself (needs a layout ancestor)
 .glow                    wrapper (owns the halo / ambient pseudo)
 .squircle                on the media element itself
+.parallax                wrapper (clips; owns nothing painted)
+└─ img | video           scaled for headroom, drifts on its own view() timeline
+.ken-burns               wrapper (clips the zoom)
+└─ img | video           slow pan/zoom on wrapper hover / focus-within
+.view-crop               on the media element itself
+.tilt                    on the media element (or a whole card)
+.textured                on the media element itself (or any element)
 ```
 
 ## HTML structure
@@ -96,6 +105,30 @@ Shared doctrine, binding for every current and future effect in the family:
 
 <!-- squircle corners -->
 <img class="squircle" src="avatar.jpg" alt="…">
+
+<!-- parallax: wrapper clips; the media drifts as the page scrolls -->
+<figure class="parallax">
+  <img src="ridge.jpg" alt="…">
+</figure>
+
+<!-- ken burns: slow pan/zoom while the card is hovered -->
+<figure class="ken-burns">
+  <a href="/story"><img src="glacier.jpg" alt="Glacier story"></a>
+</figure>
+
+<!-- view-box crops: punch-in zoom by default; data-crop keeps one half -->
+<img class="view-crop" src="crowd.jpg" alt="…">
+<img class="view-crop" data-crop="right" src="crowd.jpg" alt="…">
+<img class="view-crop" style="--wel-view-box: inset(10% 40% 30% 5%)" src="crowd.jpg" alt="…">
+
+<!-- 3d tilt: fixed pose on hover/focus; also works on a whole card -->
+<a href="/work/atrium">
+  <img class="tilt" src="atrium.jpg" alt="Atrium case study">
+</a>
+
+<!-- textured prints: halftone default, grain variant -->
+<img class="textured" src="poster.jpg" alt="…">
+<img class="textured" data-texture="grain" src="poster.jpg" alt="…">
 ```
 
 ## Variants & modifiers
@@ -106,6 +139,8 @@ Shared doctrine, binding for every current and future effect in the family:
 | `data-vt-image` | boolean | Image morph treatment — see the [view-transitions spec](view-transitions.md), which owns this attribute. |
 | `data-shape` (on `.organic-frame`) | `arch`, `scallop` | Swaps the default blob crop for an elliptical arch over straight jambs, or a stamp-like scallop loop. |
 | `data-glow` (on `.glow`) | `ambient` | Replaces the accent drop-shadow halo with a blurred cover-fit pseudo painting the image's own colours; feed it the source via `--wel-glow-image: url(…)` on the wrapper (without it, nothing paints). |
+| `data-crop` (on `.view-crop`) | `top`, `bottom`, `left`, `right` | Keeps one half of the source image. Names are **physical** by design (unlike `.edge-fade`'s logical axes): they point at where the subject sits in the photograph, which does not move with text direction. Omit for the default punch-in zoom; arbitrary crops go through `--wel-view-box`. |
+| `data-texture` (on `.textured`) | `grain` | Swaps the staggered halftone dot grid for a seamless fractal-noise film grain. |
 
 Composability rules (the family is designed to stack — but on the right node):
 
@@ -133,13 +168,34 @@ Composability rules (the family is designed to stack — but on the right node):
 - `.glow` around an `.organic-frame`/`.squircle` media: the halo follows the
   clipped silhouette — the flagship combo. Don't put `.glow`'s halo on an
   `.edge-fade`d media (the shadow re-outlines the very edge the mask melts).
+- `.parallax` and `.ken-burns` both write the media's `scale`/`translate`
+  (one scroll-driven, one hover-driven): **never share a wrapper**. `.tilt`
+  writes `transform`, which composes after the individual properties — but
+  stacking it on a `.ken-burns`/`.parallax` media is the same fight for the
+  same geometry: don't.
+- `.textured` and `.edge-fade` both write `mask-image` — the family's second
+  contended property (after the media `filter`). Never combine them on one
+  node; when both are wanted, put `.edge-fade` on a wrapper — a wrapper's
+  mask applies to everything inside it, `.textured` media included.
+- `.view-crop` is source-space geometry and composes freely with the
+  media-level filters (`.dim`, `.color-reveal`) and corner crops
+  (`.organic-frame`, `.squircle`). With `.adaptive-crop` it is coherent —
+  both resolve to `object-fit: cover`, `.adaptive-crop` picks the box ratio
+  while `.view-crop` picks the source region — but check the pairing
+  visually: two crop systems compound.
+- `.textured`, `.view-crop`, and `.tilt` go on the **media**; `.parallax`
+  and `.ken-burns` are wrappers whose media they size themselves (like
+  `.duotone`).
 
 ## States
 
 | State | Trigger selector | Visual treatment | How announced (a11y) |
 |-------|------------------|------------------|----------------------|
 | Entering viewport | `.reveal` via `animation-range: entry` | Fade/scale from the token start-state to normal | Not announced — decorative motion only; content identical at rest |
+| Crossing viewport | `.parallax` media via `animation-range: cover` | Block-axis drift from `+depth` to `−depth`, scroll-linked (linear — the easing belongs to the scroll itself) | Not announced — decorative motion only |
 | Hover / keyboard focus | `.color-reveal:is(:hover, :focus-visible)`, or `:is(a, button, summary):is(:hover, :focus-visible) .color-reveal` | Grayscale rest state saturates to full colour (`--wel-motion`-ridden transition) | Not announced — decorative; the image content is identical in both states |
+| Hover / focus within | `.ken-burns:is(:hover, :has(:focus-visible))` | Media drifts to `--wel-kenburns-zoom`/`-pan` over the seconds-scale linear duration; quick `duration-4` return on release | Not announced — decorative; framing shifts but content is identical |
+| Hover / keyboard focus | `.tilt:is(:hover, :focus-visible)`, or `:is(a, button, summary):is(:hover, :focus-visible) .tilt` | Fixed perspective pose (rotate + whisper of lift) settling on the spring ease | Not announced — decorative depth cue only |
 
 ## Tokens consumed
 
@@ -164,6 +220,17 @@ Composability rules (the family is designed to stack — but on the right node):
 | `--wel-glow-size` | `1.5rem` | — | Halo spread; also the ambient variant's blur radius and pseudo outset. |
 | `--wel-glow-image` | *unset* | — | Ambient variant's image source (`url(…)`), set inline on the wrapper. Unset → the pseudo paints nothing. **Absolute or root-relative URLs only**: engines disagree on the base for a relative `url()` inside a custom property (Chromium resolves it against the stylesheet that substitutes it — i.e. `welkin.css` — and silently 404s). From a relative-path page, feed the pseudo directly in author CSS instead: `.hero-glow::before { background-image: url(img/poster.jpg) }`. |
 | `--wel-squircle-radius` | `25%` | — | Corner radius the squircle (or the round fallback) is drawn at. |
+| `--wel-parallax-depth` | `8%` | — | `.parallax` drift amplitude (block-axis translate of the media's own box, `+depth → −depth` across the cover range). |
+| `--wel-parallax-scale` | `1.2` | — | `.parallax` media headroom. Keep `>= 1 + 2 × depth` (as a fraction) or the drift exposes the wrapper behind the media. |
+| `--wel-kenburns-zoom` | `1.15` | — | `.ken-burns` hover scale target. |
+| `--wel-kenburns-pan` | `-2% 1%` | — | `.ken-burns` hover translate pair. Stay inside the zoom's `(zoom − 1) / 2` per-side overflow (7.5% at defaults) or the pan exposes the wrapper. |
+| `--wel-kenburns-duration` | `12s` | — | The drift's linear transition duration (rides `--wel-motion`). The return leg is a fixed quick `duration-4`. |
+| `--wel-view-box` | `inset(15%)` | — | `.view-crop` source-space crop (`inset()`/`xywh()`); the `data-crop` presets just override this token. |
+| `--wel-tilt-x` / `--wel-tilt-y` | `4deg` / `-4deg` | — | `.tilt` pose rotations. |
+| `--wel-tilt-perspective` | `900px` | — | `.tilt` perspective depth (smaller = more dramatic). |
+| `--wel-tilt-lift` | `1.02` | — | `.tilt` hover scale whisper. |
+| `--wel-texture-size` | `0.5rem` | — | `.textured` halftone tile size (grain tiles at its natural seamless 300px regardless). |
+| `--wel-texture-base` | `35%` | — | `.textured` ghost floor — the whole image stays visible at this alpha under the pattern; `0%` is the hard print. |
 
 ## Behaviour tiers
 
@@ -175,7 +242,10 @@ wiring behind `--wel-img-dim` is Core. So are wave 2's foundations:
 `.color-reveal`'s filter transition (`@media (hover: hover)` is a capability
 gate, not a support gate), `.adaptive-crop`'s container queries (the
 architecture spine), `.glow`'s `drop-shadow`, and `.frosted-caption`'s
-near-solid `color-mix` fallback scrim.
+near-solid `color-mix` fallback scrim. Wave 3's `.ken-burns` and `.tilt`
+mechanics (transitions on `scale`/`translate`/`transform`) are likewise
+long-Baseline — their `hover`/`prefers-reduced-motion` wrappers are
+capability/preference gates, not support gates.
 
 ### Enhanced (Baseline Newly Available)
 
@@ -184,6 +254,9 @@ near-solid `color-mix` fallback scrim.
 | Relative colour syntax (`oklch(from …)`) | None — the failure mode is already additive | `.duotone` endpoints derive from the cascaded accent | Engines without it invalidate the overlay `background-color` at computed-value time: overlays render transparent and the image shows **desaturated only** — readable, on-doctrine (docs/03 row) |
 | `mask-image` / `mask-composite` | None — additive by nature | `.edge-fade` gradient melts | Unfaded image (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | `@supports (animation-timeline: view())` **around the hidden start state** | `.reveal` entry animation | The gate is load-bearing: outside it no `opacity: 0` exists, so no-support engines (and reduced-motion users, whose gate nests inside) always see the image — never a stuck blank (docs/03 row) |
+| Scroll-driven animations (`animation-timeline: view()`) | Same gate, **around the headroom scale and the animation together** | `.parallax` drift | Outside the gate the media is unscaled and motionless — a plain image in a wrapper whose `overflow: clip` is a no-op (docs/03 row) |
+| `object-view-box` | None — unknown property drops at parse time | `.view-crop` in-source art direction | Full uncropped image; the paired ungated `object-fit: cover` is a no-op at natural ratio (docs/03 row) |
+| `mask-image` (multi-layer + `add` compositing) | None — additive by nature | `.textured` halftone/grain prints | Plain unmasked image, same contract as `.edge-fade` (docs/03 row) |
 | `view-transition-class` (Level 2) | None — unknown selector/property drop additively | `data-vt-image` morph treatment | Default VT morph (stretch + cross-fade); owned by the [view-transitions spec](view-transitions.md) |
 | `backdrop-filter` | `@supports (backdrop-filter: blur(1px))` around the glass branch | `.frosted-caption` blur+saturate glass over a 68% scrim | Ungated near-solid (92% surface) scrim — caption text readable over any image, just no glass (docs/03 row) |
 | `clip-path: shape()` | `@supports (clip-path: shape(…))` | `.organic-frame` blob/arch/scallop crops | Ungated `border-radius` analogues: blob and arch keep honest approximations, scallop falls back to a plain rounded crop; the fallback radius is zeroed inside the gate so the clips never intersect (docs/03 row) |
@@ -211,24 +284,30 @@ shipped JS.
   pseudo are `pointer-events: none` and cannot intercept interaction.
   `.color-reveal` reveals on `:focus-visible` (own or a wrapping
   link/button/summary), so keyboard users get exactly what hover users get.
-- **Hover capability:** `.color-reveal` lives entirely inside
-  `@media (hover: hover)` — touch/stylus users see the plain colour image,
-  never one stuck grayscale with no way to reveal it.
+- **Hover capability:** `.color-reveal`, `.ken-burns`, and `.tilt` live
+  entirely inside `@media (hover: hover)` — touch/stylus users see the plain
+  image, never a state they have no way to trigger or release.
 - **Forced colors:** `.duotone` drops its overlays and desaturation and shows
   the original image (forced backgrounds would otherwise paint opaque slabs
-  over it); `--wel-img-dim` resets to identity. `.edge-fade` keeps its mask
-  (geometry, not colour); `.reveal` is motion-only. `.glow` drops both halo
+  over it); `--wel-img-dim` resets to identity. `.edge-fade` and `.textured`
+  keep their masks (geometry, not colour); `.reveal`, `.parallax`,
+  `.ken-burns`, and `.tilt` are motion-only. `.glow` drops both halo
   forms (a decorative coloured halo has no forced-colors story). The
   `.frosted-caption` bar needs no rule — its background is forced to an
   opaque system colour, which is the readable outcome. Crops
-  (`.organic-frame`, `.squircle`, `.adaptive-crop`) are geometry and keep.
-- **Reduced motion:** `.reveal` sits inside
+  (`.organic-frame`, `.squircle`, `.adaptive-crop`, `.view-crop`) are
+  geometry and keep.
+- **Reduced motion:** `.reveal` and `.parallax` sit inside
   `@media (prefers-reduced-motion: no-preference)` — gated **off**, per the
   docs/09 matrix (a timeline animation has no duration for `--wel-motion` to
   zero). `data-vt-image` inherits the view-transitions module's identical
-  gate. `.color-reveal`'s transition rides the `--wel-motion` multiplier —
-  reduced-motion users get an instant swap, and the state change itself is
-  non-vestibular (opacity/filter only). Everything else is static.
+  gate. `.ken-burns` and `.tilt` gate off wholesale too: a slow pan/zoom or
+  rotation has no non-vestibular reduced equivalent — zeroing their
+  durations would snap-crop or jump, not calm — so under the preference the
+  media simply never moves. `.color-reveal`'s transition rides the
+  `--wel-motion` multiplier — reduced-motion users get an instant swap, and
+  the state change itself is non-vestibular (opacity/filter only).
+  Everything else is static.
 - **Reduced transparency:** the `.frosted-caption` bar falls back to a fully
   opaque `--wel-color-surface` scrim (no blur) under
   `prefers-reduced-transparency: reduce`, per the docs/09 matrix.
@@ -255,15 +334,18 @@ container width.
 
 ## Composition
 
-- `.duotone`, `.frosted-caption`, and `.glow` force their media to
-  `display: block; inline-size: 100%` — overlays/captions/halos cover the
-  wrapper, and any uncovered backdrop breaks the effect. Size the wrapper,
-  not the image.
+- `.duotone`, `.frosted-caption`, `.glow`, `.parallax`, and `.ken-burns`
+  force their media to `display: block; inline-size: 100%` —
+  overlays/captions/halos/clipped drifts cover the wrapper, and any
+  uncovered backdrop breaks the effect. Size the wrapper, not the image.
 - The media `filter` is the contended property: `.duotone` (grayscale),
   `.dim`, and `.color-reveal` all write it, resolved by the explicit combo
   rules (see Variants). A future filter-based effect must join those rules
   rather than add another competing declaration. `.glow` deliberately puts
-  its filter on the **wrapper** to stay out of this contention.
+  its filter on the **wrapper** to stay out of this contention. Wave 3 adds
+  two more contended surfaces: `mask-image` (`.edge-fade` vs `.textured`)
+  and the media's `scale`/`translate`/`transform` (`.parallax`,
+  `.ken-burns`, `.tilt`) — see Variants for the resolution rules.
 - `.frosted-caption` uses `overflow: clip`, so a `border-radius` on the
   wrapper crops media and caption together — round the wrapper, not the
   media.
@@ -278,7 +360,13 @@ container width.
 Forbidden nestings: `.duotone` inside `.duotone` (the outer overlays remap the
 inner's already-mapped output; the result is mud, not an error);
 `.color-reveal` inside `.duotone` (no colour to reveal); `.organic-frame` +
-`.squircle` on one element (two corner geometries, one wins silently).
+`.squircle` on one element (two corner geometries, one wins silently);
+`.parallax` + `.ken-burns` on one wrapper and `.tilt` on either's media
+(three writers of the same media geometry); `.textured` + `.edge-fade` on
+one node (both write `mask-image` — the later declaration silently replaces
+the earlier; wrap to combine). `.reveal` on a `.parallax` media is the same
+`animation` slot twice — put `.reveal` on the wrapper if entry fade and
+drift are both wanted.
 
 ## References
 
