@@ -173,6 +173,51 @@
       }
     }
   }
+
+  /* Frosted caption bar (T-104) — wrapper (canonically a <figure>) whose
+     <figcaption> pins to the media's block-end edge as a translucent
+     surface bar, backdrop-blurred where supported. This is the family's
+     sanctioned text-on-imagery pattern (image-fx spec): the bar is the
+     ink/surface pairing over a surface-colour scrim, so text never sits on
+     raw photography. overflow: clip means a border-radius on the wrapper
+     crops media and caption together — round the wrapper, not the media. */
+  .frosted-caption {
+    --wel-frosted-blur: 16px;
+    --wel-frosted-saturate: 1.8;
+    --wel-frosted-bg: color-mix(in oklch, var(--wel-color-surface) 68%, transparent);
+
+    position: relative;
+    overflow: clip;
+  }
+
+  .frosted-caption :is(img, video) {
+    display: block;
+    inline-size: 100%; /* the caption spans the wrapper — media must fill it */
+  }
+
+  /* No-backdrop-filter engines skip the @supports block below and keep this
+     near-solid scrim: text stays readable over any image (never-a-broken-
+     image doctrine) at the cost of the glass look. Forced colors needs no
+     rule — background-color is forced to an opaque system colour there. */
+  .frosted-caption > figcaption {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    /* above a composed .duotone's z-index:1 blend overlays (probe D-12) —
+       at z-auto the caption would paint under them and get gradient-mapped */
+    z-index: 2;
+    padding: var(--wel-space-2) var(--wel-space-4);
+    font-size: var(--wel-text-size--1);
+    color: var(--wel-color-ink);
+    background-color: color-mix(in oklch, var(--wel-color-surface) 92%, transparent);
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .frosted-caption > figcaption {
+      background-color: var(--wel-frosted-bg);
+      backdrop-filter: blur(var(--wel-frosted-blur)) saturate(var(--wel-frosted-saturate));
+    }
+  }
 }
 
 @keyframes wel-reveal {
