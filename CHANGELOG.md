@@ -5,7 +5,12 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
-## Unreleased
+## 1.2.0 — 2026-07-15
+
+Image FX wave 3: five zero-JS, token-driven image treatments (scroll-linked
+parallax, Ken Burns hover pan/zoom, in-source art-direction crops, 3D hover
+tilt, halftone/grain textured prints), with spec/doctrine coverage, live
+showcase demos, and consumer-skill sync.
 
 ### Added
 
