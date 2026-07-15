@@ -5,7 +5,10 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
-## Unreleased
+## 1.1.0 — 2026-07-15
+
+Image FX: eleven zero-JS, token-driven image treatments across two waves,
+with spec/doctrine coverage, live showcase demos, and consumer-skill sync.
 
 ### Changed
 
