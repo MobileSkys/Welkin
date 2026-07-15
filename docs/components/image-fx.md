@@ -11,10 +11,12 @@
 
 Token-driven image treatments from the **utilities layer** — not a widget but a
 family of single-purpose classes that make photography sit well in a themed,
-dual-scheme page: dark-mode dimming, duotone brand tinting, edge-fade bleeds,
-scroll-driven entry, and (via the view-transitions module) thumb-to-detail
-morphs. All zero-JS. Wave 1 of the image-FX plan; live demos with copyable
-markup: `examples/image-fx.html`.
+dual-scheme page. Wave 1: dark-mode dimming, duotone brand tinting, edge-fade
+bleeds, scroll-driven entry, and (via the view-transitions module)
+thumb-to-detail morphs. Wave 2: frosted caption bars, grayscale-to-colour
+hover reveals, organic `shape()` frames, container-driven adaptive crops,
+ambient glow halos, and squircle corners. All zero-JS. Live demos with
+copyable markup: `examples/image-fx.html`.
 
 Shared doctrine, binding for every current and future effect in the family:
 
@@ -36,6 +38,14 @@ Shared doctrine, binding for every current and future effect in the family:
 .edge-fade               on the media element itself (or any element)
 .reveal                  on the media element itself (or any element)
 [data-vt-image]          on a --wel-vt-named image, both sides of a morph
+.frosted-caption         wrapper (canonically <figure>)
+├─ img | video           forced to fill the wrapper's inline size
+└─ figcaption            pinned block-end, glass scrim bar
+.color-reveal            on the media element (or on it inside a link/button)
+.organic-frame           on the media element itself
+.adaptive-crop           on the media element itself (needs a layout ancestor)
+.glow                    wrapper (owns the halo / ambient pseudo)
+.squircle                on the media element itself
 ```
 
 ## HTML structure
@@ -57,6 +67,35 @@ Shared doctrine, binding for every current and future effect in the family:
 
 <!-- view-transition image morph (requires the opt-in VT module) -->
 <img data-vt-image style="--wel-vt: hero" src="thumb.jpg" alt="…">
+
+<!-- frosted caption: the sanctioned text-on-imagery pattern -->
+<figure class="frosted-caption">
+  <img src="harbour.jpg" alt="…">
+  <figcaption>Harbour at dusk</figcaption>
+</figure>
+
+<!-- grayscale-to-colour hover reveal (hover devices only) -->
+<a href="/work/harbour">
+  <img class="color-reveal" src="harbour.jpg" alt="Harbour case study">
+</a>
+
+<!-- organic frames: blob default; arch and scallop via data-shape -->
+<img class="organic-frame" src="portrait.jpg" alt="…">
+<img class="organic-frame" data-shape="arch" src="door.jpg" alt="…">
+
+<!-- adaptive crop: square in narrow layout containers, 21:9 band in wide -->
+<img class="adaptive-crop" src="valley.jpg" alt="…">
+
+<!-- ambient glow: accent halo; ambilight variant feeds the image back in -->
+<figure class="glow">
+  <img src="poster.jpg" alt="…">
+</figure>
+<figure class="glow" data-glow="ambient" style="--wel-glow-image: url(poster.jpg)">
+  <img src="poster.jpg" alt="…">
+</figure>
+
+<!-- squircle corners -->
+<img class="squircle" src="avatar.jpg" alt="…">
 ```
 
 ## Variants & modifiers
@@ -65,6 +104,8 @@ Shared doctrine, binding for every current and future effect in the family:
 |-----------|--------|--------|
 | `data-edges` (on `.edge-fade`) | `block`, `inline`, `block-start`, `block-end`, `inline-start`, `inline-end`, `radial` | Narrows the fade to one axis/edge, or an elliptical vignette. Omit for all four edges. The asymmetric `inline-*` values flip under `:dir(rtl)`. |
 | `data-vt-image` | boolean | Image morph treatment — see the [view-transitions spec](view-transitions.md), which owns this attribute. |
+| `data-shape` (on `.organic-frame`) | `arch`, `scallop` | Swaps the default blob crop for an elliptical arch over straight jambs, or a stamp-like scallop loop. |
+| `data-glow` (on `.glow`) | `ambient` | Replaces the accent drop-shadow halo with a blurred cover-fit pseudo painting the image's own colours; feed it the source via `--wel-glow-image: url(…)` on the wrapper (without it, nothing paints). |
 
 Composability rules (the family is designed to stack — but on the right node):
 
@@ -78,12 +119,27 @@ Composability rules (the family is designed to stack — but on the right node):
 - `.dim` + `.edge-fade`: freely combined on the media (different properties).
 - `.duotone` media is scheme-stable by construction (accent-derived endpoints
   at fixed lightnesses), so it does not need `.dim`.
+- `.color-reveal` + `.dim`: explicit combo rule (both write the media
+  `filter`); the dim prefix holds while the grayscale argument transitions.
+- `.color-reveal` inside `.duotone`: **forbidden** — duotone media is
+  grayscale by construction, so there is no colour to reveal.
+- `.frosted-caption` + `.duotone` on the same wrapper: supported — the caption
+  carries `z-index: 2` and paints above the blend overlays (D-12 rule).
+- `.organic-frame` / `.squircle` / `.adaptive-crop` go on the **media**, and
+  compose freely with the media-level filters (`.dim`, `.color-reveal`) —
+  crop and filter are different properties. `.organic-frame` + `.squircle`
+  on one element is meaningless (both draw the corner geometry; shape() wins
+  where supported).
+- `.glow` around an `.organic-frame`/`.squircle` media: the halo follows the
+  clipped silhouette — the flagship combo. Don't put `.glow`'s halo on an
+  `.edge-fade`d media (the shadow re-outlines the very edge the mask melts).
 
 ## States
 
 | State | Trigger selector | Visual treatment | How announced (a11y) |
 |-------|------------------|------------------|----------------------|
 | Entering viewport | `.reveal` via `animation-range: entry` | Fade/scale from the token start-state to normal | Not announced — decorative motion only; content identical at rest |
+| Hover / keyboard focus | `.color-reveal:is(:hover, :focus-visible)`, or `:is(a, button, summary):is(:hover, :focus-visible) .color-reveal` | Grayscale rest state saturates to full colour (`--wel-motion`-ridden transition) | Not announced — decorative; the image content is identical in both states |
 
 ## Tokens consumed
 
@@ -98,6 +154,16 @@ Composability rules (the family is designed to stack — but on the right node):
 | `--wel-edge-fade` | `--wel-space-8` | — | Depth of the fade band. |
 | `--wel-reveal-scale` | `0.96` | — | `.reveal` start scale. |
 | `--wel-reveal-distance` | `0px` | — | `.reveal` start block-axis offset; positive rises into place. |
+| `--wel-frosted-bg` | `color-mix(in oklch, --wel-color-surface 68%, transparent)` | — | Caption bar scrim when `backdrop-filter` is available. The no-blur fallback scrim (92% surface) is internal — near-solid so text stays readable without the glass. |
+| `--wel-frosted-blur` | `16px` | — | Backdrop blur radius. |
+| `--wel-frosted-saturate` | `1.8` | — | Backdrop saturation boost (the "glass" pop). |
+| `--wel-color-reveal-rest` | `1` | — | `.color-reveal` rest grayscale amount; lower for a softer rest state. |
+| `--wel-crop-narrow` | `1` | — | `.adaptive-crop` aspect ratio in layout containers `< 30rem`. |
+| `--wel-crop-wide` | `21 / 9` | — | `.adaptive-crop` aspect ratio at `>= 30rem`. The query widths themselves are literals — container query conditions cannot read custom properties. |
+| `--wel-glow-color` | `oklch(from --wel-color-accent l c h / 55%)` | — | Halo colour; re-derives from the cascaded accent (docs/05 derivation pattern). |
+| `--wel-glow-size` | `1.5rem` | — | Halo spread; also the ambient variant's blur radius and pseudo outset. |
+| `--wel-glow-image` | *unset* | — | Ambient variant's image source (`url(…)`), set inline on the wrapper. Unset → the pseudo paints nothing. |
+| `--wel-squircle-radius` | `25%` | — | Corner radius the squircle (or the round fallback) is drawn at. |
 
 ## Behaviour tiers
 
@@ -105,7 +171,11 @@ Composability rules (the family is designed to stack — but on the right node):
 
 `.dim` and `.duotone`'s blend/filter mechanics (`filter`, `mix-blend-mode`,
 `isolation`) are long-Baseline and ship ungated. The `prefers-color-scheme`
-wiring behind `--wel-img-dim` is Core.
+wiring behind `--wel-img-dim` is Core. So are wave 2's foundations:
+`.color-reveal`'s filter transition (`@media (hover: hover)` is a capability
+gate, not a support gate), `.adaptive-crop`'s container queries (the
+architecture spine), `.glow`'s `drop-shadow`, and `.frosted-caption`'s
+near-solid `color-mix` fallback scrim.
 
 ### Enhanced (Baseline Newly Available)
 
@@ -115,6 +185,9 @@ wiring behind `--wel-img-dim` is Core.
 | `mask-image` / `mask-composite` | None — additive by nature | `.edge-fade` gradient melts | Unfaded image (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | `@supports (animation-timeline: view())` **around the hidden start state** | `.reveal` entry animation | The gate is load-bearing: outside it no `opacity: 0` exists, so no-support engines (and reduced-motion users, whose gate nests inside) always see the image — never a stuck blank (docs/03 row) |
 | `view-transition-class` (Level 2) | None — unknown selector/property drop additively | `data-vt-image` morph treatment | Default VT morph (stretch + cross-fade); owned by the [view-transitions spec](view-transitions.md) |
+| `backdrop-filter` | `@supports (backdrop-filter: blur(1px))` around the glass branch | `.frosted-caption` blur+saturate glass over a 68% scrim | Ungated near-solid (92% surface) scrim — caption text readable over any image, just no glass (docs/03 row) |
+| `clip-path: shape()` | `@supports (clip-path: shape(…))` | `.organic-frame` blob/arch/scallop crops | Ungated `border-radius` analogues: blob and arch keep honest approximations, scallop falls back to a plain rounded crop; the fallback radius is zeroed inside the gate so the clips never intersect (docs/03 row) |
+| `corner-shape: squircle` | None — `corner-shape` only reshapes how `border-radius` corners draw, so its absence is inherently additive | `.squircle` superellipse corners | Plain round corners at the same `--wel-squircle-radius` (docs/03 row) |
 
 ### JS enhancement
 
@@ -134,40 +207,66 @@ shipped JS.
 |-----|--------|
 | — | No interaction surface |
 
-- **Focus behaviour:** unaffected. `.duotone` overlays are
-  `pointer-events: none` and cannot intercept interaction.
+- **Focus behaviour:** unaffected. `.duotone` overlays and the `.glow` ambient
+  pseudo are `pointer-events: none` and cannot intercept interaction.
+  `.color-reveal` reveals on `:focus-visible` (own or a wrapping
+  link/button/summary), so keyboard users get exactly what hover users get.
+- **Hover capability:** `.color-reveal` lives entirely inside
+  `@media (hover: hover)` — touch/stylus users see the plain colour image,
+  never one stuck grayscale with no way to reveal it.
 - **Forced colors:** `.duotone` drops its overlays and desaturation and shows
   the original image (forced backgrounds would otherwise paint opaque slabs
   over it); `--wel-img-dim` resets to identity. `.edge-fade` keeps its mask
-  (geometry, not colour); `.reveal` is motion-only.
+  (geometry, not colour); `.reveal` is motion-only. `.glow` drops both halo
+  forms (a decorative coloured halo has no forced-colors story). The
+  `.frosted-caption` bar needs no rule — its background is forced to an
+  opaque system colour, which is the readable outcome. Crops
+  (`.organic-frame`, `.squircle`, `.adaptive-crop`) are geometry and keep.
 - **Reduced motion:** `.reveal` sits inside
   `@media (prefers-reduced-motion: no-preference)` — gated **off**, per the
   docs/09 matrix (a timeline animation has no duration for `--wel-motion` to
   zero). `data-vt-image` inherits the view-transitions module's identical
-  gate. `.dim`, `.duotone`, `.edge-fade` are static.
+  gate. `.color-reveal`'s transition rides the `--wel-motion` multiplier —
+  reduced-motion users get an instant swap, and the state change itself is
+  non-vestibular (opacity/filter only). Everything else is static.
+- **Reduced transparency:** the `.frosted-caption` bar falls back to a fully
+  opaque `--wel-color-surface` scrim (no blur) under
+  `prefers-reduced-transparency: reduce`, per the docs/09 matrix.
 - **Contrast:** decorative image treatments carry no text-contrast pairings.
-  Do not set text over an `.edge-fade`d region that fades into an
-  unknown backdrop; use the frosted caption pattern (wave 2) for text on
-  imagery.
+  Do not set text over an `.edge-fade`d region that fades into an unknown
+  backdrop; `.frosted-caption` is the family's sanctioned text-on-imagery
+  pattern — its bar is the ink/surface pairing over a surface-colour scrim,
+  near-solid whenever blur can't guarantee separation. Keep
+  `--wel-frosted-bg` at or above its default opacity if you override it.
 - **WCAG 2.2 criteria specifically implicated:** 2.3.3 Animation from
-  Interactions (AAA) — satisfied by the reduced-motion gates; 1.4.11 —
-  not implicated (no UI components rendered).
+  Interactions (AAA) — satisfied by the reduced-motion gates; 1.4.13 — not
+  triggered (`.color-reveal` reveals no *content* on hover, the image is
+  identical); 1.4.11 — not implicated (no UI components rendered).
 
 ## Container behaviour
 
-Not container-responsive in wave 1 (container-query treatments are a wave-2
-item). All effects are geometry-relative (`%`-based masks, own-element view
-timelines) so they hold at any container width.
+`.adaptive-crop` is the family's container-responsive member: it queries the
+nearest layout primitive (`container-name: layout`, like every
+container-aware component) and switches crop at the card spec's established
+30rem width. With no layout ancestor neither branch matches and the media
+keeps its natural aspect. Everything else is geometry-relative (`%`-based
+masks and `shape()` paths, own-element view timelines) and holds at any
+container width.
 
 ## Composition
 
-- `.duotone` forces its media to `display: block; inline-size: 100%` — the
-  overlays cover the wrapper, and any uncovered backdrop would blend into a
-  solid colour slab. Size the wrapper, not the image.
-- The media `filter` is the contended property: `.duotone` (grayscale) and
-  `.dim` both write it, resolved by the explicit combo rule (see Variants).
-  A future filter-based effect must join that rule rather than add a third
-  competing declaration.
+- `.duotone`, `.frosted-caption`, and `.glow` force their media to
+  `display: block; inline-size: 100%` — overlays/captions/halos cover the
+  wrapper, and any uncovered backdrop breaks the effect. Size the wrapper,
+  not the image.
+- The media `filter` is the contended property: `.duotone` (grayscale),
+  `.dim`, and `.color-reveal` all write it, resolved by the explicit combo
+  rules (see Variants). A future filter-based effect must join those rules
+  rather than add another competing declaration. `.glow` deliberately puts
+  its filter on the **wrapper** to stay out of this contention.
+- `.frosted-caption` uses `overflow: clip`, so a `border-radius` on the
+  wrapper crops media and caption together — round the wrapper, not the
+  media.
 - Overlay stacking (probe D-12): a `filter`ed image is a stacking context
   painted at the z-0 level in tree order — pseudo-element overlays over
   filtered media need `z-index: 1` or they silently paint underneath. This
@@ -177,7 +276,9 @@ timelines) so they hold at any container width.
   don't put `.reveal` in fixed chrome.
 
 Forbidden nestings: `.duotone` inside `.duotone` (the outer overlays remap the
-inner's already-mapped output; the result is mud, not an error).
+inner's already-mapped output; the result is mud, not an error);
+`.color-reveal` inside `.duotone` (no colour to reveal); `.organic-frame` +
+`.squircle` on one element (two corner geometries, one wins silently).
 
 ## References
 
