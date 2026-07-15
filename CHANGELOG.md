@@ -18,6 +18,14 @@ say so there.
 
 ### Added
 
+- **Consumer skill: image FX wave 2 (T-125)**: `skill/welkin`'s
+  `references/image-fx.md` gains the six wave-2 utilities (markup, knobs,
+  per-utility traps) and an expanded combination table with the new
+  forbidden pairs; SKILL.md's effects table, reference index, and trigger
+  description list them. Live copy at `~/.claude/skills/welkin` re-synced
+  and hash-verified identical (dual-copy rule; a stale CRLF-only drift in
+  the live gotchas.md was normalised in passing).
+
 - **Image FX page: wave-2 demos** (docs site, T-124): `examples/image-fx.html`
   gains live sections with copyable markup for all six wave-2 utilities —
   `.frosted-caption` (incl. the rounded-wrapper crop), `.color-reveal`
