@@ -18,6 +18,14 @@ say so there.
 
 ### Added
 
+- **Image FX: `.organic-frame` (T-107, wave 2)**: blob (default), `data-shape`
+  `arch` and `scallop` image crops via `clip-path: shape()`, applied to the
+  media element directly. All coordinates are percentages, so crops track any
+  box and aspect ratio. Engines without `shape()` keep ungated `border-radius`
+  approximations (blob/arch have honest radius analogues; scallop falls back
+  to a plain rounded crop) — never a broken image; the fallback radius is
+  zeroed inside the `@supports` gate so the clips don't intersect.
+
 - **Image FX: `.color-reveal` (T-105, wave 2)**: media rests desaturated
   (`--wel-color-reveal-rest`, default full grayscale) and saturates on hover —
   or on keyboard `:focus-visible` when wrapped in a link/button/summary. The

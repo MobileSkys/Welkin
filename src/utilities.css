@@ -254,6 +254,93 @@
       filter: var(--wel-img-dim) grayscale(0);
     }
   }
+
+  /* Organic frames (T-107) — blob (default) / arch / scallop crops via
+     clip-path: shape(), applied to the media element directly (like
+     .edge-fade; clipping a wrapper would crop captions/overlays too).
+     Every coordinate is a percentage, so the crop scales with any box and
+     aspect ratio (responsive-safe). Engines without shape() keep the
+     ungated border-radius approximations below — blob and arch have honest
+     radius analogues, scallop falls back to a plain rounded crop; never a
+     broken image. Inside the gate the fallback radius is zeroed so the two
+     clips don't intersect at the corners. */
+  .organic-frame {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* blob analogue */
+  }
+
+  .organic-frame[data-shape="arch"] {
+    border-radius: 50% 50% 0 0 / 45% 45% 0 0;
+  }
+
+  .organic-frame[data-shape="scallop"] {
+    border-radius: var(--wel-radius-lg);
+  }
+
+  @supports (clip-path: shape(from 0% 0%, line to 100% 100%)) {
+    .organic-frame,
+    .organic-frame[data-shape="arch"],
+    .organic-frame[data-shape="scallop"] {
+      border-radius: 0;
+    }
+
+    /* five-anchor cubic loop; lobes stay off the corners */
+    .organic-frame {
+      clip-path: shape(
+        from 55% 3%,
+        curve to 96% 32% with 78% 10% / 95% 12%,
+        curve to 87% 82% with 98% 52% / 99% 68%,
+        curve to 35% 97% with 72% 99% / 55% 104%,
+        curve to 4% 56% with 16% 92% / -2% 78%,
+        curve to 55% 3% with 8% 28% / 32% -4%,
+        close
+      );
+    }
+
+    /* elliptical arch: quadrant cubics (k = 0.552) over straight jambs */
+    .organic-frame[data-shape="arch"] {
+      clip-path: shape(
+        from 0% 100%,
+        line to 0% 40%,
+        curve to 50% 0% with 0% 17.9% / 22.4% 0%,
+        curve to 100% 40% with 77.6% 0% / 100% 17.9%,
+        line to 100% 100%,
+        close
+      );
+    }
+
+    /* a 6%-inset loop with six quadratic bumps per edge (peaks reach ~1%
+       from the box edge); corner points stay sharp */
+    .organic-frame[data-shape="scallop"] {
+      clip-path: shape(
+        from 6% 6%,
+        curve to 20.67% 6% with 13.33% -4%,
+        curve to 35.33% 6% with 28% -4%,
+        curve to 50% 6% with 42.67% -4%,
+        curve to 64.67% 6% with 57.33% -4%,
+        curve to 79.33% 6% with 72% -4%,
+        curve to 94% 6% with 86.67% -4%,
+        curve to 94% 20.67% with 104% 13.33%,
+        curve to 94% 35.33% with 104% 28%,
+        curve to 94% 50% with 104% 42.67%,
+        curve to 94% 64.67% with 104% 57.33%,
+        curve to 94% 79.33% with 104% 72%,
+        curve to 94% 94% with 104% 86.67%,
+        curve to 79.33% 94% with 86.67% 104%,
+        curve to 64.67% 94% with 72% 104%,
+        curve to 50% 94% with 57.33% 104%,
+        curve to 35.33% 94% with 42.67% 104%,
+        curve to 20.67% 94% with 28% 104%,
+        curve to 6% 94% with 13.33% 104%,
+        curve to 6% 79.33% with -4% 86.67%,
+        curve to 6% 64.67% with -4% 72%,
+        curve to 6% 50% with -4% 57.33%,
+        curve to 6% 35.33% with -4% 42.67%,
+        curve to 6% 20.67% with -4% 28%,
+        curve to 6% 6% with -4% 13.33%,
+        close
+      );
+    }
+  }
 }
 
 @keyframes wel-reveal {
