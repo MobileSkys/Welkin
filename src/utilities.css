@@ -532,6 +532,41 @@
       }
     }
   }
+
+  /* View-box crop (T-113) — CSS art direction on the media element: crop
+     into the *source image* with object-view-box, no extra image files.
+     Bare class is a punch-in zoom (inset all round); data-crop keeps one
+     half — names are PHYSICAL on purpose, unlike .edge-fade's logical
+     axes: they point at where the subject sits in the photograph, which
+     does not move with text direction. Arbitrary crops go through the
+     token (--wel-view-box: inset(t r b l) / xywh(…)). object-fit: cover
+     pairs with it so a view box whose ratio differs from the element's
+     covers rather than distorts. Fallback is built in (AC-260): engines
+     without object-view-box drop the unknown property at parse time and
+     the ungated cover is a no-op at the image's natural ratio — the
+     full, uncropped image, never a broken one. */
+  .view-crop {
+    --wel-view-box: inset(15%);
+
+    object-view-box: var(--wel-view-box);
+    object-fit: cover;
+  }
+
+  .view-crop[data-crop="top"] {
+    --wel-view-box: inset(0% 0% 50% 0%);
+  }
+
+  .view-crop[data-crop="bottom"] {
+    --wel-view-box: inset(50% 0% 0% 0%);
+  }
+
+  .view-crop[data-crop="left"] {
+    --wel-view-box: inset(0% 50% 0% 0%);
+  }
+
+  .view-crop[data-crop="right"] {
+    --wel-view-box: inset(0% 0% 0% 50%);
+  }
 }
 
 @keyframes wel-reveal {
