@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Image effects · Welkin</title>
 <!-- Run `npm run build` first; this page loads the built bundle. The image-FX
-     page of the docs site (T-120): every wave-1 utility live, each with its
-     copyable markup. gen-site copies it verbatim into site/examples/, so
+     page of the docs site (T-120; waves 2–3 T-124/T-128): every shipped
+     utility live, each with its copyable markup. gen-site copies it verbatim into site/examples/, so
      chrome links are written for that depth. The <style> below is demo
      harness only — it styles nothing the toolkit ships. The view-transitions
      module link is this page's opt-in (its image-morph rules also serve the
@@ -31,9 +31,13 @@
   /* demo captions — NOT the frosted-caption bar (its ink/scrim pairing is
      the utility's own; this harness rule is unlayered and would beat it) */
   .demo-row > figure:not(.frosted-caption) figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-start: var(--wel-space-1); }
-  /* harness radius — NOT on utilities that own their corner geometry */
+  /* harness radius — NOT on utilities that own their corner geometry, and
+     NOT on media inside clipping wrappers (.parallax/.ken-burns own the
+     crop; the radius goes on the wrapper so drift/zoom stays clipped) */
   .demo-row img { inline-size: 100%; display: block; }
   .demo-row img:not(.organic-frame, .squircle) { border-radius: var(--wel-radius-sm); }
+  .demo-row :is(.parallax, .ken-burns) { border-radius: var(--wel-radius-sm); overflow: clip; }
+  .demo-row :is(.parallax, .ken-burns) img { border-radius: 0; }
   pre { background: var(--wel-color-surface-sunken); border: var(--wel-border-width) solid var(--wel-color-border); border-radius: var(--wel-radius-sm); padding: var(--wel-space-3); overflow-x: auto; font-size: var(--wel-text-size--1); }
 
   /* dim demo: a dark-pinned panel so the effect shows regardless of the
@@ -397,6 +401,145 @@ vt.finished.finally(() =&gt; stage.style.removeProperty('--wel-vt'));</code></pr
     <pre tabindex="0"><code>&lt;img class="squircle" src="avatar.jpg" alt="…"&gt;
 
 .squircle.tight { --wel-squircle-radius: 15%; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.parallax</code> — scroll-linked drift</h2>
+    <p>A wrapper class: the media drifts along the block axis on its own
+    <code>view()</code> timeline as it crosses the viewport — no scroll
+    listeners, no JS. The media is scaled up for headroom so the drift never
+    exposes a gap (raise <code>--wel-parallax-depth</code> and
+    <code>--wel-parallax-scale</code> together). Browsers without
+    scroll-driven animations — and reduced-motion readers — see a plain
+    static image. Scroll to watch these drift at different depths:</p>
+    <div class="demo-row">
+      <figure>
+        <div class="parallax">
+          <img src="img/fx-alpine.svg" alt="Alpine valley drifting as the page scrolls" width="400" height="250">
+        </div>
+        <figcaption>default — 8% drift, 1.2 headroom</figcaption>
+      </figure>
+      <figure>
+        <div class="parallax" style="--wel-parallax-depth: 14%; --wel-parallax-scale: 1.35">
+          <img src="img/fx-dunes.svg" alt="Dunes drifting more deeply as the page scrolls" width="400" height="250">
+        </div>
+        <figcaption>deeper — depth 14%, scale 1.35 (raised together)</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;figure class="parallax"&gt;
+  &lt;img src="ridge.jpg" alt="…"&gt;
+&lt;/figure&gt;
+
+/* keep scale ≥ 1 + 2 × depth or the drift exposes the wrapper */
+.parallax.deep { --wel-parallax-depth: 14%; --wel-parallax-scale: 1.35; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.ken-burns</code> — slow hover pan/zoom</h2>
+    <p>A wrapper class: while the card is hovered (or holds keyboard focus),
+    the media drifts to a gentle zoom and pan over a deliberately slow linear
+    12 seconds, then eases back quickly on release. Hover devices only, and
+    gated <em>off</em> under reduced motion — an instant zoom would crop, not
+    calm. Hold the pointer over these:</p>
+    <div class="demo-row">
+      <figure>
+        <div class="ken-burns">
+          <a href="#fx-stage"><img src="img/fx-harbour.svg" alt="Harbour — hover to start the slow pan and zoom" width="400" height="250"></a>
+        </div>
+        <figcaption>default — zoom 1.15, pan −2% 1%</figcaption>
+      </figure>
+      <figure>
+        <div class="ken-burns" style="--wel-kenburns-zoom: 1.3; --wel-kenburns-pan: 4% -2%; --wel-kenburns-duration: 6s">
+          <a href="#fx-stage"><img src="img/fx-alpine.svg" alt="Alpine valley — a faster, deeper Ken Burns drift" width="400" height="250"></a>
+        </div>
+        <figcaption>retuned — zoom 1.3, 6s drift</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;figure class="ken-burns"&gt;
+  &lt;a href="/story"&gt;&lt;img src="glacier.jpg" alt="Glacier story"&gt;&lt;/a&gt;
+&lt;/figure&gt;
+
+/* keep the pan inside the zoom's (zoom − 1) / 2 per-side overflow */
+.ken-burns.brisk { --wel-kenburns-zoom: 1.3; --wel-kenburns-duration: 6s; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.view-crop</code> — in-source art direction</h2>
+    <p>Crop into the <em>source image</em> with <code>object-view-box</code> —
+    one photo, several framings, no extra files. The bare class is a punch-in
+    zoom; <code>data-crop</code> keeps one half (physical names: they say
+    where the subject is in the photo). Engines without the property show the
+    full image — compose so that still works. All three below are the same
+    <code>src</code>:</p>
+    <div class="demo-row">
+      <figure>
+        <img class="view-crop" src="img/fx-harbour.svg" alt="Harbour, punched in 15%" width="400" height="250">
+        <figcaption>default — <code>inset(15%)</code> punch-in</figcaption>
+      </figure>
+      <figure>
+        <img class="view-crop" data-crop="right" src="img/fx-harbour.svg" alt="The right half of the harbour" width="400" height="250">
+        <figcaption><code>data-crop="right"</code></figcaption>
+      </figure>
+      <figure>
+        <img class="view-crop" style="--wel-view-box: inset(5% 55% 45% 5%)" src="img/fx-harbour.svg" alt="A custom top-left region of the harbour" width="400" height="250">
+        <figcaption>custom <code>--wel-view-box</code> region</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="view-crop" src="crowd.jpg" alt="…"&gt;
+&lt;img class="view-crop" data-crop="right" src="crowd.jpg" alt="…"&gt;
+&lt;img class="view-crop" style="--wel-view-box: inset(10% 40% 30% 5%)" src="crowd.jpg" alt="…"&gt;</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.tilt</code> — 3D hover pose</h2>
+    <p>A fixed perspective pose — subtle rotation plus a whisper of lift —
+    settling on the spring ease when hovered or keyboard-focused. Pure CSS is
+    one pose, not pointer tracking; that's the point (and the zero-JS
+    thesis). Hover devices only; gated off under reduced motion.</p>
+    <div class="demo-row">
+      <figure>
+        <a href="#fx-stage"><img class="tilt" src="img/fx-alpine.svg" alt="Alpine valley — hover or focus to tilt" width="400" height="250"></a>
+        <figcaption>default pose — 4° / −4°, lift 1.02</figcaption>
+      </figure>
+      <figure>
+        <a href="#fx-stage"><img class="tilt" style="--wel-tilt-x: 8deg; --wel-tilt-y: 6deg; --wel-tilt-perspective: 500px" src="img/fx-dunes.svg" alt="Dunes — a more dramatic tilt pose" width="400" height="250"></a>
+        <figcaption>more drama — bigger angles, tighter perspective</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;a href="/work/atrium"&gt;
+  &lt;img class="tilt" src="atrium.jpg" alt="Atrium case study"&gt;
+&lt;/a&gt;
+
+.tilt.drama { --wel-tilt-x: 8deg; --wel-tilt-y: 6deg; --wel-tilt-perspective: 500px; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.textured</code> — halftone &amp; grain prints</h2>
+    <p>The image prints through an SVG data-URI mask — a staggered halftone
+    dot grid, or film grain via <code>data-texture="grain"</code> — while a
+    ghost floor (<code>--wel-texture-base</code>) keeps the full image
+    readable underneath. Set the floor to <code>0%</code> for a hard print.
+    Engines without mask support show the plain image.</p>
+    <div class="demo-row">
+      <figure>
+        <img class="textured" src="img/fx-dunes.svg" alt="Dunes printing through a halftone dot grid" width="400" height="250">
+        <figcaption>default — halftone over a 35% ghost floor</figcaption>
+      </figure>
+      <figure>
+        <img class="textured" data-texture="grain" src="img/fx-alpine.svg" alt="Alpine valley under film grain" width="400" height="250">
+        <figcaption><code>data-texture="grain"</code></figcaption>
+      </figure>
+      <figure>
+        <img class="textured" style="--wel-texture-base: 0%; --wel-texture-size: 0.75rem" src="img/fx-harbour.svg" alt="Harbour as a hard halftone print" width="400" height="250">
+        <figcaption>hard print — <code>--wel-texture-base: 0%</code>, bigger dots</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="textured" src="poster.jpg" alt="…"&gt;
+&lt;img class="textured" data-texture="grain" src="poster.jpg" alt="…"&gt;
+
+/* never .textured + .edge-fade on one node (both write mask-image);
+   wrap instead: fade the wrapper, texture the media */
+.textured.hard { --wel-texture-base: 0%; }</code></pre>
   </section>
 </main>
 <script>
