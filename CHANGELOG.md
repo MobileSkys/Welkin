@@ -18,6 +18,16 @@ say so there.
 
 ### Added
 
+- **Image FX: `.color-reveal` (T-105, wave 2)**: media rests desaturated
+  (`--wel-color-reveal-rest`, default full grayscale) and saturates on hover —
+  or on keyboard `:focus-visible` when wrapped in a link/button/summary. The
+  whole effect is gated behind `@media (hover: hover)`: touch users get the
+  plain colour image, never one stuck gray. The filter transition rides the
+  `--wel-motion` multiplier, so reduced-motion users get an instant swap.
+  Composes with `.dim` via an explicit combo rule (the family's contended
+  `filter` doctrine); meaningless inside `.duotone` (already grayscale) —
+  forbidden nesting.
+
 - **Image FX: `.frosted-caption` (T-104, wave 2)**: wrapper utility (canonically
   `<figure>` + `<figcaption>`) pinning the caption to the media's block-end
   edge as a translucent surface bar — `backdrop-filter` blur+saturate glass
