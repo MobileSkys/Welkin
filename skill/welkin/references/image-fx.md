@@ -184,6 +184,12 @@ Wrapper class:
   alpha); one accent override retints. `--wel-glow-size` = spread/blur.
 - Ambient variant NEEDS `--wel-glow-image` on the wrapper (same URL as the
   img) — without it nothing paints. The pseudo sits behind the media.
+- **URL trap:** give `--wel-glow-image` an ABSOLUTE or root-relative URL. A
+  relative `url(img/…)` resolves against `welkin.css` (the stylesheet that
+  substitutes the var), not your page, in Chromium — silent 404, no glow.
+  From a relative-path page, skip the property and feed the pseudo in your
+  own CSS: `.hero-glow::before { background-image: url(img/poster.jpg) }`
+  (unlayered author CSS beats the utilities layer).
 - The halo follows the composite silhouette — `.glow` around an
   `.organic-frame`/`.squircle` media glows in the clipped shape (flagship
   combo). Halos read best on dark surfaces.
