@@ -18,6 +18,17 @@ say so there.
 
 ### Added
 
+- **Image FX page: wave-2 demos** (docs site, T-124): `examples/image-fx.html`
+  gains live sections with copyable markup for all six wave-2 utilities —
+  `.frosted-caption` (incl. the rounded-wrapper crop), `.color-reveal`
+  (link-wrapped, plus a softer `--wel-color-reveal-rest`), `.organic-frame`
+  (blob/arch/scallop), `.adaptive-crop` (narrow vs wide layout container,
+  same markup), `.glow` (accent halo / ambilight / green-retinted blob combo,
+  on a dark-pinned panel so the halos read), and `.squircle` beside a plain
+  round-corner control. Demo-harness radius/caption rules are scoped away
+  from utilities that own their geometry or caption styling (unlayered
+  harness CSS would otherwise beat the utilities layer).
+
 - **Image FX wave-2 spec + doctrine (T-122)**: `docs/components/image-fx.md`
   documents all six wave-2 utilities (anatomy, markup, variants, token
   contracts, tier fallbacks, composition rules incl. the new

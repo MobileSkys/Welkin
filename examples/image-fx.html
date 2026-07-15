@@ -28,8 +28,12 @@
 
   .demo-row { display: flex; flex-wrap: wrap; gap: var(--wel-space-4); align-items: start; }
   .demo-row > figure { flex: 1 1 14rem; max-inline-size: 22rem; }
-  .demo-row figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-start: var(--wel-space-1); }
-  .demo-row img { inline-size: 100%; display: block; border-radius: var(--wel-radius-sm); }
+  /* demo captions — NOT the frosted-caption bar (its ink/scrim pairing is
+     the utility's own; this harness rule is unlayered and would beat it) */
+  .demo-row > figure:not(.frosted-caption) figcaption { color: var(--wel-color-ink-muted); font-size: var(--wel-text-size--1); margin-block-start: var(--wel-space-1); }
+  /* harness radius — NOT on utilities that own their corner geometry */
+  .demo-row img { inline-size: 100%; display: block; }
+  .demo-row img:not(.organic-frame, .squircle) { border-radius: var(--wel-radius-sm); }
   pre { background: var(--wel-color-surface-sunken); border: var(--wel-border-width) solid var(--wel-color-border); border-radius: var(--wel-radius-sm); padding: var(--wel-space-3); overflow-x: auto; font-size: var(--wel-text-size--1); }
 
   /* dim demo: a dark-pinned panel so the effect shows regardless of the
@@ -230,6 +234,156 @@ const vt = document.startViewTransition(() =&gt; {
   stage.src = thumb.src;
 });
 vt.finished.finally(() =&gt; stage.style.removeProperty('--wel-vt'));</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.frosted-caption</code> — glass caption bar</h2>
+    <p>The family's sanctioned text-on-imagery pattern: the
+    <code>figcaption</code> pins to the media's bottom edge as a translucent
+    surface bar, blurred and saturated where <code>backdrop-filter</code> is
+    supported and near-solid where it isn't — caption text is never
+    unreadable. Under <code>prefers-reduced-transparency</code> the bar goes
+    fully opaque.</p>
+    <div class="demo-row">
+      <figure class="frosted-caption">
+        <img src="img/fx-harbour.svg" alt="Harbour at dusk" width="400" height="250">
+        <figcaption>Harbour at dusk — the glass bar</figcaption>
+      </figure>
+      <figure class="frosted-caption" style="border-radius: var(--wel-radius-surface)">
+        <img src="img/fx-alpine.svg" alt="Alpine valley" width="400" height="250">
+        <figcaption>Rounded wrapper crops bar and media together</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;figure class="frosted-caption"&gt;
+  &lt;img src="harbour.jpg" alt="…"&gt;
+  &lt;figcaption&gt;Harbour at dusk&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+/* knobs */
+.frosted-caption.deep { --wel-frosted-blur: 24px; --wel-frosted-saturate: 2; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.color-reveal</code> — grayscale until hover</h2>
+    <p>Media rests desaturated and saturates on hover — or on keyboard focus
+    when wrapped in a link. The whole effect only exists on hover-capable
+    devices: touch readers see the plain colour image. The transition rides
+    <code>--wel-motion</code>, so reduced motion swaps instantly.</p>
+    <div class="demo-row">
+      <figure>
+        <a href="#fx-stage"><img class="color-reveal" src="img/fx-alpine.svg" alt="Alpine valley — hover or focus to reveal colour" width="400" height="250"></a>
+        <figcaption>hover / Tab to the link — colour returns</figcaption>
+      </figure>
+      <figure>
+        <a href="#fx-stage"><img class="color-reveal" style="--wel-color-reveal-rest: 0.7" src="img/fx-dunes.svg" alt="Dunes — softer grayscale rest state" width="400" height="250"></a>
+        <figcaption>softer rest — <code>--wel-color-reveal-rest: 0.7</code></figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;a href="/work/harbour"&gt;
+  &lt;img class="color-reveal" src="harbour.jpg" alt="Harbour case study"&gt;
+&lt;/a&gt;</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.organic-frame</code> — blob, arch, scallop</h2>
+    <p>Organic crops via <code>clip-path: shape()</code>, in pure percentages
+    so they track any box. Engines without <code>shape()</code> keep honest
+    <code>border-radius</code> approximations for blob and arch, and a plain
+    rounded crop for scallop.</p>
+    <div class="demo-row">
+      <figure>
+        <img class="organic-frame" src="img/fx-alpine.svg" alt="Alpine valley in a blob crop" width="400" height="250">
+        <figcaption>default — blob</figcaption>
+      </figure>
+      <figure>
+        <img class="organic-frame" data-shape="arch" src="img/fx-harbour.svg" alt="Harbour in an arch crop" width="400" height="250">
+        <figcaption><code>data-shape="arch"</code></figcaption>
+      </figure>
+      <figure>
+        <img class="organic-frame" data-shape="scallop" src="img/fx-dunes.svg" alt="Dunes in a scallop crop" width="400" height="250">
+        <figcaption><code>data-shape="scallop"</code></figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="organic-frame" src="portrait.jpg" alt="…"&gt;
+&lt;img class="organic-frame" data-shape="arch" src="door.jpg" alt="…"&gt;
+&lt;img class="organic-frame" data-shape="scallop" src="stamp.jpg" alt="…"&gt;</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.adaptive-crop</code> — container-driven art direction</h2>
+    <p>One class, two crops: square for presence in layout containers under
+    30rem, a 21:9 cinematic band at 30rem and up —
+    <code>object-fit: cover</code> keeps both undistorted. It queries the
+    nearest layout primitive, so the same markup adapts wherever it lands.</p>
+    <div class="demo-row">
+      <figure style="flex-basis: 16rem; max-inline-size: 18rem">
+        <div class="center">
+          <img class="adaptive-crop" src="img/fx-alpine.svg" alt="Alpine valley cropped square in a narrow column" width="400" height="250">
+        </div>
+        <figcaption>narrow container — square</figcaption>
+      </figure>
+      <figure style="flex-basis: 100%; max-inline-size: none">
+        <div class="center">
+          <img class="adaptive-crop" src="img/fx-alpine.svg" alt="The same valley as a cinematic band in a wide container" width="400" height="250">
+        </div>
+        <figcaption>wide container — 21:9 band (same class, same markup)</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="adaptive-crop" src="valley.jpg" alt="…"&gt;
+
+/* per-place retune */
+.sidebar-layout .adaptive-crop { --wel-crop-narrow: 4 / 3; }</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.glow</code> — ambient halo</h2>
+    <p>A wrapper class: the default halo is an accent-derived double
+    <code>drop-shadow</code> that follows the composite silhouette — an
+    <code>.organic-frame</code> inside glows in its clipped shape.
+    <code>data-glow="ambient"</code> swaps to the ambilight look: a blurred
+    copy of the image's own colours, fed with one custom property.</p>
+    <!-- dark-pinned panel: halos read like the ambilight they imitate -->
+    <div class="dim-panel" data-theme="dark">
+      <div class="demo-row">
+        <figure class="glow">
+          <img src="img/fx-harbour.svg" alt="Harbour with an accent halo" width="400" height="250">
+        </figure>
+        <figure class="glow" data-glow="ambient" style="--wel-glow-image: url(img/fx-dunes.svg)">
+          <img src="img/fx-dunes.svg" alt="Dunes with an ambilight halo of their own colours" width="400" height="250">
+        </figure>
+        <figure class="glow" style="--wel-color-accent: var(--wel-green-600)">
+          <img class="organic-frame" src="img/fx-alpine.svg" alt="Blob-cropped valley glowing green" width="400" height="250">
+        </figure>
+      </div>
+    </div>
+    <pre tabindex="0"><code>&lt;figure class="glow"&gt;
+  &lt;img src="poster.jpg" alt="…"&gt;
+&lt;/figure&gt;
+
+&lt;!-- ambilight: the halo is the image itself --&gt;
+&lt;figure class="glow" data-glow="ambient" style="--wel-glow-image: url(poster.jpg)"&gt;
+  &lt;img src="poster.jpg" alt="…"&gt;
+&lt;/figure&gt;</code></pre>
+  </section>
+
+  <section class="stack">
+    <h2><code>.squircle</code> — superellipse corners</h2>
+    <p>The continuous-curvature corner via <code>corner-shape</code>. The
+    fallback is built in: engines without it draw the same
+    <code>--wel-squircle-radius</code> as plain round corners.</p>
+    <div class="demo-row">
+      <figure>
+        <img class="squircle" src="img/fx-harbour.svg" alt="Harbour with squircle corners" width="400" height="250">
+        <figcaption><code>.squircle</code></figcaption>
+      </figure>
+      <figure>
+        <img style="border-radius: 25%" src="img/fx-harbour.svg" alt="Harbour with plain round corners for comparison" width="400" height="250">
+        <figcaption>plain <code>border-radius: 25%</code> — compare the corners</figcaption>
+      </figure>
+    </div>
+    <pre tabindex="0"><code>&lt;img class="squircle" src="avatar.jpg" alt="…"&gt;
+
+.squircle.tight { --wel-squircle-radius: 15%; }</code></pre>
   </section>
 </main>
 <script>
