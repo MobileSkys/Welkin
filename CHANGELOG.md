@@ -9,6 +9,16 @@ say so there.
 
 ### Added
 
+- **Image FX page: wave-3 demos** (docs site, T-128): `examples/image-fx.html`
+  gains live sections with copyable markup for all five wave-3 utilities —
+  `.parallax` (default and a deeper depth/scale pair, raised together),
+  `.ken-burns` (default and a retuned brisk drift), `.view-crop` (punch-in /
+  `data-crop="right"` / custom `--wel-view-box`, all one `src`), `.tilt`
+  (default and a more dramatic pose), and `.textured` (halftone / grain /
+  hard print). Demo-harness radius moves to the `.parallax`/`.ken-burns`
+  wrappers (they own the clip; rounding the drifting media would leak
+  corners).
+
 - **Image FX wave-3 spec + doctrine (T-123)**: `docs/components/image-fx.md`
   documents all five wave-3 utilities (anatomy, markup, variant axes, twelve
   token-contract rows with the headroom/pan safety envelopes, tier
