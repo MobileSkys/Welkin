@@ -9,6 +9,15 @@ say so there.
 
 ### Added
 
+- **`.tilt` image utility (T-114)**: subtle 3D hover tilt on the media
+  element (or a whole card) — a fixed `perspective(900px)` +
+  `rotateX(4deg) rotateY(-4deg) scale(1.02)` resting pose on hover or
+  keyboard focus (`.color-reveal`'s trigger pair), settling on the spring
+  ease. Tunable via `--wel-tilt-x/y/perspective/lift`. Nested inside
+  `@media (hover: hover)` + `prefers-reduced-motion: no-preference`; the
+  transition also rides `--wel-motion`. Writes `transform` — don't combine
+  with `.ken-burns`/`.parallax` on the same node.
+
 - **`.view-crop` image utility (T-113)**: CSS art direction on the media
   element — `object-view-box` crops into the source image with no extra
   image files. Bare class is a `--wel-view-box` punch-in zoom

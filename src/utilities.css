@@ -567,6 +567,40 @@
   .view-crop[data-crop="right"] {
     --wel-view-box: inset(0% 0% 0% 50%);
   }
+
+  /* 3D hover tilt (T-114) — on the media element (or a whole card): a
+     subtle fixed perspective rotation plus a whisper of lift on hover,
+     or keyboard focus via the .color-reveal trigger pair. Pure CSS means
+     the tilt is a single resting pose, not pointer-tracked — the depth
+     cue comes from the settle, so the transition gets the spring ease.
+     Writes `transform` (perspective must precede the rotates in one
+     list), which composes after — but shouldn't be combined with — the
+     .ken-burns/.parallax scale/translate on the same node. Hover-gated
+     like .color-reveal (touch users get the plain image), and the whole
+     effect nests inside prefers-reduced-motion: no-preference per the
+     docs/09 matrix — only opacity/filter swaps may survive reduction,
+     so reduced-motion users get an image that simply never tilts. */
+  @media (hover: hover) {
+    @media (prefers-reduced-motion: no-preference) {
+      .tilt {
+        --wel-tilt-x: 4deg;
+        --wel-tilt-y: -4deg;
+        --wel-tilt-perspective: 900px;
+        --wel-tilt-lift: 1.02;
+
+        transition: transform calc(var(--wel-motion-duration-3) * var(--wel-motion)) var(--wel-motion-ease-spring);
+      }
+
+      .tilt:is(:hover, :focus-visible),
+      :is(a, button, summary):is(:hover, :focus-visible) .tilt {
+        transform:
+          perspective(var(--wel-tilt-perspective))
+          rotateX(var(--wel-tilt-x))
+          rotateY(var(--wel-tilt-y))
+          scale(var(--wel-tilt-lift));
+      }
+    }
+  }
 }
 
 @keyframes wel-reveal {
