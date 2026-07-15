@@ -429,6 +429,20 @@
       display: none;
     }
   }
+
+  /* Squircle corners (T-116) — superellipse crop on media: the continuous-
+     curvature "iOS icon" corner. corner-shape reshapes how the border-radius
+     corners are drawn, so the fallback is built in: engines without it drop
+     the unknown property and render the same radius as plain round corners —
+     no gate needed, never a broken image. The generous default radius is the
+     point (squircles read at sizes where round corners look bulbous); tune
+     with --wel-squircle-radius. */
+  .squircle {
+    --wel-squircle-radius: 25%;
+
+    border-radius: var(--wel-squircle-radius);
+    corner-shape: squircle;
+  }
 }
 
 @keyframes wel-reveal {

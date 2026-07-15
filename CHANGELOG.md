@@ -18,6 +18,13 @@ say so there.
 
 ### Added
 
+- **Image FX: `.squircle` (T-116, wave 2)**: superellipse ("iOS icon") corner
+  crop on media via `corner-shape: squircle` over a generous
+  `--wel-squircle-radius` (default `25%`). The fallback is built in:
+  `corner-shape` only reshapes how `border-radius` corners are drawn, so
+  engines without it render the same radius as plain round corners — no
+  `@supports` gate needed.
+
 - **Image FX: `.glow` (T-115, wave 2)**: ambient halo behind media. Default is
   a two-layer accent-derived drop-shadow on the wrapper (`--wel-glow-color`,
   `--wel-glow-size`) — it follows the composite silhouette, so an
