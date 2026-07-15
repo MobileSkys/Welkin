@@ -18,6 +18,14 @@ say so there.
 
 ### Added
 
+- **Image FX: `.adaptive-crop` (T-112, wave 2)**: one class, container-driven
+  art direction — square tight crop (`--wel-crop-narrow`, default `1`) in
+  layout containers under 30rem, cinematic full-bleed band (`--wel-crop-wide`,
+  default `21 / 9`) at 30rem and up, `object-fit: cover` so neither crop
+  distorts. Queries the nearest layout primitive (`container-name: layout`)
+  like every container-aware component; with no layout ancestor neither
+  branch matches and the media keeps its natural aspect.
+
 - **Image FX: `.organic-frame` (T-107, wave 2)**: blob (default), `data-shape`
   `arch` and `scallop` image crops via `clip-path: shape()`, applied to the
   media element directly. All coordinates are percentages, so crops track any
