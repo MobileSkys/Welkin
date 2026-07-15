@@ -162,7 +162,7 @@ Composability rules (the family is designed to stack — but on the right node):
 | `--wel-crop-wide` | `21 / 9` | — | `.adaptive-crop` aspect ratio at `>= 30rem`. The query widths themselves are literals — container query conditions cannot read custom properties. |
 | `--wel-glow-color` | `oklch(from --wel-color-accent l c h / 55%)` | — | Halo colour; re-derives from the cascaded accent (docs/05 derivation pattern). |
 | `--wel-glow-size` | `1.5rem` | — | Halo spread; also the ambient variant's blur radius and pseudo outset. |
-| `--wel-glow-image` | *unset* | — | Ambient variant's image source (`url(…)`), set inline on the wrapper. Unset → the pseudo paints nothing. |
+| `--wel-glow-image` | *unset* | — | Ambient variant's image source (`url(…)`), set inline on the wrapper. Unset → the pseudo paints nothing. **Absolute or root-relative URLs only**: engines disagree on the base for a relative `url()` inside a custom property (Chromium resolves it against the stylesheet that substitutes it — i.e. `welkin.css` — and silently 404s). From a relative-path page, feed the pseudo directly in author CSS instead: `.hero-glow::before { background-image: url(img/poster.jpg) }`. |
 | `--wel-squircle-radius` | `25%` | — | Corner radius the squircle (or the round fallback) is drawn at. |
 
 ## Behaviour tiers

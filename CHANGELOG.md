@@ -16,6 +16,16 @@ say so there.
   `--wel-shadow-3` so the open-state raise stays one tier above the stuck
   rest shadow. Visual-only; no API surface change.
 
+### Fixed
+
+- **`.glow` ambient URL trap (T-115 kickback)**: a relative `url()` inside
+  `--wel-glow-image` resolves against `welkin.css` (the stylesheet that
+  substitutes the var) in Chromium — not the page — and silently 404s, so
+  the ambilight halo never painted on the demo. Docs, skill, and the demo's
+  copyable markup now require absolute/root-relative URLs (or an author-CSS
+  `::before { background-image }` override from relative-path pages, which
+  is how the demo itself is now fed).
+
 ### Added
 
 - **Consumer skill: image FX wave 2 (T-125)**: `skill/welkin`'s

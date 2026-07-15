@@ -44,6 +44,14 @@
   .fade-well { background: var(--wel-color-surface-sunken); border-radius: var(--wel-radius-surface); padding: var(--wel-space-4); }
   .fade-well img { border-radius: 0; }
 
+  /* ambient glow demo: the image is fed from page CSS, not the custom
+     property — a RELATIVE url() inside --wel-glow-image resolves against
+     welkin.css (the stylesheet that substitutes it) in Chromium, not this
+     page, and silently 404s. Root-relative/absolute URLs in the property
+     are fine; from a relative-path page, an own-CSS rule like this one is
+     the reliable form (unlayered, it beats the utilities layer). */
+  #glow-ambient-demo::before { background-image: url(img/fx-dunes.svg); }
+
   /* gallery demo */
   .fx-thumbs { display: flex; gap: var(--wel-space-3); flex-wrap: wrap; padding: 0; margin: 0; list-style: none; }
   .fx-thumbs button { border: none; background: none; padding: 0; cursor: pointer; border-radius: var(--wel-radius-sm); }
@@ -348,7 +356,7 @@ vt.finished.finally(() =&gt; stage.style.removeProperty('--wel-vt'));</code></pr
         <figure class="glow">
           <img src="img/fx-harbour.svg" alt="Harbour with an accent halo" width="400" height="250">
         </figure>
-        <figure class="glow" data-glow="ambient" style="--wel-glow-image: url(img/fx-dunes.svg)">
+        <figure class="glow" data-glow="ambient" id="glow-ambient-demo">
           <img src="img/fx-dunes.svg" alt="Dunes with an ambilight halo of their own colours" width="400" height="250">
         </figure>
         <figure class="glow" style="--wel-color-accent: var(--wel-green-600)">
@@ -360,10 +368,15 @@ vt.finished.finally(() =&gt; stage.style.removeProperty('--wel-vt'));</code></pr
   &lt;img src="poster.jpg" alt="…"&gt;
 &lt;/figure&gt;
 
-&lt;!-- ambilight: the halo is the image itself --&gt;
-&lt;figure class="glow" data-glow="ambient" style="--wel-glow-image: url(poster.jpg)"&gt;
-  &lt;img src="poster.jpg" alt="…"&gt;
-&lt;/figure&gt;</code></pre>
+&lt;!-- ambilight: the halo is the image itself. Give --wel-glow-image an
+     ABSOLUTE or root-relative URL — a relative one resolves against
+     welkin.css, not your page, in some engines and silently 404s --&gt;
+&lt;figure class="glow" data-glow="ambient" style="--wel-glow-image: url(/img/poster.jpg)"&gt;
+  &lt;img src="/img/poster.jpg" alt="…"&gt;
+&lt;/figure&gt;
+
+/* from a relative-path page, feed the pseudo in your own CSS instead */
+.hero-glow::before { background-image: url(img/poster.jpg); }</code></pre>
   </section>
 
   <section class="stack">
