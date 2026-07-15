@@ -18,6 +18,14 @@ say so there.
 
 ### Added
 
+- **Image FX: `.adaptive-crop` (T-112, wave 2)**: one class, container-driven
+  art direction — square tight crop (`--wel-crop-narrow`, default `1`) in
+  layout containers under 30rem, cinematic full-bleed band (`--wel-crop-wide`,
+  default `21 / 9`) at 30rem and up, `object-fit: cover` so neither crop
+  distorts. Queries the nearest layout primitive (`container-name: layout`)
+  like every container-aware component; with no layout ancestor neither
+  branch matches and the media keeps its natural aspect.
+
 - **Image FX: `.color-reveal` (T-105, wave 2)**: media rests desaturated
   (`--wel-color-reveal-rest`, default full grayscale) and saturates on hover —
   or on keyboard `:focus-visible` when wrapped in a link/button/summary. The

@@ -219,6 +219,36 @@
     }
   }
 
+  /* Adaptive crop (T-112) — one class, container-driven art direction: in a
+     narrow layout container the media crops tight and square (presence over
+     panorama in a cramped column); at 30rem+ (the card spec's established
+     switch width) it stretches to a full-bleed cinematic band. Queries the
+     nearest layout primitive like every container-aware component; with no
+     layout ancestor neither branch matches and the media keeps its natural
+     aspect — plain image, never broken. Retune per place by overriding the
+     two ratio tokens; the query widths are fixed (container queries cannot
+     read custom properties in their conditions). */
+  .adaptive-crop {
+    --wel-crop-narrow: 1;
+    --wel-crop-wide: 21 / 9;
+
+    display: block;
+    inline-size: 100%;
+    object-fit: cover;
+  }
+
+  @container layout (inline-size < 30rem) {
+    .adaptive-crop {
+      aspect-ratio: var(--wel-crop-narrow);
+    }
+  }
+
+  @container layout (inline-size >= 30rem) {
+    .adaptive-crop {
+      aspect-ratio: var(--wel-crop-wide);
+    }
+  }
+
   /* Grayscale-to-color hover reveal (T-105) — media rests desaturated and
      saturates on hover, or on keyboard focus when wrapped in a link/button.
      The whole effect lives inside @media (hover: hover): touch/stylus users
