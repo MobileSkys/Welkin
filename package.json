@@ -4,6 +4,12 @@
   "description": "Welkin — a CSS-first UI toolkit built on modern CSS: cascade layers, design tokens, container queries, zero required build step.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MobileSkys/Welkin.git"
+  },
+  "homepage": "https://github.com/MobileSkys/Welkin#readme",
+  "bugs": "https://github.com/MobileSkys/Welkin/issues",
   "keywords": [
     "css",
     "design-tokens",
