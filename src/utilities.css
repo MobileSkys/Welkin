@@ -219,6 +219,15 @@
     }
   }
 
+  /* docs/09 preference matrix: translucent surface treatments fall back to
+     an opaque equivalent under prefers-reduced-transparency. */
+  @media (prefers-reduced-transparency: reduce) {
+    .frosted-caption > figcaption {
+      background-color: var(--wel-color-surface);
+      backdrop-filter: none;
+    }
+  }
+
   /* Adaptive crop (T-112) — one class, container-driven art direction: in a
      narrow layout container the media crops tight and square (presence over
      panorama in a cramped column); at 30rem+ (the card spec's established

@@ -18,6 +18,17 @@ say so there.
 
 ### Added
 
+- **Image FX wave-2 spec + doctrine (T-122)**: `docs/components/image-fx.md`
+  documents all six wave-2 utilities (anatomy, markup, variants, token
+  contracts, tier fallbacks, composition rules incl. the new
+  wrapper-vs-media entries and forbidden nestings). Doc 03 gains
+  `backdrop-filter`, `clip-path: shape()`, and `corner-shape` contract rows;
+  doc 09's preference matrix records `.color-reveal`'s multiplier-ridden
+  instant swap and names `.frosted-caption` the first occupant of the
+  reduced-transparency rule. Compliance fix riding along: the frosted
+  caption bar now goes fully opaque (no blur) under
+  `prefers-reduced-transparency: reduce`, as doc 09 already required.
+
 - **Image FX: `.squircle` (T-116, wave 2)**: superellipse ("iOS icon") corner
   crop on media via `corner-shape: squircle` over a generous
   `--wel-squircle-radius` (default `25%`). The fallback is built in:
