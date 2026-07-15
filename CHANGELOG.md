@@ -18,6 +18,15 @@ say so there.
 
 ### Added
 
+- **Image FX: `.frosted-caption` (T-104, wave 2)**: wrapper utility (canonically
+  `<figure>` + `<figcaption>`) pinning the caption to the media's block-end
+  edge as a translucent surface bar — `backdrop-filter` blur+saturate glass
+  where supported, an ungated near-solid surface scrim otherwise, so caption
+  text is never unreadable over imagery (never-a-broken-image doctrine).
+  Tokens: `--wel-frosted-bg`, `--wel-frosted-blur`, `--wel-frosted-saturate`.
+  Caption paints above `.duotone` blend overlays (D-12 stacking rule);
+  `overflow: clip` on the wrapper crops media + caption to a wrapper radius.
+
 - **Consumer skill: image FX (T-121)**: `skill/welkin` gains
   `references/image-fx.md` (per-utility markup, knobs, fallbacks, and the
   wrapper-vs-media combination table), a SKILL.md effects section +
