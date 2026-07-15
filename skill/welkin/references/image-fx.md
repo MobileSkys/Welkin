@@ -1,4 +1,4 @@
-# Image effects (utilities) — post-1.0.1 (waves 1–2)
+# Image effects (utilities) — post-1.0.1 (waves 1–3)
 
 Token-driven image treatments from the utilities layer. Zero JS, all safe by
 default: engines without a feature show the plain image; motion effects gate
@@ -208,6 +208,107 @@ Wrapper class:
 - Don't combine with `.organic-frame` (two corner geometries, one wins
   silently).
 
+## `.parallax` — scroll-linked drift
+
+Wrapper class; the media drifts along the block axis as the wrapper crosses
+the viewport (`view()` timeline — no scroll listeners, no JS):
+
+```html
+<figure class="parallax">
+  <img src="ridge.jpg" alt="…">
+</figure>
+```
+
+- Knobs: `--wel-parallax-depth` (drift amplitude, default 8%) and
+  `--wel-parallax-scale` (media headroom, default 1.2). If you raise the
+  depth, raise the scale too: keep `scale >= 1 + 2 × depth` or the drift
+  exposes the wrapper behind the media.
+- Size the wrapper (the media fills it and is scaled/clipped inside).
+- Firefox stable and reduced-motion users get an unscaled, motionless image —
+  the scale lives inside the same gate as the animation. Don't add your own
+  scale outside it.
+- Same view-timeline caveat as `.reveal`: dead inside fixed/non-scrolling
+  chrome.
+
+## `.ken-burns` — slow hover pan/zoom
+
+Wrapper class; drift starts on hover (or keyboard focus inside):
+
+```html
+<figure class="ken-burns">
+  <a href="/story"><img src="glacier.jpg" alt="Glacier story"></a>
+</figure>
+```
+
+- Knobs: `--wel-kenburns-zoom` (1.15), `--wel-kenburns-pan` (`-2% 1%`,
+  a translate pair), `--wel-kenburns-duration` (12s, linear). Return leg is
+  a quick 0.5s ease-out — don't equalise them, the asymmetry is the point.
+- Keep the pan inside the zoom's per-side overflow (`(zoom − 1) / 2`,
+  7.5% at defaults) or the wrapper shows through.
+- Hover devices only + gated **off** under reduced motion (not merely
+  instant — an instant zoom would crop). Touch users see a static image;
+  don't try to re-trigger it with JS.
+
+## `.view-crop` — in-source art direction
+
+On the media element. Crop into the *source image* — one photo, several
+framings, no extra files:
+
+```html
+<img class="view-crop" src="crowd.jpg" alt="…">                     <!-- 15% punch-in -->
+<img class="view-crop" data-crop="right" src="crowd.jpg" alt="…">   <!-- keep right half -->
+<img class="view-crop" style="--wel-view-box: inset(10% 40% 30% 5%)" src="crowd.jpg" alt="…">
+```
+
+- `data-crop`: `top` | `bottom` | `left` | `right` (keeps that half). Names
+  are **physical** on purpose — they say where the subject is in the photo,
+  which doesn't flip with text direction. Arbitrary region: set
+  `--wel-view-box` to any `inset()`/`xywh()`.
+- Ships with `object-fit: cover` so mismatched view/element ratios cover
+  rather than distort.
+- Chromium-only as of 2026: elsewhere the property drops at parse and the
+  full image shows (that's the designed fallback — compose so the uncropped
+  image still works).
+- Composes with media filters and corner crops; with `.adaptive-crop` it's
+  coherent (box ratio vs source region) but eyeball the pairing.
+
+## `.tilt` — 3D hover pose
+
+On the media element, or a whole `.card`; wrap in a link for keyboard parity:
+
+```html
+<a href="/work/atrium">
+  <img class="tilt" src="atrium.jpg" alt="Atrium case study">
+</a>
+```
+
+- Fixed pose (pure CSS ≠ pointer tracking): `--wel-tilt-x`/`--wel-tilt-y`
+  (4deg/−4deg), `--wel-tilt-perspective` (900px, smaller = more drama),
+  `--wel-tilt-lift` (1.02). Settles on the spring ease.
+- Hover devices only; gated off under reduced motion. Don't reimplement with
+  JS `mousemove` tracking — that abandons the zero-JS thesis and the gates.
+- Writes `transform` — keep it off `.ken-burns`/`.parallax` media.
+
+## `.textured` — halftone / grain prints
+
+On the media element (or any element):
+
+```html
+<img class="textured" src="poster.jpg" alt="…">                      <!-- halftone -->
+<img class="textured" data-texture="grain" src="poster.jpg" alt="…"> <!-- film grain -->
+```
+
+- The image prints through an SVG mask; a ghost floor keeps it readable
+  underneath: `--wel-texture-base` (35%; `0%` = hard print, dots-only).
+  `--wel-texture-size` scales the halftone tile (grain is a fixed seamless
+  tile).
+- Both write `mask-image` like `.edge-fade` — **never combine those two on
+  one node**; put `.edge-fade` on a wrapper instead (a wrapper's mask
+  applies to everything inside).
+- No mask support → plain image. Forced colors keeps the mask (geometry).
+- It's a treatment for decorative/hero imagery — don't texture images whose
+  fine detail carries meaning.
+
 ## Combining effects — which class goes where
 
 | Combination | How |
@@ -223,6 +324,12 @@ Wrapper class:
 | `.color-reveal` in `.duotone` | Never — no colour to reveal |
 | `.organic-frame` + `.squircle` | Never — two corner geometries, one wins silently |
 | `.glow` halo + `.edge-fade` on the same media | Avoid — the shadow re-outlines the edge the mask melts |
+| `.textured` + `.edge-fade` on one node | Never — both write `mask-image`, the later silently wins. Wrap: `.edge-fade` on the wrapper, `.textured` on the media |
+| `.parallax` + `.ken-burns` on one wrapper | Never — both drive the media's `scale`/`translate` |
+| `.tilt` on `.ken-burns`/`.parallax` media | Never — a third writer of the same geometry |
+| `.reveal` on `.parallax` media | Never — same `animation` slot; put `.reveal` on the wrapper for entry-fade + drift |
+| `.view-crop` + media filters / corner crops | Freely combined on the media (source-space crop vs filter vs corner geometry) |
+| `.textured` + media filters (`.dim`/`.color-reveal`) | Freely combined on the media (mask vs filter) |
 
 `.duotone` output is scheme-stable (accent-derived endpoints), so it doesn't
 need `.dim`.

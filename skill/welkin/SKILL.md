@@ -11,7 +11,8 @@ description: >
   token-based theming, and image effect utilities (duotone, edge-fade,
   scroll reveal, dark-mode dimming, view-transition morphs, frosted
   captions, hover colour reveal, organic/squircle frames, adaptive
-  crops, ambient glow).
+  crops, ambient glow, parallax drift, Ken Burns pan/zoom, view-box
+  art-direction crops, 3D hover tilt, halftone/grain textures).
 ---
 
 # Welkin — the CSS-first toolkit
@@ -137,6 +138,11 @@ by default (no feature → plain image; motion gates off under reduced motion):
 | `.adaptive-crop` (on media) | Square in narrow layout containers, 21:9 band at ≥30rem | `--wel-crop-narrow`/`-wide` |
 | `.glow` (wrapper) | Accent halo; `data-glow="ambient"` = ambilight from the image itself | `--wel-glow-color`/`-size`/`-image` |
 | `.squircle` (on media) | Superellipse corners, round fallback built in | `--wel-squircle-radius` |
+| `.parallax` (wrapper) | Scroll-linked block-axis drift, clipped headroom, no JS | `--wel-parallax-depth`/`-scale` |
+| `.ken-burns` (wrapper) | Slow hover pan/zoom (12s), quick return; hover devices only | `--wel-kenburns-zoom`/`-pan`/`-duration` |
+| `.view-crop` (on media) | `object-view-box` in-source art direction; full image where unsupported | `data-crop`, `--wel-view-box` |
+| `.tilt` (on media or card) | Fixed 3D pose on hover/focus, spring settle | `--wel-tilt-x`/`-y`/`-perspective`/`-lift` |
+| `.textured` (on media) | Halftone/grain SVG-mask print with ghost floor | `data-texture`, `--wel-texture-size`/`-base` |
 
 Combination rules matter (wrapper vs media) — copy from the reference, don't
 guess.
@@ -185,8 +191,8 @@ Escape hatches when tokens genuinely aren't enough, in order:
   1–3, `light-dark()`, contrast-safe pairings, escape hatches.
 - [references/image-fx.md](references/image-fx.md) — image effect utilities
   (.dim, .duotone, .edge-fade, .reveal, data-vt-image, .frosted-caption,
-  .color-reveal, .organic-frame, .adaptive-crop, .glow, .squircle) +
-  combination rules.
+  .color-reveal, .organic-frame, .adaptive-crop, .glow, .squircle,
+  .parallax, .ken-burns, .view-crop, .tilt, .textured) + combination rules.
 - [references/gotchas.md](references/gotchas.md) — file:// CORS, layer facts,
   anti-patterns with fixes.
 - [references/recipes.md](references/recipes.md) — page scaffolds: app shell,

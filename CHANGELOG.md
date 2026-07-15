@@ -9,6 +9,23 @@ say so there.
 
 ### Added
 
+- **Image FX wave-3 spec + doctrine (T-123)**: `docs/components/image-fx.md`
+  documents all five wave-3 utilities (anatomy, markup, variant axes, twelve
+  token-contract rows with the headroom/pan safety envelopes, tier
+  fallbacks, and the two new contended surfaces — `mask-image` and the media
+  `scale`/`translate`/`transform` — with resolution rules and forbidden
+  nestings). Doc 03 gains an `object-view-box` contract row and extends the
+  scroll-driven row for `.parallax`; doc 09's preference matrix records
+  `.parallax` joining the scroll-driven gate-off and `.ken-burns`/`.tilt`
+  gating off wholesale.
+
+- **Consumer skill: image FX wave 3 (T-123)**: `skill/welkin`'s
+  `references/image-fx.md` gains the five wave-3 utilities (markup, knobs,
+  per-utility traps) and seven new combination-table rows; SKILL.md's
+  effects table, reference index, and trigger description list them. Live
+  copy at `~/.claude/skills/welkin` re-synced and hash-verified identical
+  (dual-copy rule).
+
 - **`.textured` image utility (T-117)**: the image prints through an SVG
   data-URI mask — staggered halftone dots (default, tile scales with
   `--wel-texture-size`) or `data-texture="grain"` fractal noise (seamless
