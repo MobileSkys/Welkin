@@ -51,6 +51,8 @@ for (const [fg, bg] of PAIRINGS) {
 }
 
 function initialValue(raw) {
+  // Multi-line declarations (the accent-contrast flip) must stay one table cell.
+  raw = raw.replace(/\s+/g, ' ');
   if (raw.startsWith('light-dark(')) {
     const [a, b] = splitArgs(raw.slice('light-dark('.length, -1));
     return `light \`${a}\` / dark \`${b}\``;

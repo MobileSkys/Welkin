@@ -35,8 +35,9 @@ The 80% case. Set brand colour, type, shape, density:
 ```
 
 **The 10-line brand retint, demonstrated:** setting `--wel-color-accent` alone re-derives
-hover and active shades, focus ring, tinted backgrounds, and selection colours via the
-`color-mix()`/relative-colour formulas in [05-design-tokens.md](05-design-tokens.md).
+hover and active shades, focus ring, tinted backgrounds, selection colours, **and the
+text-on-accent colour** (white or black, flipped off the accent's linear luminance) via
+the `color-mix()`/relative-colour formulas in [05-design-tokens.md](05-design-tokens.md).
 Bootstrap's equivalent is recompiling Sass or overriding dozens of enumerated hover/active
 values.
 
@@ -104,8 +105,11 @@ Welkin's shipped pairings guarantee WCAG contrast
 theme author. The token doc's pairing table lists which tokens participate in guaranteed
 pairings; the docs-site theme playground ([11-docs-site-and-dx.md](11-docs-site-and-dx.md))
 recomputes pairing ratios live as you edit — re-check any pairing whose member you changed.
-Rule of thumb: keep accent lightness within the band noted in the pairing table and the
-derived shades stay safe.
+The `accent-contrast` pairing needs no such care: the luminance flip in
+[05-design-tokens.md](05-design-tokens.md) holds text-on-accent at ≥ 4.5:1 for **any**
+in-gamut accent, and CI sweeps that. For the other accent pairings (accent text on
+surface, accent vs border), keeping accent lightness near the shipped band is still the
+rule of thumb.
 
 ## Anti-pattern gallery
 

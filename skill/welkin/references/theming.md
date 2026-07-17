@@ -50,9 +50,13 @@ is shadowed inside those subtrees. A complete brand theme is ~10 lines:
 ```
 
 Setting `--wel-color-accent` **alone** re-derives hover (`l - 0.06`), active
-(`l - 0.10`), focus ring, tinted backgrounds, and selection colours — the
-derivation formulas live in the token layer (`oklch(from …)` / `color-mix()`).
-Never enumerate hover/active shades by hand.
+(`l - 0.10`), focus ring, tinted backgrounds, selection colours, **and
+`-contrast` (text-on-accent)** — white for accents below linear luminance
+0.179, black above, so any in-gamut accent (pure black/white included) keeps
+the primary-button pairing at ≥ 4.5:1. For accents darker than L 0.12 the
+hover/active steps flip to lighten so feedback stays visible. The derivation
+formulas live in the token layer (`oklch(from …)` / `color(from … xyz-d65 …)`
+/ `color-mix()`). Never enumerate hover/active/contrast shades by hand.
 
 ### The semantic colour roles
 
@@ -144,13 +148,15 @@ Shipped tokens guarantee WCAG contrast via an audited pairing table (31
 pairings, both schemes, CI-enforced at 4.5:1 text / 3:1 non-text). **Changing
 a colour token transfers that duty to you.** Rules of thumb:
 
-- Keep accent lightness near the shipped band (light ≈ L 0.54, dark ≈ L 0.71)
-  and the derived hover/active/contrast shades stay safe. Keep chroma near the
-  shipped range too (≤ ~0.17 at those lightnesses) — high-chroma oklch values
-  at mid lightness can fall outside sRGB and clip unpredictably per channel.
+- `accent-contrast` on accent (primary button) is safe for **any** in-gamut
+  accent — the luminance flip guarantees ≥ 4.5:1 and CI sweeps it. The other
+  accent pairings (accent text on surface, accent vs border) are not
+  auto-guaranteed: keep accent lightness near the shipped band (light ≈ L 0.54,
+  dark ≈ L 0.71) for those. Keep chroma near the shipped range too (≤ ~0.17 at
+  those lightnesses) — high-chroma oklch values at mid lightness can fall
+  outside sRGB and clip unpredictably per channel.
 - After changing any colour token, spot-check: body text on surface, accent
-  text on surface, `accent-contrast` on accent (primary button), tone colours
-  on their tints.
+  text on surface, tone colours on their tints.
 - The docs-site token playground recomputes pairing ratios live — point the
   user there for manual theme work.
 
