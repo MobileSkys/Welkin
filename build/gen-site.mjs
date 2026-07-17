@@ -454,25 +454,58 @@ const playgroundScript = `
   const dirty = new Map();
   const css2d = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
 
-  const toBytes = (probe, token) => {
-    probe.style.color = 'var(' + token + ')';
-    const resolved = getComputedStyle(probe).color; // light-dark() resolved per probe scheme
-    css2d.fillStyle = '#000'; css2d.fillRect(0, 0, 1, 1);
-    css2d.fillStyle = resolved; css2d.fillRect(0, 0, 1, 1);
-    return css2d.getImageData(0, 0, 1, 1).data;
-  };
+  // One child span per unique pairing token inside each probe (T-131).
+  // Recomputing the table used to write probe.style.color then read
+  // getComputedStyle per (pairing × scheme × side) — ~120 forced style
+  // recalcs and canvas readbacks per input event, which janked native
+  // colour-picker drags. The spans let every pass run write-free: all
+  // computed colours read in one style flush, painted into one canvas
+  // row, recovered with a single getImageData.
+  const rows = [...document.querySelectorAll('#pg-pairs tbody tr')];
+  const tokens = [...new Set(rows.flatMap((r) => [r.dataset.fg, r.dataset.bg]))];
+  const spans = new Map();
+  for (const probe of probes) {
+    const m = new Map();
+    for (const t of tokens) {
+      const s = probe.appendChild(document.createElement('span'));
+      s.style.color = 'var(' + t + ')';
+      m.set(t, s);
+    }
+    spans.set(probe, m);
+  }
+
   const lum = ([r, g, b]) => {
     const c = [r, g, b].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
     return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
   };
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
 
+  // scheme-token -> [r, g, b], resolved for the whole table in one pass
+  function resolveAll() {
+    const resolved = new Map();
+    probes.forEach((probe, row) => {
+      const m = spans.get(probe);
+      tokens.forEach((t, i) => {
+        css2d.fillStyle = '#000'; css2d.fillRect(i, row, 1, 1);
+        css2d.fillStyle = getComputedStyle(m.get(t)).color; // light-dark() resolved per probe scheme
+        css2d.fillRect(i, row, 1, 1);
+      });
+    });
+    const img = css2d.getImageData(0, 0, tokens.length, probes.length).data;
+    probes.forEach((probe, row) => tokens.forEach((t, i) => {
+      const o = (row * tokens.length + i) * 4;
+      resolved.set(probe.id + ':' + t, [img[o], img[o + 1], img[o + 2]]);
+    }));
+    return resolved;
+  }
+
   function contrast() {
-    for (const row of document.querySelectorAll('#pg-pairs tbody tr')) {
+    const resolved = resolveAll();
+    for (const row of rows) {
       const { fg, bg, min } = row.dataset;
       ['light', 'dark'].forEach((scheme, i) => {
-        const probe = document.getElementById('pg-probe-' + scheme);
-        const r = ratio(toBytes(probe, fg), toBytes(probe, bg));
+        const key = 'pg-probe-' + scheme + ':';
+        const r = ratio(resolved.get(key + fg), resolved.get(key + bg));
         const cell = row.cells[3 + i];
         const ok = r >= +min;
         cell.innerHTML = '<span class="badge" data-tone="' + (ok ? 'success' : 'danger') + '">'
@@ -487,15 +520,33 @@ const playgroundScript = `
       : ':root, [data-theme] {\\n  /* move a control to start your theme */\\n}';
   }
 
+  // Native colour pickers fire input per mousemove of a drag. Token writes
+  // queue here and everything — the :root/probe restyle, the CSS emit, the
+  // table recompute — lands at most once per animation frame (T-131).
+  const pending = new Map();
+  let queued = false;
+  function flush() {
+    queued = false;
+    for (const [t, v] of pending) {
+      rootStyle.setProperty(t, v);
+      for (const pr of probes) pr.style.setProperty(t, v);
+      dirty.set(t, v);
+    }
+    pending.clear();
+    emit(); contrast();
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(flush);
+  }
+
   document.getElementById('pg').addEventListener('input', (e) => {
     const el = e.target;
     const token = el.dataset.token;
     if (!token) return;
-    const value = el.value + (el.dataset.unit || '');
-    rootStyle.setProperty(token, value);
-    for (const pr of probes) pr.style.setProperty(token, value);
-    dirty.set(token, value);
-    emit(); contrast();
+    pending.set(token, el.value + (el.dataset.unit || ''));
+    schedule();
   });
 
   document.getElementById('pg-copy').addEventListener('click', function () {
@@ -505,21 +556,23 @@ const playgroundScript = `
   });
 
   document.getElementById('pg').addEventListener('reset', () => {
+    pending.clear();
     for (const t of dirty.keys()) {
       rootStyle.removeProperty(t);
       for (const pr of probes) pr.style.removeProperty(t);
     }
     dirty.clear();
-    requestAnimationFrame(() => { emit(); contrast(); });
+    schedule(); // next frame: removals applied, then emit + recompute
   });
 
   // seed control positions from the live computed tokens
   const rs = getComputedStyle(document.documentElement);
+  const seeded = resolveAll();
   for (const el of document.querySelectorAll('#pg [data-token]')) {
     const v = rs.getPropertyValue(el.dataset.token).trim();
     if (el.type === 'range') el.value = parseFloat(v) || el.value;
     else if (el.type === 'color') {
-      const [r, g, b] = toBytes(document.getElementById('pg-probe-light'), el.dataset.token);
+      const [r, g, b] = seeded.get('pg-probe-light:' + el.dataset.token) ?? [0, 0, 0];
       el.value = '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('');
     }
   }
