@@ -5,6 +5,47 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
+## 1.3.0 — 2026-07-17
+
+Text-on-accent becomes a real derivation: any in-gamut accent — pure black and
+white included — now keeps the primary-button pairing at WCAG 4.5:1, and the
+docs-site playground no longer janks during colour-picker drags.
+
+### Changed
+
+- **`--wel-color-accent-contrast` is now derived, not static** (T-130): white
+  when the accent's linear luminance (`xyz-d65` `y`) is below 0.179, black
+  above — the only cut where both flip sides clear 4.5:1. Previously the token
+  was a fixed `light-dark(grey-50, grey-975)`, so white/black accents produced
+  unreadable text-on-accent and mid-lightness accents (luminance 0.166–0.265)
+  cleared 4.5:1 with neither grey. Minor, not patch: the rendered text on
+  default primary buttons shifts subtly (grey-50 → white in light, grey-975 →
+  black in dark), and the `@property` fallback initial-value is now white.
+  Engines without relative colour syntax fall back to white text (static light
+  palette stance, ADR-0007).
+- **Hover/active shades flip direction for near-black accents** (T-130): below
+  accent lightness `l 0.12` the fixed steps lighten instead of darken, so a
+  black accent keeps visible hover/active feedback instead of collapsing onto
+  itself.
+
+### Added
+
+- **CI accent sweep** (T-130): `build/check-contrast.mjs` now verifies the
+  text-on-accent guarantee across 513 swept in-gamut accents on top of the
+  31-pairing table; the shared evaluator (`build/token-lib.mjs`) understands
+  general relative-colour components (`calc()`/`clamp()`/`infinity` arithmetic,
+  `xyz-d65` destinations with un-gamut-mapped `y`).
+
+### Fixed
+
+- **Playground colour-drag latency** (docs site, T-131): native colour pickers
+  fire `input` per mousemove and the playground recomputed the full pairing
+  table synchronously each time (~120 forced style recalcs + canvas readbacks
+  per event). Token writes now coalesce onto one `requestAnimationFrame` flush,
+  and the table resolves all pairing tokens through persistent per-scheme probe
+  spans — one style flush and one `getImageData` per pass (~0.006 ms per drag
+  event, recompute at most once per frame).
+
 ## 1.2.0 — 2026-07-15
 
 Image FX wave 3: five zero-JS, token-driven image treatments (scroll-linked
