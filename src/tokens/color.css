@@ -34,7 +34,7 @@
   @property --wel-color-accent-hover    { syntax: "<color>"; inherits: true; initial-value: oklch(48% 0.16 255); }
   @property --wel-color-accent-active   { syntax: "<color>"; inherits: true; initial-value: oklch(44% 0.16 255); }
   @property --wel-color-accent-tint     { syntax: "<color>"; inherits: true; initial-value: oklch(92% 0.021 255); }
-  @property --wel-color-accent-contrast { syntax: "<color>"; inherits: true; initial-value: oklch(97% 0.002 250); }
+  @property --wel-color-accent-contrast { syntax: "<color>"; inherits: true; initial-value: oklch(100% 0 0); }
   @property --wel-color-border        { syntax: "<color>"; inherits: true; initial-value: oklch(88% 0.005 250); }
   @property --wel-color-border-strong { syntax: "<color>"; inherits: true; initial-value: oklch(62% 0.01 250); }
   @property --wel-color-info    { syntax: "<color>"; inherits: true; initial-value: oklch(46% 0.144 255); }
@@ -140,10 +140,28 @@
     --wel-color-border-strong: light-dark(var(--wel-grey-500), var(--wel-grey-500));
 
     --wel-color-accent:          light-dark(var(--wel-blue-600), var(--wel-blue-400));
-    --wel-color-accent-hover:    oklch(from var(--wel-color-accent) calc(l - 0.06) c h);
-    --wel-color-accent-active:   oklch(from var(--wel-color-accent) calc(l - 0.10) c h);
+    /* Interaction shades: fixed lightness steps. Below l 0.12 the step
+       flips to LIGHTEN, so a near-black accent still shows hover/active
+       feedback — clamp(0, (l - 0.12) * infinity, 1) is 1 above the cut,
+       0 below (the same flip idiom as -contrast under it). */
+    --wel-color-accent-hover:    oklch(from var(--wel-color-accent) calc(l + 0.06 - 0.12 * clamp(0, (l - 0.12) * infinity, 1)) c h);
+    --wel-color-accent-active:   oklch(from var(--wel-color-accent) calc(l + 0.10 - 0.20 * clamp(0, (l - 0.12) * infinity, 1)) c h);
     --wel-color-accent-tint:     color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface));
-    --wel-color-accent-contrast: light-dark(var(--wel-grey-50), var(--wel-grey-975));
+    /* Text-on-accent, DERIVED (T-130, docs/05): white when the accent's
+       linear luminance y < 0.179, black above. That cut is the only band
+       where both flip sides clear 4.5:1 (white text needs y <= 0.183,
+       black needs y >= 0.175), so ANY in-gamut accent keeps the
+       primary-button pairing — including pure black and pure white.
+       xyz-d65 y is the specified colour's luminance (pre-gamut-mapping);
+       0.9505/1.089 are the D65 white point, so the flip lands on exact
+       white or black. check-contrast.mjs sweeps this guarantee in CI.
+       Engines without relative colour drop the declaration and fall back
+       to the @property initial-value (white), matching the static light
+       palette stance (ADR-0007). */
+    --wel-color-accent-contrast: color(from var(--wel-color-accent) xyz-d65
+                                   calc(clamp(0, (0.179 - y) * infinity, 1) * 0.9505)
+                                   clamp(0, (0.179 - y) * infinity, 1)
+                                   calc(clamp(0, (0.179 - y) * infinity, 1) * 1.089));
 
     /* Tones (data-tone axes): text-safe base in both schemes; tints follow
        the surface automatically via color-mix, like accent-tint. */

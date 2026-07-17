@@ -133,20 +133,38 @@ export function evaluate(expr, scheme, decls, depth = 0) {
     };
   }
 
-  // Relative color syntax: oklch(from <source> <l> <c> <h>) with calc on l.
-  const rcs = expr.match(/^oklch\(from\s+(.+?)\s+(calc\([^)]+\)|[\d.%]+|l)\s+(c|[\d.]+)\s+(h|[\d.]+)\)$/);
-  if (rcs) {
-    const base = evaluate(rcs[1], scheme, decls, depth + 1);
-    let l = base.l;
-    const calcM = rcs[2].match(/^calc\(l\s*([+-])\s*([\d.]+)\)$/);
-    if (calcM) l = calcM[1] === '-' ? base.l - Number(calcM[2]) : base.l + Number(calcM[2]);
-    else if (rcs[2] !== 'l') l = parseComponent(rcs[2]);
+  // Relative color syntax, oklch destination: oklch(from <source> <l> <c> <h>).
+  // Components are channel names, numbers, or calc()/clamp() arithmetic
+  // over the source channels (evalCalc).
+  if (expr.startsWith('oklch(from ')) {
+    const parts = splitTop(expr.slice('oklch(from '.length, -1));
+    if (parts.length !== 4) throw new Error(`unsupported relative colour: ${expr}`);
+    const base = evaluate(parts[0], scheme, decls, depth + 1);
+    const vars = { l: base.l, c: base.c, h: base.h };
     return {
-      l,
-      c: rcs[3] === 'c' ? base.c : Number(rcs[3]),
-      h: rcs[4] === 'h' ? base.h : Number(rcs[4]),
+      l: evalComponent(parts[1], vars),
+      c: evalComponent(parts[2], vars),
+      h: evalComponent(parts[3], vars),
       alpha: 1,
     };
+  }
+
+  // Relative color syntax, xyz-d65 destination — the accent-contrast flip
+  // (docs/05). Channels may reference y, the source's linear luminance;
+  // browsers compute it from the SPECIFIED colour, before gamut mapping,
+  // so it is exposed un-clamped here too.
+  if (expr.startsWith('color(from ')) {
+    const parts = splitTop(expr.slice('color(from '.length, -1));
+    if (parts[1] !== 'xyz-d65' || parts.length !== 5) {
+      throw new Error(`only xyz-d65 relative colours supported: ${expr}`);
+    }
+    const base = evaluate(parts[0], scheme, decls, depth + 1);
+    const vars = { y: linearY(base) };
+    return xyzToOklch(
+      evalComponent(parts[2], vars),
+      evalComponent(parts[3], vars),
+      evalComponent(parts[4], vars)
+    );
   }
 
   const lit = expr.match(/^oklch\(([\d.]+%?)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*[\d.%]+)?\)$/);
@@ -156,6 +174,94 @@ export function evaluate(expr, scheme, decls, depth = 0) {
 }
 
 const parseComponent = (s) => (s.endsWith('%') ? Number(s.slice(0, -1)) / 100 : Number(s));
+
+// ---- One relative-colour channel: a channel name, a number, or arithmetic.
+function evalComponent(s, vars) {
+  if (s in vars) return vars[s];
+  if (/^[\d.]+%?$/.test(s)) return parseComponent(s);
+  if (/^(calc|clamp|min|max)\(/.test(s)) return evalCalc(s, vars);
+  throw new Error(`unsupported colour component: ${s}`);
+}
+
+// ---- Split a relative-colour body on top-level whitespace (parens bind).
+function splitTop(s) {
+  const parts = [];
+  let depth = 0, cur = '';
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (/\s/.test(ch) && depth === 0) {
+      if (cur) { parts.push(cur); cur = ''; }
+      continue;
+    }
+    cur += ch;
+  }
+  if (cur) parts.push(cur);
+  return parts;
+}
+
+// ---- Tiny calc()/clamp() arithmetic over channel variables — enough for
+// the token derivations (lightness steps, the luminance flip). Supports
+// + - * / ( ), min/max/clamp, `infinity`, numbers (± %), and the names in
+// `vars`. NaN (0 * infinity, exactly at a flip boundary) is censored to
+// zero, matching CSS top-level calculation censoring.
+export function evalCalc(expr, vars = {}) {
+  const toks = expr.match(/\d+\.?\d*%?|\.\d+%?|[a-zA-Z][a-zA-Z-]*|[()+\-*/,]/g) ?? [];
+  let i = 0;
+  const peek = () => toks[i];
+  const expect = (t) => {
+    if (toks[i++] !== t) throw new Error(`expected '${t}' in: ${expr}`);
+  };
+  function primary() {
+    const t = toks[i++];
+    if (t === undefined) throw new Error(`unexpected end of: ${expr}`);
+    if (t === '(') { const v = sum(); expect(')'); return v; }
+    if (t === '-') return -primary();
+    if (t === '+') return primary();
+    if (t === 'infinity') return Infinity;
+    if (t === 'calc') { expect('('); const v = sum(); expect(')'); return v; }
+    if (t === 'min' || t === 'max' || t === 'clamp') {
+      expect('(');
+      const args = [sum()];
+      while (peek() === ',') { i++; args.push(sum()); }
+      expect(')');
+      if (t === 'min') return Math.min(...args);
+      if (t === 'max') return Math.max(...args);
+      return Math.min(Math.max(args[1], args[0]), args[2]);
+    }
+    if (t in vars) return vars[t];
+    if (/^[\d.]/.test(t)) return parseComponent(t);
+    throw new Error(`unknown token '${t}' in: ${expr}`);
+  }
+  function term() {
+    let v = primary();
+    while (peek() === '*' || peek() === '/') {
+      v = toks[i++] === '*' ? v * primary() : v / primary();
+    }
+    return v;
+  }
+  function sum() {
+    let v = term();
+    while (peek() === '+' || peek() === '-') {
+      v = toks[i++] === '+' ? v + term() : v - term();
+    }
+    return v;
+  }
+  const out = sum();
+  if (i !== toks.length) throw new Error(`trailing tokens in: ${expr}`);
+  return Number.isNaN(out) ? 0 : out;
+}
+
+// ---- XYZ (D65) -> oklch, for xyz-destination relative colours.
+export function xyzToOklch(x, y, z) {
+  const l_ = Math.cbrt(0.8189330101 * x + 0.3618667424 * y - 0.1288597137 * z);
+  const m_ = Math.cbrt(0.0329845436 * x + 0.9293118715 * y + 0.0361456387 * z);
+  const s_ = Math.cbrt(0.0482003018 * x + 0.2643662691 * y + 0.633851707 * z);
+  const L = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
+  const a = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
+  const b = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
+  return { l: L, c: Math.hypot(a, b), h: (Math.atan2(b, a) * 180 / Math.PI + 360) % 360, alpha: 1 };
+}
 
 function mixHue(h1, h2, p) {
   let d = h2 - h1;
@@ -177,8 +283,8 @@ export function splitArgs(s) {
   return out.map((a) => a.trim());
 }
 
-// ---- oklch -> linear sRGB -> WCAG relative luminance.
-export function luminance({ l, c, h }) {
+// ---- oklch -> linear sRGB (un-clamped; may excurse outside [0,1]).
+function linearRgb({ l, c, h }) {
   const hr = (h * Math.PI) / 180;
   const a = c * Math.cos(hr);
   const b = c * Math.sin(hr);
@@ -186,13 +292,31 @@ export function luminance({ l, c, h }) {
   const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
   const s_ = l - 0.0894841775 * a - 1.291485548 * b;
   const L = l_ ** 3, M = m_ ** 3, S = s_ ** 3;
-  let r = 4.0767416621 * L - 3.3077115913 * M + 0.2309699292 * S;
-  let g = -1.2684380046 * L + 2.6097574011 * M - 0.3413193965 * S;
-  let bl = -0.0041960863 * L - 0.7034186147 * M + 1.707614701 * S;
-  // Gamut-clamp: primitive ramps are chosen in-gamut; tiny excursions from
-  // mixing are clamped like browsers render them.
-  [r, g, bl] = [r, g, bl].map((v) => Math.min(1, Math.max(0, v)));
-  return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  return [
+    4.0767416621 * L - 3.3077115913 * M + 0.2309699292 * S,
+    -1.2684380046 * L + 2.6097574011 * M - 0.3413193965 * S,
+    -0.0041960863 * L - 0.7034186147 * M + 1.707614701 * S,
+  ];
+}
+
+// ---- WCAG relative luminance, as RENDERED. Gamut-clamp first: primitive
+// ramps are chosen in-gamut; tiny excursions from mixing are clamped like
+// browsers render them.
+export function luminance(color) {
+  const [r, g, b] = linearRgb(color).map((v) => Math.min(1, Math.max(0, v)));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+// ---- Linear luminance of the SPECIFIED colour (no gamut clamp) — what the
+// y channel of an xyz-d65 relative colour sees in the browser.
+export function linearY(color) {
+  const [r, g, b] = linearRgb(color);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+// ---- Is a colour inside the sRGB gamut (within rounding)?
+export function inSrgbGamut(color, eps = 1e-4) {
+  return linearRgb(color).every((v) => v >= -eps && v <= 1 + eps);
 }
 
 export const ratio = (fg, bg) => {

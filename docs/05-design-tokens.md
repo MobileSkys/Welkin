@@ -78,16 +78,27 @@ Interaction shades are **computed, not enumerated**:
 ```css
 :root {
   --wel-color-accent: oklch(55% 0.16 250);
-  --wel-color-accent-hover:  oklch(from var(--wel-color-accent) calc(l - 0.06) c h);
-  --wel-color-accent-active: oklch(from var(--wel-color-accent) calc(l - 0.10) c h);
+  /* shades flip to lighten below l 0.12 so near-black accents keep feedback */
+  --wel-color-accent-hover:  oklch(from var(--wel-color-accent) calc(l + 0.06 - 0.12 * clamp(0, (l - 0.12) * infinity, 1)) c h);
+  --wel-color-accent-active: oklch(from var(--wel-color-accent) calc(l + 0.10 - 0.20 * clamp(0, (l - 0.12) * infinity, 1)) c h);
   --wel-color-accent-tint:   color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface));
-  --wel-color-accent-contrast: /* text-on-accent; see pairing table */;
+  /* text-on-accent: white below linear luminance 0.179, black above */
+  --wel-color-accent-contrast: color(from var(--wel-color-accent) xyz-d65
+                                 calc(clamp(0, (0.179 - y) * infinity, 1) * 0.9505)
+                                 clamp(0, (0.179 - y) * infinity, 1)
+                                 calc(clamp(0, (0.179 - y) * infinity, 1) * 1.089));
 }
 ```
 
 A theme sets **one** `--wel-color-accent` and hover states, pressed states, focus tints,
-and subtle backgrounds all follow — the "brand retint in 10 lines" demo in the theming
-doc. (Relative color syntax `oklch(from …)` support is audited at Phase 1 against
+subtle backgrounds, **and the text-on-accent colour** all follow — the "brand retint in
+10 lines" demo in the theming doc. The `-contrast` flip picks white or black off the
+accent's linear luminance (`xyz-d65` `y`, exposed by relative colour syntax): the
+`0.179` cut is the only band where **both** sides clear 4.5:1 (white text needs
+y ≤ 0.183, black needs y ≥ 0.175), so any in-gamut accent — pure black and pure white
+included — keeps the primary-button pairing. `build/check-contrast.mjs` sweeps that
+guarantee in CI, on top of the shipped-default pairing table. (Relative color syntax
+`oklch(from …)`/`color(from …)` support is audited at Phase 1 against
 [ADR-0012](decisions/ADR-0012-feature-graduation-criteria.md); `color-mix()` with
 black/white mix stands as the Core-tier formulation if needed.)
 
@@ -282,11 +293,11 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-color-ink-faint` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-600)` | on `surface` 3.3 |
 | `--wel-color-border` | semantic | `<color>` | light `var(--wel-grey-200)` / dark `var(--wel-grey-800)` | under `accent` 3.6 |
 | `--wel-color-border-strong` | semantic | `<color>` | light `var(--wel-grey-500)` / dark `var(--wel-grey-500)` | on `surface` 3.3; on `surface-raised` 3.6 |
-| `--wel-color-accent` | semantic | `<color>` | light `var(--wel-blue-600)` / dark `var(--wel-blue-400)` | on `surface` 4.7; under `accent-contrast` 4.7; on `surface-sunken` 4.3; on `border` 3.6 |
-| `--wel-color-accent-hover` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.06) c h)` | on `surface` 5.9; on `accent-tint` 5.1 |
-| `--wel-color-accent-active` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l - 0.10) c h)` | on `surface` 5.0 |
+| `--wel-color-accent` | semantic | `<color>` | light `var(--wel-blue-600)` / dark `var(--wel-blue-400)` | on `surface` 4.7; under `accent-contrast` 5.1; on `surface-sunken` 4.3; on `border` 3.6 |
+| `--wel-color-accent-hover` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l + 0.06 - 0.12 * clamp(0, (l - 0.12) * infinity, 1)) c h)` | on `surface` 5.9; on `accent-tint` 5.1 |
+| `--wel-color-accent-active` | semantic | `<color>` | `oklch(from var(--wel-color-accent) calc(l + 0.10 - 0.20 * clamp(0, (l - 0.12) * infinity, 1)) c h)` | on `surface` 5.0 |
 | `--wel-color-accent-tint` | semantic | `<color>` | `color-mix(in oklch, var(--wel-color-accent) 12%, var(--wel-color-surface))` | under `ink` 13.3; under `accent-hover` 5.1 |
-| `--wel-color-accent-contrast` | semantic | `<color>` | light `var(--wel-grey-50)` / dark `var(--wel-grey-975)` | on `accent` 4.7 |
+| `--wel-color-accent-contrast` | semantic | `<color>` | `color(from var(--wel-color-accent) xyz-d65 calc(clamp(0, (0.179 - y) * infinity, 1) * 0.9505) clamp(0, (0.179 - y) * infinity, 1) calc(clamp(0, (0.179 - y) * infinity, 1) * 1.089))` | on `accent` 5.1 |
 | `--wel-color-info` | semantic | `<color>` | light `var(--wel-blue-700)` / dark `var(--wel-blue-300)` | on `surface` 6.6; on `info-tint` 5.5; on `surface-sunken` 6.0 |
 | `--wel-color-success` | semantic | `<color>` | light `var(--wel-green-700)` / dark `var(--wel-green-300)` | on `surface` 6.1; on `success-tint` 5.1 |
 | `--wel-color-warning` | semantic | `<color>` | light `var(--wel-amber-700)` / dark `var(--wel-amber-300)` | on `surface` 6.6; on `warning-tint` 5.5 |
@@ -400,7 +411,7 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `accent` | `surface` | 4.5:1 | 4.69:1 | 7.42:1 | 4.69:1 | links / accent text |
 | `accent-hover` | `surface` | 4.5:1 | 6.08:1 | 5.90:1 | 5.90:1 | hovered links |
 | `accent-active` | `surface` | 4.5:1 | 7.18:1 | 5.03:1 | 5.03:1 | active links |
-| `accent-contrast` | `accent` | 4.5:1 | 4.69:1 | 7.42:1 | 4.69:1 | text on accent (primary button) |
+| `accent-contrast` | `accent` | 4.5:1 | 5.12:1 | 8.15:1 | 5.12:1 | text on accent (primary button) |
 | `border-strong` | `surface` | 3:1 | 3.34:1 | 5.26:1 | 3.34:1 | control borders (1.4.11) |
 | `info` | `surface` | 4.5:1 | 6.61:1 | 10.24:1 | 6.61:1 | info text |
 | `success` | `surface` | 4.5:1 | 6.09:1 | 10.62:1 | 6.09:1 | success text |
