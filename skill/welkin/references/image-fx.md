@@ -77,6 +77,18 @@ whatever is behind:
   prevents.
 - Don't put `.reveal` inside fixed/non-scrolling chrome — its view timeline
   never advances there.
+- Stagger a group: put `data-stagger` on the container whose direct children
+  are `.reveal`. Each sibling's entry starts a bit later (`sibling-index()`,
+  8% of the range per step, max four steps; tune `--wel-reveal-stagger` on the
+  container) but still finishes when fully in view. Engines without
+  `sibling-index()` reveal them together; reduced-motion users see no effect.
+
+```html
+<div data-stagger>
+  <figure class="reveal">…</figure>
+  <figure class="reveal">…</figure>
+</div>
+```
 
 ## `data-vt-image` — view-transition image morph
 

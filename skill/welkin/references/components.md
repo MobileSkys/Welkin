@@ -270,6 +270,8 @@ Knobs: `--wel-pagination-current-bg` / `-current-ink` / `-item-ink` /
 ## Select — platform (`select.css`)
 
 Native `<select>`, styled trigger, UA picker. No JS, ever. `data-size="sm|lg"`.
+Where `:open` is supported the caret flips and the border turns accent while
+the picker is open (nothing to add); elsewhere the caret stays static.
 
 ```html
 <label class="field">
@@ -334,13 +336,20 @@ Knobs: `--wel-field-gap`, `--wel-field-hint-ink`, `--wel-field-error-ink`.
 ## Dialog / Modal — platform (`dialog.css`) + optional `wel-dialog.js`
 
 Native `<dialog>`: `showModal()` gives focus trap, inert background, Esc, top
-layer. Closing is declarative (`form method="dialog"`). Opening: load
-`wel-dialog.js` and use `data-dialog-open="<id>"` on any button (or call
-`dialog.showModal()` yourself — 3 lines). `data-size="sm|lg"`;
-`data-dialog-modal="false"` on the invoker opens non-modally.
+layer. Closing is declarative (`form method="dialog"`). Opening is declarative
+too — Invoker Commands (`commandfor` + `command="show-modal"`, zero JS, works
+with scripting off; `command="close"` closes). For engines without invokers add
+the legacy `data-dialog-open="<id>"` to the same button and load
+`wel-dialog.js`, which yields to the engine for any button carrying
+`commandfor` (or call `dialog.showModal()` yourself — 3 lines).
+`data-size="sm|lg"`; non-modal opening has no command — use
+`data-dialog-open` + `data-dialog-modal="false"`.
 
 ```html
-<button class="button" data-variant="danger" data-dialog-open="confirm">Delete…</button>
+<button class="button" data-variant="danger" commandfor="confirm" command="show-modal"
+        data-dialog-open="confirm">Delete…</button>
+<!-- data-dialog-open is the fallback for engines without invokers; drop it
+     (and wel-dialog.js) if you target only invoker-capable browsers -->
 
 <dialog class="dialog" id="confirm" data-size="sm" aria-labelledby="confirm-title">
   <header>
@@ -370,6 +379,10 @@ Knobs: `--wel-dialog-bg` / `-ink` / `-radius` / `-padding` / `-shadow` /
 ## Popover / Dropdown menu — platform (`popover.css`) + optional `wel-anchor.js`
 
 Fully declarative: `popovertarget` toggles; light dismiss and Esc are native.
+(`commandfor="id" command="toggle-popover|show-popover|hide-popover"` is the
+invoker equivalent — keep `popovertarget` as the default, it is Core and what
+`wel-anchor.js` looks for.) Menu items stagger in via `sibling-index()` where
+supported (`--wel-motion-stagger`, zero under reduced motion, no markup needed).
 Plain lists — **no `role="menu"`** (it promises APG keyboard support the
 Popover API doesn't supply). `data-placement="block-end|inline-end|…"`,
 `data-size="sm"`. Load `wel-anchor.js` to tether where CSS anchor positioning
@@ -381,7 +394,7 @@ is unsupported (it no-ops where supported).
   <ul>
     <li><a href="…" aria-current="page">Overview</a></li>
     <li><a href="…">Settings</a></li>
-    <li><button data-dialog-open="confirm">Delete…</button></li>
+    <li><button commandfor="confirm" command="show-modal">Delete…</button></li>
   </ul>
 </div>
 ```
@@ -510,6 +523,9 @@ alerts with JS off), not at end of body.
 </script>
 ```
 
+A batch of toasts enters with a `sibling-index()` cascade where supported
+(`--wel-motion-stagger`, default 40ms, zero under reduced motion; no markup).
+
 Knobs: `--wel-toast-bg` / `-ink` / `-border` / `-accent` / `-radius` /
 `-gap` / `-shadow` / `-max-inline-size`.
 
@@ -520,7 +536,7 @@ Knobs: `--wel-toast-bg` / `-ink` / `-border` / `-accent` / `-radius` /
 | `wel-tabs.js` | `<wel-tabs>` | Upgrades heading+section pairs to APG tabs |
 | `wel-combobox.js` | `<wel-combobox>` | Upgrades input+datalist to filtered listbox |
 | `wel-toast-region.js` | `<wel-toast-region>` | Queue/politeness/dismiss/timers |
-| `wel-dialog.js` | `[data-dialog-open]` | Declarative dialog opening (delegated) |
+| `wel-dialog.js` | `[data-dialog-open]` | Legacy/fallback dialog opening (delegated); yields to native `commandfor` |
 | `wel-tooltip.js` | `.tooltip[popover]` triggers | Hover/focus reveal, 1.4.13 trio |
 | `wel-anchor.js` | any `[popover]` + invoker | JS tether where CSS anchor positioning missing (else no-op) |
 | `table-sort.js` | `.table[data-sortable]` | Client sort; `wel-sort` cancelable event |

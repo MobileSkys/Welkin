@@ -215,6 +215,25 @@
 
 /* knobs: start scale and block-axis rise */
 .reveal.hero { --wel-reveal-scale: 0.9; --wel-reveal-distance: 1rem; }</code></pre>
+
+    <h3>Staggered group — <code>data-stagger</code></h3>
+    <p>Put <code>data-stagger</code> on the container and each direct
+    <code>.reveal</code> child starts its entry a little later than the one before
+    (<code>sibling-index()</code>, capped at four steps). Every item still finishes
+    exactly when fully in view; engines without <code>sibling-index()</code> reveal
+    them together.</p>
+    <div class="demo-row" data-stagger>
+      <figure class="reveal"><img src="img/fx-alpine.svg" alt="" width="400" height="250"><figcaption>first</figcaption></figure>
+      <figure class="reveal"><img src="img/fx-dunes.svg" alt="" width="400" height="250"><figcaption>second</figcaption></figure>
+      <figure class="reveal"><img src="img/fx-harbour.svg" alt="" width="400" height="250"><figcaption>third</figcaption></figure>
+    </div>
+    <pre tabindex="0"><code>&lt;div data-stagger&gt;
+  &lt;figure class="reveal"&gt;…&lt;/figure&gt;
+  &lt;figure class="reveal"&gt;…&lt;/figure&gt;
+&lt;/div&gt;
+
+/* knob: per-sibling range offset (default 8%) */
+[data-stagger] { --wel-reveal-stagger: 12%; }</code></pre>
   </section>
 
   <section class="stack">
