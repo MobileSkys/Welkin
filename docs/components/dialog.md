@@ -38,7 +38,7 @@ close button; body (flow content); footer (action cluster).
 ## HTML structure
 
 ```html
-<button class="button" data-variant="danger" data-dialog-open="confirm-delete">
+<button class="button" data-variant="danger" commandfor="confirm-delete" command="show-modal">
   Delete project…
 </button>
 
@@ -69,15 +69,27 @@ exit. Non-modal use (`.show()`) is permitted but exceptional: no backdrop, no tr
 Esc (unless `closedby` provides it), renders in flow, not top layer; styled via
 `.dialog:not(:modal)`.
 
-**The one platform gap — stated precisely:** the dialog itself, its closing, its focus
-behaviour, and its modality are JS-free. *Opening* a closed dialog is not: there is no
-Baseline declarative invoker today. Invoker Commands
-(`<button command="show-modal" commandfor="confirm-delete">`) close this gap and are
-shipping across engines through 2025–26, but at time of writing they are not confirmed
-Baseline Newly Available, so per
-[ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md) they may not appear in
-shipped markup. Until intake, the Core path is a ~3-line script or the optional
-`wel-dialog` module (see Behaviour tiers).
+**Opening is declarative too — Invoker Commands.** `<button commandfor="id"
+command="show-modal">` opens the dialog as a modal with no script at all (it works with
+JavaScript disabled), and `command="close"` / `"request-close"` on any button closes
+it. Invoker Commands are Baseline Newly Available (web-features `invoker-commands`,
+since 2025-12-12; Chrome 135, Firefox 144, Safari 26.2), so they are the **recommended
+pattern** and appear in shipped markup under the Enhanced tier
+([03](../03-browser-support-policy.md) contract row; ADR-0012 intake approved for
+1.4.0, T-140). **Fallback:** engines without them ignore the two attributes, so add the
+legacy `data-dialog-open="id"` to the same button and load `wel-dialog.js`:
+
+```html
+<button class="button" commandfor="confirm-delete" command="show-modal"
+        data-dialog-open="confirm-delete">Delete project…</button>
+```
+
+`wel-dialog.js` detects native support (`'commandForElement' in
+HTMLButtonElement.prototype`) and **yields** for any button carrying `commandfor`, so
+the pair never double-fires. Non-modal opening has no invoker command — it stays
+`data-dialog-open` + `data-dialog-modal="false"` (or `dialog.show()`). With neither
+invoker support nor script a closed dialog cannot be opened — the documented no-JS gap
+below, unchanged.
 
 ## Variants & modifiers
 
@@ -119,10 +131,11 @@ confirms it, the `::backdrop` rule carries a literal fallback in its `var()`.
 
 ### Core (Baseline Widely Available)
 
-Everything except declarative opening. `<dialog>` is Core
+Everything except declarative opening (which is Enhanced, below). `<dialog>` is Core
 ([03](../03-browser-support-policy.md)): `showModal()` provides top layer, focus trap,
 background inert, Esc-to-close, backdrop. Closing via `form method="dialog"` and
-`returnValue` is declarative. Opening requires the Core script path:
+`returnValue` is declarative. Opening in an engine without Invoker Commands requires the
+Core script path:
 
 ```html
 <script type="module">
@@ -132,8 +145,8 @@ background inert, Esc-to-close, backdrop. Closing via `form method="dialog"` and
 </script>
 ```
 
-This is the entire behaviour; the optional `wel-dialog` module is this plus late-added-DOM
-handling. Open/close is instant in Core (03 contract).
+This is the entire fallback behaviour; the optional `wel-dialog` module is this plus
+late-added-DOM handling. Open/close is instant in Core (03 contract).
 
 ### Enhanced (Baseline Newly Available)
 
@@ -141,7 +154,7 @@ handling. Open/close is instant in Core (03 contract).
 |---------|------------------|-------------|------------------------------------------|
 | `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Fade/scale entry and exit on panel and `::backdrop`; `display` and `overlay` in the transition list so exit animates before leaving the top layer (engines without `overlay` skip it — exit may snap, entry unaffected) | Instant open/close (03 row) |
 | `closedby="any"` | — (inert HTML attribute; no gate possible, none needed) | Light dismiss: outside-click and close-request close the dialog. Near/at Baseline Newly Available at writing; if the intake review finds it pre-Baseline it is withheld — nothing else changes, because the close button is mandatory regardless | Explicit close button + Esc (Core) |
-| Invoker Commands (`command="show-modal"` / `commandfor`) | — (HTML; **pre-Baseline at writing — not in shipped markup**, ADR-0012) | Fully declarative opening; the Core script is deleted on graduation | Core script path above |
+| Invoker Commands (`command="show-modal"` / `"close"` / `commandfor`) | — (HTML attributes; no `@supports` gate exists, none needed — additive by nature) | Fully declarative opening and closing, zero JS. **Baseline Newly Available since 2025-12-12** (T-140 intake) | Attributes ignored; `data-dialog-open` + `wel-dialog.js` / the Core script opens it exactly as before. The module is deleted when invokers reach Widely Available |
 
 All durations route through `calc(var(--wel-motion-duration-2) * var(--wel-motion))`.
 
@@ -149,9 +162,10 @@ All durations route through `calc(var(--wel-motion-duration-2) * var(--wel-motio
 
 Documented here although the tier is Platform, because opening is the one gap:
 
-- **Ladder justification:** rung 2 delivers modality, trap, Esc, closing, focus return.
-  It cannot yet deliver *opening* — Invoker Commands will, but are pre-Baseline. Scope of
-  JS: one `showModal()` call.
+- **Ladder justification:** rung 2 delivers modality, trap, Esc, closing, focus return,
+  and (via Invoker Commands) opening. What it cannot deliver is opening in engines
+  without invokers, and non-modal `show()`. Scope of JS: one `showModal()`/`show()` call,
+  and none at all where the engine handles `commandfor`.
 - **Element/module:** `[data-dialog-open]` data-attribute upgrader; `wel-dialog.js`
   (optional; the inline 3-liner above is an equally supported choice). ≤ 2 KB per
   [08](../08-javascript-policy.md).
@@ -159,13 +173,14 @@ Documented here although the tier is Platform, because opening is the one gap:
 
 | Attribute | On | Meaning |
 |-----------|----|---------|
-| `data-dialog-open="{id}"` | invoker button | `showModal()` the dialog with that id |
+| `data-dialog-open="{id}"` | invoker button | `showModal()` the dialog with that id (legacy/fallback path; ignored where the button has `commandfor` and the engine supports it) |
 | `data-dialog-modal="false"` | invoker button | use `show()` (non-modal) instead |
 
 - **Events (state out):** none of our own — native `close` and `cancel` on the dialog
   are the API; `returnValue` carries the closing button's `value`.
-- **No-JS baseline:** a closed dialog cannot be opened without script — stated plainly.
-  Consequence: content that must be reachable no-JS does not belong in a dialog; serve it
+- **No-JS baseline:** in engines with Invoker Commands, `commandfor`/`command` opens the
+  dialog with scripting disabled. In engines without them a closed dialog cannot be
+  opened without script — stated plainly. Consequence: content that must be reachable no-JS does not belong in a dialog; serve it
   as a page, or server-render the dialog with the `open` attribute (renders in-flow,
   non-modal, close button still works via `method="dialog"`). This is the documented
   no-JS pattern.
@@ -233,6 +248,9 @@ stacking; the design system does not); `.dialog` inside `.popover`.
   an already-open guard (`showModal()` on an open dialog throws, and a server-rendered
   in-flow panel must not be re-modal-ised). The inline 3-liner remains an equally
   supported choice. Both are deleted when Invoker Commands graduate (ADR-0012).
+- ~~Invoker Commands intake~~ **Resolved (T-140):** Baseline Newly Available since
+  2025-12-12; recommended markup is `commandfor` + `command="show-modal"`, with
+  `wel-dialog.js` now detect-and-yield (it keeps serving `data-dialog-open`).
 - Drawer/sheet placement (`data-placement="inline-end"`) — post-v1, needs its own motion
   contract.
 
@@ -241,6 +259,6 @@ stacking; the design system does not); `.dialog` inside `.popover`.
 Bootstrap Modal — requires `bootstrap.js` + a hand-rolled focus trap, `data-bs-toggle`
 plumbing, scroll-lock hacks, and ARIA wired manually. We differ: the browser's
 `<dialog>` supplies trap/inert/Esc/top-layer ([09](../09-accessibility.md) names this the
-platform-first selling point); our total JS is one `showModal()` call, deleted entirely
-when Invoker Commands graduate ([ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md));
+platform-first selling point); our total JS is one `showModal()` call, needed only where Invoker Commands are missing and deleted entirely
+when they graduate ([ADR-0012](../decisions/ADR-0012-feature-graduation-criteria.md));
 entry/exit animation is pure CSS (`@starting-style`), not a JS class-toggle dance.

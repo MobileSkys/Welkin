@@ -26,13 +26,13 @@ override — two parallel definitions per token, drift guaranteed. CSS now offer
 
 ## Fallback stance
 
-`light-dark()` is Newly-Available-adjacent (Baseline mid-2024). It is treated as
-**core-eligible pending the Phase 1 graduation audit**
-([ADR-0012](ADR-0012-feature-graduation-criteria.md)). If the audit fails, the documented
-fallback is: unsupporting browsers resolve to the *light* palette (achieved by
-falling-back token definitions preceding the `light-dark()` redefinition), i.e. static
-light — functional, never broken. This fallback text lives in the Enhanced table of
-[03-browser-support-policy.md](../03-browser-support-policy.md) until graduation.
+`light-dark()` was treated as **core-eligible pending graduation audit**
+([ADR-0012](ADR-0012-feature-graduation-criteria.md)). **Graduated 2026-11-13** (1.4.0
+re-audit, board doc D-14): Baseline Widely Available since 2026-11-13, already ungated, so
+graduation changed no source. The static-light fallback (falling-back token definitions
+preceding the `light-dark()` redefinition) remains in place for below-Core engines and is
+recorded in the graduated-features archive of
+[03-browser-support-policy.md](../03-browser-support-policy.md).
 
 ## Consequences
 
