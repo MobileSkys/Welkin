@@ -445,7 +445,10 @@
      the unknown property and render the same radius as plain round corners —
      no gate needed, never a broken image. The generous default radius is the
      point (squircles read at sizes where round corners look bulbous); tune
-     with --wel-squircle-radius. */
+     with --wel-squircle-radius.
+     EXPERIMENTAL (docs/03 Experimental lane, ADR-0012 amendment 2026-11-12):
+     corner-shape is below Baseline intake (Chrome only in stable; Safari
+     27.3 beta; Firefox Nightly). Re-check every minor release. */
   .squircle {
     --wel-squircle-radius: 25%;
 
@@ -544,7 +547,10 @@
      covers rather than distorts. Fallback is built in (AC-260): engines
      without object-view-box drop the unknown property at parse time and
      the ungated cover is a no-op at the image's natural ratio — the
-     full, uncropped image, never a broken one. */
+     full, uncropped image, never a broken one.
+     EXPERIMENTAL (docs/03 Experimental lane, ADR-0012 amendment 2026-11-12):
+     object-view-box is below Baseline intake (Chrome only in stable; Safari
+     27.3 beta; Firefox not implemented). Re-check every minor release. */
   .view-crop {
     --wel-view-box: inset(15%);
 
