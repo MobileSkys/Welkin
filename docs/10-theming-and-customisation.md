@@ -1,5 +1,5 @@
 ---
-status: Review
+status: Accepted
 depends-on: [04-css-architecture.md, 05-design-tokens.md]
 ---
 

@@ -1,5 +1,5 @@
 ---
-status: Review
+status: Accepted
 depends-on: [01-vision-and-principles.md]
 ---
 

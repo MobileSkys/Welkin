@@ -1,5 +1,5 @@
 ---
-status: Review
+status: Accepted
 depends-on: [04-css-architecture.md, 05-design-tokens.md, 06-layout-system.md, 08-javascript-policy.md, 09-accessibility.md]
 ---
 
