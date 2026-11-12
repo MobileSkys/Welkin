@@ -78,6 +78,20 @@
     wel-toast-region:defined wel-toast[data-closing] {
       opacity: 0;
     }
+
+    /* Staggered entry (T-140): a batch of toasts cascades in by sibling
+       position, capped at 5 steps so a long stack never waits more than
+       5 x --wel-motion-stagger. Motion only — the end state is unchanged
+       and nothing is hidden outside @starting-style. Exit never waits. */
+    @supports (transition-delay: calc(sibling-index() * 1ms)) {
+      wel-toast-region:defined wel-toast {
+        transition-delay: calc((min(sibling-index(), 6) - 1) * var(--wel-motion-stagger) * var(--wel-motion));
+      }
+
+      wel-toast-region:defined wel-toast[data-closing] {
+        transition-delay: 0s;
+      }
+    }
   }
 
   /* The stack-reflow morph groups (module-driven view transition). */

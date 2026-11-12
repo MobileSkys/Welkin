@@ -74,6 +74,12 @@ Shared doctrine, binding for every current and future effect in the family:
 <!-- scroll-driven reveal -->
 <img class="reveal" src="peak.jpg" alt="…">
 
+<!-- staggered group: opt in on the container (direct .reveal children) -->
+<div data-stagger>
+  <figure class="reveal">…</figure>
+  <figure class="reveal">…</figure>
+</div>
+
 <!-- view-transition image morph (requires the opt-in VT module) -->
 <img data-vt-image style="--wel-vt: hero" src="thumb.jpg" alt="…">
 
@@ -210,6 +216,7 @@ Composability rules (the family is designed to stack — but on the right node):
 | `--wel-edge-fade` | `--wel-space-8` | — | Depth of the fade band. |
 | `--wel-reveal-scale` | `0.96` | — | `.reveal` start scale. |
 | `--wel-reveal-distance` | `0px` | — | `.reveal` start block-axis offset; positive rises into place. |
+| `--wel-reveal-stagger` | `8%` | — | `[data-stagger] > .reveal` only: how much later (percent of the entry range) each successive sibling's reveal starts. Read with a fallback; set it on the container. |
 | `--wel-frosted-bg` | `color-mix(in oklch, --wel-color-surface 68%, transparent)` | — | Caption bar scrim when `backdrop-filter` is available. The no-blur fallback scrim (92% surface) is internal — near-solid so text stays readable without the glass. |
 | `--wel-frosted-blur` | `16px` | — | Backdrop blur radius. |
 | `--wel-frosted-saturate` | `1.8` | — | Backdrop saturation boost (the "glass" pop). |
@@ -254,6 +261,7 @@ capability/preference gates, not support gates.
 | Relative colour syntax (`oklch(from …)`) | None — the failure mode is already additive | `.duotone` endpoints derive from the cascaded accent | Engines without it invalidate the overlay `background-color` at computed-value time: overlays render transparent and the image shows **desaturated only** — readable, on-doctrine (docs/03 row) |
 | `mask-image` / `mask-composite` | None — additive by nature | `.edge-fade` gradient melts | Unfaded image (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | `@supports (animation-timeline: view())` **around the hidden start state** | `.reveal` entry animation | The gate is load-bearing: outside it no `opacity: 0` exists, so no-support engines (and reduced-motion users, whose gate nests inside) always see the image — never a stuck blank (docs/03 row) |
+| `sibling-index()` (Baseline Newly Available since 2026-08-18; T-140) | `@supports (transition-delay: calc(sibling-index() * 1ms))`, nested inside the scroll-driven gate | `[data-stagger] > .reveal` groups: each sibling's `animation-range` start shifts later (8% per step, capped at four steps), the end stays `entry 100%` | Engines without it drop the declaration at parse time and keep the plain `entry` range — items reveal together. Never adds a hidden state; every item still completes exactly when fully in view (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | Same gate, **around the headroom scale and the animation together** | `.parallax` drift | Outside the gate the media is unscaled and motionless — a plain image in a wrapper whose `overflow: clip` is a no-op (docs/03 row) |
 | `object-view-box` | None — unknown property drops at parse time | `.view-crop` in-source art direction | Full uncropped image; the paired ungated `object-fit: cover` is a no-op at natural ratio (docs/03 row) |
 | `mask-image` (multi-layer + `add` compositing) | None — additive by nature | `.textured` halftone/grain prints | Plain unmasked image, same contract as `.edge-fade` (docs/03 row) |
