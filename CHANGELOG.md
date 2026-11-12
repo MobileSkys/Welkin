@@ -5,6 +5,50 @@ names/tiers, component classes/parts/attribute axes, and custom-element APIs are
 major-version surface. Components marked **Experimental** in their spec are exempt and
 say so there.
 
+## 1.4.0 — 2026-11-13
+
+Minor-release Baseline re-audit (ADR-0012 cadence, board doc D-14, verified against
+web-features 3.46.0): three newly interoperable platform features enter the Enhanced
+tier, two graduations are recorded, and two Chrome-only utilities are honestly
+relabelled Experimental.
+
+### Added
+
+- **Invoker commands** (T-140): `<button commandfor="id" command="show-modal">` is now
+  the recommended way to open dialogs, with no JS at all (Baseline Newly Available
+  since 2025-12-12). `js/wel-dialog.js` detects native support
+  (`commandForElement` on `HTMLButtonElement.prototype`) and yields for any button
+  carrying `commandfor`; existing `[data-dialog-open]` markup keeps working unchanged.
+  `command="toggle-popover"` is documented as the equivalent of `popovertarget`.
+- **Staggered entry via `sibling-index()`** (T-140): new token
+  `--wel-motion-stagger` (40ms). Toast stacks (capped at 5 steps) and popover/menu
+  items (capped at 6) enter one after another; `.reveal` groups stagger when wrapped
+  in `[data-stagger]` (opt-in, `--wel-reveal-stagger`, default 8% of the entry range).
+  Gated `@supports (transition-delay: calc(sibling-index() * 1ms))`; zero under
+  `prefers-reduced-motion`; never introduces a hidden state outside the gate.
+- **`:open` select caret** (T-140): the select caret flips and the border takes the
+  accent while the picker is open, gated `@supports selector(:open)`; static caret
+  otherwise.
+- **Experimental lane** (T-139, ADR-0012 amendment 2026-11-12): a narrow, written
+  exception for ungated, purely additive, paint-only properties below intake.
+
+### Changed
+
+- **`.squircle` and `.view-crop` are now Experimental** (T-139): `corner-shape` and
+  `object-view-box` are Chrome-only in stable (Safari 27.3 beta; Firefox none), so
+  they never met intake. No rendering change; the specs previously claimed Baseline
+  Newly Available, which was wrong. As Experimental utilities they are semver-exempt.
+- **docs/03 re-audited** (T-139): Core table gains a Baseline-status column (Popover,
+  `@property` and `text-wrap: balance` annotated as Newly-in-Core); masks
+  (Widely since 2026-06-07) and `light-dark()` (Widely since 2026-11-13) move to a
+  graduated-features archive — both were already ungated, so no CSS changes;
+  scroll-driven animations now cite Firefox 159; the subgrid wrapper is documented as
+  intentional; the cross-document view-transition trigger names `@view-transition`.
+- Design docs 01 and 03–12, and the image-fx and view-transitions specs, are marked
+  Accepted.
+- Dev dependencies refreshed, stylelint 16 → 17 (T-136); `dist/` output unchanged by
+  the toolchain bump.
+
 ## 1.3.0 — 2026-07-17
 
 Text-on-accent becomes a real derivation: any in-gamut accent — pure black and
