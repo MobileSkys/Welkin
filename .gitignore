@@ -26,3 +26,6 @@ desktop.ini
 # Kanban board (local state incl. auth token)
 .kanban/
 site/
+
+# Claude Code agent worktrees
+.claude/worktrees/
