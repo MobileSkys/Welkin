@@ -7,6 +7,11 @@
    picker stays UA-rendered by policy — color-scheme on :root already keeps
    it dark in dark mode, which beats any Core styling trick. No JS, ever:
    rebuilding <select> is the anti-pattern this component exists to end. */
+/* Typed so the caret flip animates (T-140, :open below). */
+@layer tokens {
+  @property --wel-select-caret-turn { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+}
+
 @layer components {
   .select {
     --wel-select-bg: var(--wel-color-surface);
@@ -38,14 +43,16 @@
        the caret genuinely consumes --wel-select-caret-color in both schemes
        and under [data-theme] pinning. The ±0.5px stop softens the diagonal. */
     background-image:
-      linear-gradient(135deg, var(--wel-select-caret-color) calc(50% - 0.5px), transparent calc(50% + 0.5px)),
-      linear-gradient(45deg, transparent calc(50% - 0.5px), var(--wel-select-caret-color) calc(50% + 0.5px));
+      linear-gradient(calc(135deg + var(--wel-select-caret-turn)), var(--wel-select-caret-color) calc(50% - 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(calc(45deg + var(--wel-select-caret-turn)), transparent calc(50% - 0.5px), var(--wel-select-caret-color) calc(50% + 0.5px));
     background-position:
       calc(100% - var(--wel-select-padding-inline)) 50%,
       calc(100% - var(--wel-select-padding-inline) - var(--wel-select-caret-size) / 2) 50%;
     background-size: calc(var(--wel-select-caret-size) / 2) var(--wel-select-caret-size);
     background-repeat: no-repeat;
-    transition: border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease);
+    transition:
+      border-color calc(var(--wel-motion-duration-1) * var(--wel-motion)) var(--wel-motion-ease),
+      --wel-select-caret-turn calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease);
   }
 
   /* background-position has no flow-relative syntax — a permitted physical
@@ -102,6 +109,19 @@
   }
 
   /* Focus ring is the single global :focus-visible rule in base. */
+
+  /* Open picker (T-140): :open is Baseline Newly Available (Chrome 133 /
+     Firefox 136 / Safari 26.5). A gradient caret cannot be transformed, so
+     "rotating" it means advancing both gradient angles by 180deg — the
+     V flips to a Λ in the same box, animated via the registered angle.
+     Gated so engines without :open keep the static caret. */
+  @supports selector(:open) {
+    .select:open {
+      --wel-select-caret-turn: 180deg;
+
+      border-color: var(--wel-color-accent);
+    }
+  }
 
   .select:user-invalid {
     border-color: var(--wel-color-danger);
