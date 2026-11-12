@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | Review |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
 | **Stability** | Experimental |
 | **Version target** | post-v1 |

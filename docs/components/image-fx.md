@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| **Status** | Review |
+| **Status** | Accepted |
 | **Tier** | Pure CSS |
-| **Stability** | Experimental |
+| **Stability** | Experimental — and `.squircle` / `.view-crop` sit in the docs/03 **Experimental lane** (below Baseline intake, semver-exempt; see [Behaviour tiers](#experimental-lane-below-baseline-intake)) |
 | **Version target** | post-v1 |
 
 ## Purpose
@@ -255,12 +255,24 @@ capability/preference gates, not support gates.
 | `mask-image` / `mask-composite` | None — additive by nature | `.edge-fade` gradient melts | Unfaded image (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | `@supports (animation-timeline: view())` **around the hidden start state** | `.reveal` entry animation | The gate is load-bearing: outside it no `opacity: 0` exists, so no-support engines (and reduced-motion users, whose gate nests inside) always see the image — never a stuck blank (docs/03 row) |
 | Scroll-driven animations (`animation-timeline: view()`) | Same gate, **around the headroom scale and the animation together** | `.parallax` drift | Outside the gate the media is unscaled and motionless — a plain image in a wrapper whose `overflow: clip` is a no-op (docs/03 row) |
-| `object-view-box` | None — unknown property drops at parse time | `.view-crop` in-source art direction | Full uncropped image; the paired ungated `object-fit: cover` is a no-op at natural ratio (docs/03 row) |
 | `mask-image` (multi-layer + `add` compositing) | None — additive by nature | `.textured` halftone/grain prints | Plain unmasked image, same contract as `.edge-fade` (docs/03 row) |
 | `view-transition-class` (Level 2) | None — unknown selector/property drop additively | `data-vt-image` morph treatment | Default VT morph (stretch + cross-fade); owned by the [view-transitions spec](view-transitions.md) |
 | `backdrop-filter` | `@supports (backdrop-filter: blur(1px))` around the glass branch | `.frosted-caption` blur+saturate glass over a 68% scrim | Ungated near-solid (92% surface) scrim — caption text readable over any image, just no glass (docs/03 row) |
 | `clip-path: shape()` | `@supports (clip-path: shape(…))` | `.organic-frame` blob/arch/scallop crops | Ungated `border-radius` analogues: blob and arch keep honest approximations, scallop falls back to a plain rounded crop; the fallback radius is zeroed inside the gate so the clips never intersect (docs/03 row) |
-| `corner-shape: squircle` | None — `corner-shape` only reshapes how `border-radius` corners draw, so its absence is inherently additive | `.squircle` superellipse corners | Plain round corners at the same `--wel-squircle-radius` (docs/03 row) |
+
+### Experimental lane (below Baseline intake)
+
+`.squircle` and `.view-crop` are **Experimental** utilities: their properties are
+**not** Baseline Newly Available, so they ship ungated only under the docs/03
+Experimental lane ([ADR-0012 amendment 2026-11-12](../decisions/ADR-0012-feature-graduation-criteria.md),
+board Q-98). They are semver-exempt and may change or be removed in a minor release.
+Each is purely additive and paint-only; they are re-checked at every minor release
+and promoted to the Enhanced table above when they reach Newly Available.
+
+| Feature | Real engine status (web-features 3.46.0 / MDN BCD 8.1.9, 2026-11-12) | `@supports` gate | Enhancement | Fallback experience (lane entry in 03) |
+|---------|------------------------------------------------------------|------------------|-------------|------------------------------------------|
+| `corner-shape: squircle` | **Limited** — Chrome 139; Safari 27.3 **beta** only; Firefox Nightly only | None — `corner-shape` only reshapes how `border-radius` corners draw, so its absence is inherently additive | `.squircle` superellipse corners | Plain round corners at the same `--wel-squircle-radius` |
+| `object-view-box` | **Limited** — Chrome 104; Safari 27.3 **beta** only; Firefox not implemented | None — unknown property drops at parse time | `.view-crop` in-source art direction | Full uncropped image; the paired ungated `object-fit: cover` is a no-op at natural ratio |
 
 ### JS enhancement
 

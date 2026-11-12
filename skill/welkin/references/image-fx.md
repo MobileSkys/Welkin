@@ -202,6 +202,10 @@ Wrapper class:
 <img class="squircle" src="avatar.jpg" alt="…">
 ```
 
+- **Experimental** (semver-exempt; may change in a minor). `corner-shape` is
+  not Baseline: stable Chrome 139+ only, Safari 27.3 beta, Firefox Nightly
+  only (Nov 2026). Firefox and Safari visitors see the fallback, so design
+  for it.
 - `corner-shape: squircle` over `--wel-squircle-radius` (default 25%).
   Fallback is automatic: no support → plain round corners at the same
   radius. Never gate it yourself.
@@ -266,7 +270,9 @@ framings, no extra files:
   `--wel-view-box` to any `inset()`/`xywh()`.
 - Ships with `object-fit: cover` so mismatched view/element ratios cover
   rather than distort.
-- Chromium-only as of 2026: elsewhere the property drops at parse and the
+- **Experimental** (semver-exempt; may change in a minor). `object-view-box`
+  is not Baseline: stable Chrome 104+ only, Safari 27.3 beta, no Firefox
+  implementation (Nov 2026). Elsewhere the property drops at parse and the
   full image shows (that's the designed fallback — compose so the uncropped
   image still works).
 - Composes with media filters and corner crops; with `.adaptive-crop` it's
