@@ -19,6 +19,13 @@
     --wel-motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
     --wel-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
     --wel-motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Per-sibling entry-delay step for sibling-index() staggers (T-140:
+       toast stack, popover items). Always written
+       calc(n * var(--wel-motion-stagger) * var(--wel-motion)), so reduced
+       motion zeroes it by the multiplier rule. (.reveal groups stagger in
+       scroll-range percent instead: --wel-reveal-stagger.) */
+    --wel-motion-stagger: 40ms;
   }
 
   @media (prefers-reduced-motion: reduce) {

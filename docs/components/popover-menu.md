@@ -46,8 +46,8 @@ content for panels).
   <ul>
     <li><a href="/settings">Settings</a></li>
     <li><a href="/members">Members</a></li>
-    <li><button class="button" data-variant="ghost" data-dialog-open="confirm-delete">
-      Delete…</button></li>
+    <li><button class="button" data-variant="ghost" commandfor="confirm-delete"
+      command="show-modal">Delete…</button></li>
   </ul>
 </div>
 ```
@@ -61,6 +61,16 @@ rest of page, per [09](../09-accessibility.md). Under Enhanced anchor positionin
 `popovertarget` invoker is the popover's *implicit anchor* — no `anchor-name` wiring for
 the common case; explicit `anchor-name`/`position-anchor` only when the anchor is not
 the invoker.
+
+**Invoker Commands (Baseline Newly Available, T-140).** `popovertarget` remains the
+recommended popover toggle — it is Core, works in every engine this component supports,
+and is what the `wel-anchor`/`wel-tooltip` fallbacks look for. The equivalent invoker
+form, `<button commandfor="project-menu" command="toggle-popover">`, adds explicit
+`show-popover` / `hide-popover` commands (a "Close" button inside the panel is just
+`<button commandfor="project-menu" command="hide-popover">`). Items that open a dialog
+use `commandfor` + `command="show-modal"` as in the example above; for engines without
+invokers add `data-dialog-open` and load `wel-dialog.js` (see [dialog.md](dialog.md)).
+Engines without invokers ignore the attributes — additive by nature.
 
 ## Variants & modifiers
 
@@ -123,6 +133,7 @@ tethered placement in non-supporting browsers opt into the `wel-anchor` module b
 | CSS anchor positioning (`position-anchor`, `position-area`, implicit invoker anchor) | `@supports (anchor-name: --x)` | Popover tethers to its invoker on the `data-placement` side, offset by `--wel-popover-offset` | Centred panel as above (03 row + this spec's Core detail) |
 | `position-try-fallbacks` | same block as above | Flips to the opposite side / slides when the preferred side lacks room | — (part of the same enhancement) |
 | `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Fade + 2% scale entry, fade exit (`display` transitions with `allow-discrete`) | Instant appear/disappear (03 row) |
+| `sibling-index()` (Baseline Newly Available since 2026-08-18; T-140) | `@supports (transition-delay: calc(sibling-index() * 1ms))`, nested in the `allow-discrete` block | Menu `<li>` items cascade in (fade + 0.25rem rise) behind the panel, one `--wel-motion-stagger` step per sibling, capped at 6 steps. Zero delay under `prefers-reduced-motion` (multiplier rule) | Items enter together with the panel; the hidden start state exists only in `@starting-style`, so no item is ever held at `opacity: 0` outside the gate. Motion-only, never layout |
 
 Anchor positioning intake passed at implementation (T-41), following the navbar (T-38)
 and tooltip (T-45) precedents — the `@supports` gate carries the

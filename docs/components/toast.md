@@ -117,6 +117,7 @@ document flow.
 | Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
 |---------|------------------|-------------|------------------------------------------|
 | `@starting-style` + `transition-behavior: allow-discrete` | `@supports (transition-behavior: allow-discrete)` | Toasts slide/fade in on entry and fade out on dismissal | Toasts appear/disappear instantly ([03 contract](../03-browser-support-policy.md)) |
+| `sibling-index()` (Baseline Newly Available since 2026-08-18; T-140) | `@supports (transition-delay: calc(sibling-index() * 1ms))`, nested in the `allow-discrete` block | A batch of toasts cascades in by stack position, one `--wel-motion-stagger` step each, capped at 5 steps; exit (`[data-closing]`) never waits; zero under `prefers-reduced-motion` | Toasts enter together. Motion-only: the end state and reachability are identical |
 | View transitions | runtime `document.startViewTransition` detect (module-driven, as in [tabs.md](tabs.md)) | Remaining stack reflows smoothly when a toast leaves | Stack reflows instantly ([03](../03-browser-support-policy.md)) |
 
 *Implementation note (T-49):* exit works by setting `data-closing` (the CSS fades),

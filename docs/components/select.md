@@ -87,7 +87,7 @@ the platform ([form-controls.md](form-controls.md)).
 | Focus | `:focus-visible` | Global focus ring | — |
 | Disabled | `:disabled` | Reduced-contrast ink/bg pair; native semantics | Implicit via `disabled` |
 | Invalid | `:user-invalid` | `--wel-color-danger` border; error text via field wrapper | Error via `aria-describedby` (field pattern) |
-| Open (picker) | `:open` — **Enhanced-only styling hook**; not in the 07 core vocabulary, declared here as component-specific | Caret rotates; trigger border accent | Native expanded state (UA) |
+| Open (picker) | `:open` — **Enhanced-only styling hook** (Baseline Newly Available; shipped T-140, gated `@supports selector(:open)`); not in the 07 core vocabulary, declared here as component-specific | Caret flips (both gradient angles advance 180deg via the registered `--wel-select-caret-turn`, animated on `--wel-motion`) and the trigger border turns accent | Native expanded state (UA). Engines without `:open`: static caret, unchanged border (the gate skips the rule) |
 | Option selected | `option:checked` (Enhanced styling) | `::checkmark` + accent ink | Native selected state (UA) |
 
 ## Tokens consumed
@@ -132,6 +132,12 @@ The honest Core reality, stated plainly:
 - Full function: keyboard, type-ahead, form participation, mobile native pickers.
 
 ### Enhanced (Baseline Newly Available)
+
+The `:open` caret flip is the one Enhanced piece that ships today (see States):
+`@supports selector(:open)` around `.select:open`. The gradient caret cannot be
+transformed (it is a background, and `select` has no pseudo-elements), so the flip is
+done by animating the two gradient angles through the typed `--wel-select-caret-turn`
+(`0deg` to `180deg`), which turns the V into a Λ in the same box.
 
 | Feature | `@supports` gate | Enhancement | Fallback experience (contract ref in 03) |
 |---------|------------------|-------------|------------------------------------------|

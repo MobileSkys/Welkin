@@ -183,6 +183,8 @@ steps maintain ratio, so layouts breathe proportionally at every size. One extra
 
 - Durations: `--wel-motion-duration-1` (~100ms) … `--wel-motion-duration-4` (~500ms).
 - Easings: `--wel-motion-ease` / `-ease-in` / `-ease-out` / `-ease-spring`.
+- Stagger: `--wel-motion-stagger` (~40ms) is the per-sibling entry-delay step for `sibling-index()`
+  staggers (toast stack, popover items; Enhanced, gated). Always multiplied by `--wel-motion`.
 - **The multiplier rule:** every duration in the codebase is written
   `calc(var(--wel-motion-duration-2) * var(--wel-motion))`, and:
 
@@ -330,6 +332,7 @@ source — regenerate with `node build/gen-token-appendix.mjs`. Structure:
 | `--wel-motion-ease-in` | semantic | — | `cubic-bezier(0.4, 0, 1, 1)` | — |
 | `--wel-motion-ease-out` | semantic | — | `cubic-bezier(0, 0, 0.2, 1)` | — |
 | `--wel-motion-ease-spring` | semantic | — | `cubic-bezier(0.34, 1.56, 0.64, 1)` | — |
+| `--wel-motion-stagger` | semantic | — | `40ms` | — |
 
 #### Radius, border, shadow (`src/tokens/radius-border-shadow.css`)
 
@@ -433,6 +436,6 @@ Every foreground/background combination components are allowed to use. Ratios ar
 | `accent` | `surface-sunken` | 3:1 | 4.29:1 | 7.80:1 | 4.29:1 | progress fill vs track (1.4.11) |
 | `accent` | `border` | 3:1 | 3.57:1 | 3.88:1 | 3.57:1 | spinner arc vs track (1.4.11) |
 
-Totals: 142 tokens, 31 pairings × 2 schemes.
+Totals: 143 tokens, 31 pairings × 2 schemes.
 
 <!-- WELKIN:TOKEN-APPENDIX:END -->

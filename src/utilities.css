@@ -171,6 +171,18 @@
         animation-timeline: view();
         animation-range: entry;
       }
+
+      /* Stagger (T-140): opt-in on the group container. Each sibling's
+         range starts a little later into its own entry (capped at 4 steps
+         = 32%), while the END stays entry 100%, so every item still
+         completes exactly when fully in view — never stuck part-way.
+         Unsupported engines drop the declaration at parse time and keep
+         the plain `entry` range above. Tune with --wel-reveal-stagger. */
+      @supports (transition-delay: calc(sibling-index() * 1ms)) {
+        [data-stagger] > .reveal {
+          animation-range: entry calc((min(sibling-index(), 5) - 1) * var(--wel-reveal-stagger, 8%) * var(--wel-motion)) entry 100%;
+        }
+      }
     }
   }
 

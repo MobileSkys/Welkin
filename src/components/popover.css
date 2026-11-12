@@ -93,6 +93,26 @@
         scale: 0.98;
       }
     }
+
+    /* Staggered item entry (T-140): list items cascade in under the panel
+       fade by sibling position (capped at 6 steps). The hidden start state
+       lives only in @starting-style, so items are never held at opacity 0
+       outside the gate; the delay is 0 under reduced motion. */
+    @supports (transition-delay: calc(sibling-index() * 1ms)) {
+      .popover :where(ul) > li {
+        transition:
+          opacity calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease),
+          translate calc(var(--wel-motion-duration-2) * var(--wel-motion)) var(--wel-motion-ease);
+        transition-delay: calc((min(sibling-index(), 7) - 1) * var(--wel-motion-stagger) * var(--wel-motion));
+      }
+
+      @starting-style {
+        .popover:where(:popover-open) :where(ul) > li {
+          opacity: 0;
+          translate: 0 -0.25rem;
+        }
+      }
+    }
   }
 }
 

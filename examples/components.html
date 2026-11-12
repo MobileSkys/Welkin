@@ -477,7 +477,8 @@
     <p>Native <code>&lt;select&gt;</code>, styled trigger, UA picker —
     <code>color-scheme</code> keeps the dropdown dark in dark mode. The caret is
     gradient-drawn, so it consumes <code>--wel-select-caret-color</code> in both
-    schemes. No JS, ever.</p>
+    schemes. No JS, ever. Where <code>:open</code> is supported the caret flips and the
+    border turns accent while the picker is open; elsewhere it stays static.</p>
 
     <div class="cluster">
       <label class="field">
@@ -654,17 +655,25 @@
     <h2>Dialog</h2>
     <p>Native <code>&lt;dialog&gt;</code>: <code>showModal()</code> gives the focus
     trap, background inert, Esc, and top layer for free; closing is declarative via
-    <code>form method="dialog"</code>. Opening is the one gap — <code>wel-dialog.js</code>
-    (inlined below at build; the spec's inline 3-liner is an equally supported
-    choice) covers it until Invoker Commands graduate. One delegated listener, so
-    invokers added after load need nothing.</p>
+    <code>form method="dialog"</code>. Opening is declarative too, via Invoker
+    Commands (Baseline Newly Available): <code>commandfor</code> +
+    <code>command="show-modal"</code> on a button — zero JS, even with scripts
+    disabled. Engines without invokers fall back to <code>wel-dialog.js</code>
+    (inlined below at build) and the legacy <code>data-dialog-open</code> attribute;
+    the module yields to the engine for any button that carries
+    <code>commandfor</code>.</p>
 
     <div class="cluster">
-      <button class="button" data-variant="danger" data-dialog-open="confirm-delete">
-        Delete project…
-      </button>
-      <button class="button" data-dialog-open="dialog-lg">Open large dialog…</button>
+      <button class="button" data-variant="danger" commandfor="confirm-delete"
+              command="show-modal">Delete project…</button>
+      <button class="button" commandfor="dialog-lg" command="show-modal"
+              data-dialog-open="dialog-lg">Open large dialog… (invoker + fallback)</button>
     </div>
+    <pre tabindex="0"><code>&lt;button commandfor="confirm-delete" command="show-modal"&gt;Delete…&lt;/button&gt;
+&lt;dialog class="dialog" id="confirm-delete" aria-labelledby="t"&gt; … &lt;/dialog&gt;
+
+&lt;!-- fallback for engines without invokers: add data-dialog-open + load wel-dialog.js --&gt;
+&lt;button commandfor="x" command="show-modal" data-dialog-open="x"&gt;Open&lt;/button&gt;</code></pre>
 
     <dialog class="dialog" id="confirm-delete" data-size="sm"
             aria-labelledby="confirm-delete-title">
@@ -696,6 +705,7 @@
         <form method="dialog">
           <button class="button" data-variant="primary" value="ok" autofocus>Got it</button>
         </form>
+        <button class="button" data-variant="ghost" commandfor="dialog-lg" command="close">Close (invoker)</button>
       </footer>
     </dialog>
 
@@ -724,7 +734,9 @@
     API doesn't supply). Tethered under Enhanced; a designed centred panel in Core —
     unless <code>wel-anchor.js</code> is loaded (it is here, inlined at build), which
     tethers with JS exactly where the anchor-positioning CSS can't, and no-ops where
-    it can.</p>
+    it can. Menu items cascade in under the panel fade where
+    <code>sibling-index()</code> is supported (<code>--wel-motion-stagger</code>, zero
+    under reduced motion); the Delete… item opens the dialog above with an invoker.</p>
 
     <div class="cluster">
       <button class="button" popovertarget="project-menu">
@@ -740,7 +752,7 @@
         <li><a href="#" aria-current="page">Overview</a></li>
         <li><a href="#">Settings</a></li>
         <li><a href="#">Members</a></li>
-        <li><button data-dialog-open="confirm-delete">Delete…</button></li>
+        <li><button commandfor="confirm-delete" command="show-modal" data-dialog-open="confirm-delete">Delete…</button></li>
       </ul>
     </div>
     <div class="popover" id="side-panel" popover data-placement="inline-end" data-size="sm">
@@ -878,7 +890,9 @@
     and pauses timers on hover and focus. With JS off this region renders right here in
     flow and the flash message below reads as a static alert — which is why it sits in
     the page, not at the end of <code>&lt;body&gt;</code>. Danger toasts never
-    auto-dismiss (WCAG 2.2.1).</p>
+    auto-dismiss (WCAG 2.2.1). A batch of toasts enters with a short
+    <code>sibling-index()</code> cascade (<code>--wel-motion-stagger</code>) where
+    supported — push several at once to see it.</p>
 
     <wel-toast-region aria-label="Notifications">
       <wel-toast data-tone="success">Profile saved — server-rendered flash message.</wel-toast>
@@ -886,6 +900,7 @@
 
     <div class="cluster">
       <button class="button" type="button" id="toast-status">Status toast (6s)</button>
+      <button class="button" type="button" id="toast-batch">Batch of three (stagger)</button>
       <button class="button" type="button" data-variant="secondary" id="toast-sticky">
         Persistent toast (duration=0)
       </button>
@@ -904,9 +919,9 @@
   with T-31…T-39.</p>
 </footer>
 
-<!-- Dialog opening: wel-dialog.js (inlined below) is the delegated form of the
-     documented 3-liner in docs/components/dialog.md; both are deleted when
-     Invoker Commands graduate per ADR-0012. -->
+<!-- Dialog opening: Invoker Commands (commandfor/command) open dialogs natively;
+     wel-dialog.js (inlined below) yields to them and serves only the legacy
+     data-dialog-open path, deleted when invokers reach Widely Available (ADR-0012). -->
 <!-- Demo-only wiring for the toast buttons (the component API is the DOM;
      these buttons just exercise the push() convenience). -->
 <script type="module">
@@ -914,6 +929,9 @@
   let n = 0;
   document.getElementById('toast-status').addEventListener('click', () =>
     region.push(`Upload ${++n} complete.`, { tone: 'info' }));
+  document.getElementById('toast-batch')?.addEventListener('click', () => {
+    for (const tone of ['info', 'success', 'warning']) region.push(`Batch ${tone} toast.`, { tone });
+  });
   document.getElementById('toast-sticky').addEventListener('click', () =>
     region.push('Working offline — changes stored locally.', { tone: 'warning', duration: 0 }));
   document.getElementById('toast-error').addEventListener('click', () =>
@@ -1320,14 +1338,24 @@ customElements.define('wel-combobox', WelCombobox);
    (docs/components/dialog.md, T-65; delivery per ADR-0011). <dialog> is
    Core: showModal() brings top layer, focus trap, inert background, Esc,
    and focus return; closing is declarative (form method="dialog").
-   Opening is the one gap — Invoker Commands (command/commandfor) will
-   close it, but are pre-Baseline (ADR-0012), so this module is deleted
-   when they graduate. It is the spec's documented inline 3-liner plus
-   late-added-DOM handling: one delegated listener at the root, so
+   Opening was the one gap. Invoker Commands (<button commandfor="id"
+   command="show-modal">) close it natively and are Baseline Newly
+   Available (web-features `invoker-commands`, 2025-12-12; T-140), so the
+   recommended markup needs no JS at all and this module DETECTS AND
+   YIELDS (docs/08, doc 03 @supports rule 4): a button carrying
+   `commandfor` is never touched when the engine implements the feature.
+   Detection: `commandForElement` is the IDL attribute that reflects
+   `commandfor` on HTMLButtonElement, so its presence on the prototype means
+   the engine acts on the attribute itself
+   (https://developer.mozilla.org/en-US/docs/Web/API/HTMLButtonElement/commandForElement).
+   What stays is the legacy [data-dialog-open] path (older markup, and
+   engines without invokers): one delegated listener at the root, so
    invokers inserted after load work with no re-scan and no observer.
-   data-dialog-modal="false" on the invoker opens non-modally (show()). */
+   data-dialog-modal="false" on the invoker opens non-modally (show()).
+   This module is deleted when invokers reach Widely Available (ADR-0012). */
 
 const BOUND = Symbol();
+const NATIVE = 'commandForElement' in HTMLButtonElement.prototype;
 
 /** Bind the delegated opener on root, once. */
 export default function upgrade(root = document) {
@@ -1336,7 +1364,8 @@ export default function upgrade(root = document) {
 
   root.addEventListener('click', (e) => {
     const invoker = e.target.closest?.('[data-dialog-open]');
-    if (!invoker) return;
+    // Yield: the engine already handles any commandfor button itself.
+    if (!invoker || (NATIVE && invoker.hasAttribute('commandfor'))) return;
     const dialog = document.getElementById(invoker.dataset.dialogOpen || '');
     // Skip anything already open: showModal() on an open dialog throws,
     // and a server-rendered in-flow panel (`open` attribute) must not be
