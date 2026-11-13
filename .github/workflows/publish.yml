@@ -1,9 +1,9 @@
 # npm publish pipeline (T-53, ADR-0003). Trigger: push a version tag
 # (v0.2.0 …). Gates: the full CI surface — lint, build, size budgets,
-# a11y smoke — then publishes with npm provenance. Requires an
-# `NPM_TOKEN` repository secret (npm automation token); until the repo
-# has a remote + secret, `npm publish` from a clean checkout is the
-# documented manual path (prepublishOnly runs the same npm test gate).
+# a11y smoke — then publishes with npm provenance. Auth is npm trusted
+# publishing (OIDC): npmjs.com trusts MobileSkys/Welkin + publish.yml, so
+# no token secret is needed (the NPM_TOKEN secret expired before 1.4.0).
+# Never `npm publish` manually — it skips provenance.
 name: Publish
 
 on:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing (OIDC) + provenance
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,6 +31,6 @@ jobs:
       - run: |
           [ "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}" ] \
             || { echo "tag ${GITHUB_REF_NAME} != package version"; exit 1; }
+      # trusted publishing needs npm >= 11.5.1; Node 22 bundles npm 10
+      - run: npm install -g npm@11 && npm --version
       - run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
